@@ -1,4 +1,4 @@
-import { VideoCompact, Channel, PlaylistCompact, Client, Video, Playlist } from "../dist/index";
+import { Channel, PlaylistCompact, Client, Video, Playlist, SearchResult } from "../dist";
 import "jest-extended";
 
 const youtube = new Client();
@@ -9,17 +9,16 @@ const PLAYLIST_ID = "PLAo4aa6NKcpjx0SVA3JzZHw2wJ3hQ4vmO";
 
 describe("Client", () => {
 	describe("search video", () => {
-		let videos: VideoCompact[];
+		let videos: SearchResult<{ type: "video" }>;
 
 		beforeAll(async () => {
 			videos = await youtube.search(SEARCH_QUERY, {
-				limit: 3,
 				type: "video",
 			});
 		});
 
-		it("search result should be 3", () => {
-			expect(videos.length).toBe(3);
+		it("search result should be more than 15", () => {
+			expect(videos.length).toBeGreaterThan(15);
 		});
 		it("match 1st video from search result", () => {
 			const video = videos[0];
@@ -29,9 +28,16 @@ describe("Client", () => {
 			expect(video.thumbnail).toStartWith("https://i.ytimg.com/");
 			expect(video.channel?.id).toBe("UCuAXFkgsw1L7xaCfnd5JJOw");
 			expect(video.channel?.name).toBe("Official Rick Astley");
-			expect(video.channel?.url).toBe("https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw");
+			expect(video.channel?.url).toBe(
+				"https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+			);
 			expect(typeof video.uploadDate).toBe("string");
 			expect(video.viewCount).toBeGreaterThan(680000000);
+		});
+		it("load continuation", async () => {
+			const nextVideos = await videos.next();
+			expect(nextVideos.length).toBeGreaterThan(15);
+			expect(videos.length).toBeGreaterThan(35);
 		});
 	});
 
@@ -122,7 +128,9 @@ describe("Client", () => {
 
 		beforeAll(async () => {
 			video = (await youtube.getVideo(VIDEO_ID)) as Video;
-			liveVideo = (await youtube.getVideo("https://www.youtube.com/watch?v=5qap5aO4i9A")) as Video;
+			liveVideo = (await youtube.getVideo(
+				"https://www.youtube.com/watch?v=5qap5aO4i9A"
+			)) as Video;
 			endedLiveVideo = (await youtube.getVideo(
 				"https://www.youtube.com/watch?v=iXn9O-Rzb_M"
 			)) as Video;
@@ -136,7 +144,9 @@ describe("Client", () => {
 			expect(typeof video.description).toBe("string");
 			expect(video.channel?.id).toBe("UCuAXFkgsw1L7xaCfnd5JJOw");
 			expect(video.channel?.name).toBe("Official Rick Astley");
-			expect(video.channel?.url).toBe("https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw");
+			expect(video.channel?.url).toBe(
+				"https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw"
+			);
 			expect(video.channel?.thumbnail).toStartWith("https://yt3.ggpht.com");
 			expect(typeof video.uploadDate).toBe("string");
 			expect(video.viewCount).toBeGreaterThan(680000000);

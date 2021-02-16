@@ -1,11 +1,12 @@
 import { Channel, PlaylistCompact, VideoCompact } from "..";
 
+export type SearchType = "video" | "channel" | "playlist" | "all";
+
 export type SearchOptions = {
-	type: "video" | "channel" | "playlist" | "all";
-	limit: number;
+	type: SearchType;
 };
 
-export type SearchType<T> = T extends { type: "video" }
+export type SearchResultType<T> = T extends { type: "video" }
 	? VideoCompact
 	: T extends { type: "channel" }
 	? Channel

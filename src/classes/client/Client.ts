@@ -1,8 +1,8 @@
-import { GetPlaylistOptions, SearchOptions, SearchType } from "./options";
+import { GetPlaylistOptions, SearchOptions } from "./types";
 import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { getQueryParameter, axios } from "../../common";
 
-import { PlaylistCompact, VideoCompact, Channel, Playlist, Video } from "..";
+import { Playlist, Video, SearchResult } from "..";
 
 export default class YoutubeClient {
 	/**
@@ -14,36 +14,15 @@ export default class YoutubeClient {
 	async search<T extends SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
-	): Promise<SearchType<T>[]> {
+	): Promise<SearchResult<T>> {
 		const options: SearchOptions = {
 			type: "all",
-			limit: 10,
 			...searchOptions,
 		};
 
-		const response = await axios.post(`${I_END_POINT}/search`, {
-			query,
-			params: YoutubeClient.getSearchTypeParam(options.type),
-		});
-
-		const contents = response.data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents
-			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
-			.pop().itemSectionRenderer.contents;
-
-		const results = [];
-
-		for (const content of contents) {
-			if ("playlistRenderer" in content)
-				results.push(new PlaylistCompact().load(content.playlistRenderer));
-			else if ("videoRenderer" in content)
-				results.push(new VideoCompact().load(content.videoRenderer));
-			else if ("channelRenderer" in content)
-				results.push(new Channel().load(content.channelRenderer));
-
-			if (results.length >= options.limit) break;
-		}
-
-		return results as SearchType<T>[];
+		const result = new SearchResult();
+		await result.init(query, options);
+		return result;
 	}
 
 	/**
@@ -84,20 +63,5 @@ export default class YoutubeClient {
 
 		if (!response.data[3].response.contents) return undefined;
 		return new Video().load(response.data);
-	}
-
-	/**
-	 * Get type query value
-	 *
-	 * @param type Search type
-	 */
-	static getSearchTypeParam(type: "video" | "playlist" | "channel" | "all"): string {
-		const searchType = {
-			video: "EgIQAQ%3D%3D",
-			playlist: "EgIQAw%3D%3D",
-			channel: "EgIQAg%3D%3D",
-			all: "",
-		};
-		return type in searchType ? searchType[type] : "";
 	}
 }

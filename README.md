@@ -21,8 +21,13 @@ const run = async () => {
 		limit: 10,
 	});
 
+	console.log(videos.length); // 20
+	const nextVideos = await videos.next(); // load next page
+	console.log(nextVideos.length); // 18-20, inconsistent next videos count from youtube
+	console.log(videos.length); // 38 - 40
+
 	// you can also pass the video URL
-	const video = await youtube.getVideo("dQw4w9WgXcQ"); 
+	const video = await youtube.getVideo("dQw4w9WgXcQ");
 
 	const channelVideos = await video.channel.getVideos();
 	const channelPlaylists = await video.channel.getPlaylists();
