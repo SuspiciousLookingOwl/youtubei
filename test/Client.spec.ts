@@ -5,7 +5,7 @@ const youtube = new Client();
 
 const SEARCH_QUERY = "Never gonna give you up";
 const VIDEO_ID = "dQw4w9WgXcQ";
-const PLAYLIST_ID = "PLAo4aa6NKcpjx0SVA3JzZHw2wJ3hQ4vmO";
+const PLAYLIST_ID = "UUHnyfMqiRRG1u-2MsSQLbXA";
 
 describe("Client", () => {
 	describe("search video", () => {
@@ -20,6 +20,7 @@ describe("Client", () => {
 		it("search result should be more than 15", () => {
 			expect(videos.length).toBeGreaterThan(15);
 		});
+
 		it("match 1st video from search result", () => {
 			const video = videos[0];
 			expect(video.id).toBe(VIDEO_ID);
@@ -34,6 +35,7 @@ describe("Client", () => {
 			expect(typeof video.uploadDate).toBe("string");
 			expect(video.viewCount).toBeGreaterThan(680000000);
 		});
+
 		it("load continuation", async () => {
 			const nextVideos = await videos.next();
 			expect(nextVideos.length).toBeGreaterThan(15);
@@ -91,20 +93,18 @@ describe("Client", () => {
 
 		it("match getPlaylist result", () => {
 			expect(playlist.id).toBe(PLAYLIST_ID);
-			expect(playlist.title).toBe("Scrape Youtube Test");
-			expect(playlist.videoCount).toBe(5);
+			expect(playlist.title).toBe("Uploads from Veritasium");
+			expect(playlist.videoCount).toBeGreaterThan(300);
 			expect(typeof playlist.viewCount).toBe("number");
 			expect(typeof playlist.lastUpdatedAt).toBe("string");
-			expect(playlist.channel?.id).toBe("UCXzoobwjLSyFECcWi9K1iMg");
-			expect(playlist.channel?.name).toBe("Vincent Jonathan");
-			expect(playlist.channel?.url).toBe(
-				"https://www.youtube.com/channel/UCXzoobwjLSyFECcWi9K1iMg"
-			);
+			expect(playlist.channel?.id).toBe("UCHnyfMqiRRG1u-2MsSQLbXA");
+			expect(playlist.channel?.name).toBe("Veritasium");
+			expect(playlist.channel?.url).toBe("https://www.youtube.com/c/veritasium");
 			expect(playlist.channel?.thumbnail).toStartWith("https://yt3.ggpht.com");
-			expect(playlist.videos.length).toBe(5);
-			expect(playlist.videos[0].id).toBe("aROa_qE2FLM");
-			expect(playlist.videos[0].title).toBe("The Paper Kites - Don’t Keep Driving");
-			expect(playlist.videos[0].duration).toBe(321);
+			expect(playlist.videos.length).toBe(100);
+			expect(typeof playlist.videos[0].id).toBe("string");
+			expect(typeof playlist.videos[0].title).toBe("string");
+			expect(typeof playlist.videos[0].duration).toBe("number");
 			expect(playlist.videos[0].thumbnail).toStartWith("https://i.ytimg.com/");
 		});
 
@@ -112,11 +112,14 @@ describe("Client", () => {
 			expect(invalidPlaylist).toBeUndefined();
 		});
 
-		it("match videos count from continuation limit", async () => {
-			playlist = (await youtube.getPlaylist("UUsBjURrPoezykLs9EqgamOA", {
-				continuationLimit: 2,
-			})) as Playlist;
+		it("load continuation", async () => {
+			expect(playlist.videos.length).toBe(100);
+			let newVideos = await playlist.next();
+			expect(newVideos.length).toBe(100);
 			expect(playlist.videos.length).toBe(200);
+			newVideos = await playlist.next(0);
+			expect(newVideos.length).toBeGreaterThan(100);
+			expect(playlist.videos.length).toBe(playlist.videoCount);
 		});
 	});
 

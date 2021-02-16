@@ -13,7 +13,3 @@ export type SearchResultType<T> = T extends { type: "video" }
 	: T extends { type: "playlist" }
 	? PlaylistCompact
 	: VideoCompact | Channel | PlaylistCompact;
-
-export type GetPlaylistOptions = {
-	continuationLimit: number;
-};

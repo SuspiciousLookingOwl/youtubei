@@ -24,6 +24,7 @@ export default class Playlist implements PlaylistAttributes {
 	lastUpdatedAt!: string;
 	channel?: Channel;
 	videos!: VideoCompact[];
+	private latestContinuationToken!: string;
 
 	constructor(playlist: Partial<Playlist> = {}) {
 		Object.assign(this, playlist);
@@ -34,7 +35,7 @@ export default class Playlist implements PlaylistAttributes {
 	 *
 	 * @param youtubeRawData raw object from youtubei
 	 */
-	async load(youtubeRawData: YoutubeRawData, continuationLimit = 0): Promise<Playlist> {
+	load(youtubeRawData: YoutubeRawData): Playlist {
 		const sidebarRenderer = youtubeRawData.sidebar.playlistSidebarRenderer.items;
 		const primaryRenderer = sidebarRenderer[0].playlistSidebarPrimaryInfoRenderer;
 
@@ -44,12 +45,12 @@ export default class Playlist implements PlaylistAttributes {
 
 		const { stats } = primaryRenderer;
 		if (primaryRenderer.stats.length === 3) {
-			this.videoCount = Playlist.getSideBarInfo(stats[0], true);
-			this.viewCount = Playlist.getSideBarInfo(stats[1], true);
-			this.lastUpdatedAt = Playlist.getSideBarInfo(stats[2], false);
+			this.videoCount = this.getSideBarInfo(stats[0], true);
+			this.viewCount = this.getSideBarInfo(stats[1], true);
+			this.lastUpdatedAt = this.getSideBarInfo(stats[2], false);
 		} else if (stats.length === 2) {
-			this.videoCount = Playlist.getSideBarInfo(stats[0], true);
-			this.lastUpdatedAt = Playlist.getSideBarInfo(stats[1], false);
+			this.videoCount = this.getSideBarInfo(stats[0], true);
+			this.lastUpdatedAt = this.getSideBarInfo(stats[1], false);
 		}
 
 		// Videos
@@ -58,18 +59,12 @@ export default class Playlist implements PlaylistAttributes {
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer.contents;
 
-		const videos = Playlist.getVideos(playlistContents);
+		const videos = this.getVideos(playlistContents);
 
-		// Video Continuation
-		const continuationRenderer = playlistContents[100];
-		if (continuationRenderer) {
-			const continuationVideos = await Playlist.getVideoContinuation(
-				continuationRenderer.continuationItemRenderer.continuationEndpoint
-					.continuationCommand.token,
-				continuationLimit
-			);
-			videos.push(...continuationVideos);
-		}
+		// Video Continuation Token
+		this.latestContinuationToken =
+			playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+
 		this.videos = videos;
 
 		// Channel
@@ -91,11 +86,37 @@ export default class Playlist implements PlaylistAttributes {
 	}
 
 	/**
+	 * Load next videos of the playlist
+	 *
+	 * @param count How many times to load the next videos. Set 0 to load all videos (might take a while on a large playlist!)
+	 */
+	async next(count = 1): Promise<VideoCompact[]> {
+		const newVideos: VideoCompact[] = [];
+		for (let i = 0; i < count || count == 0; i++) {
+			if (!this.latestContinuationToken) break;
+			const response = await axios.post(`${I_END_POINT}/browse`, {
+				continuation: this.latestContinuationToken,
+			});
+
+			const playlistContents =
+				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
+					.continuationItems;
+			newVideos.push(...this.getVideos(playlistContents));
+
+			this.latestContinuationToken =
+				playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+		}
+
+		this.videos.push(...newVideos);
+		return newVideos;
+	}
+
+	/**
 	 * Get compact videos
 	 *
 	 * @param playlistContents raw object from youtubei
 	 */
-	static getVideos(playlistContents: YoutubeRawData): VideoCompact[] {
+	private getVideos(playlistContents: YoutubeRawData): VideoCompact[] {
 		const videosRenderer = playlistContents.map((c: YoutubeRawData) => c.playlistVideoRenderer);
 		const videos = [];
 		for (const videoRenderer of videosRenderer) {
@@ -105,43 +126,7 @@ export default class Playlist implements PlaylistAttributes {
 		return videos;
 	}
 
-	/**
-	 * Load videos continuation
-	 *
-	 * @param continuation Continuation token
-	 * @param continuationLimit How many continuation
-	 */
-	static async getVideoContinuation(
-		continuation: string,
-		continuationLimit = 0,
-		continuationCount = 0
-	): Promise<VideoCompact[]> {
-		continuationCount++;
-		if (continuationLimit && continuationCount >= continuationLimit) return [];
-
-		const response = await axios.post(`${I_END_POINT}/browse`, { continuation });
-
-		const playlistContents =
-			response.data.onResponseReceivedActions[0].appendContinuationItemsAction
-				.continuationItems;
-
-		const videos = Playlist.getVideos(playlistContents);
-
-		const continuationRenderer = playlistContents[100];
-		if (continuationRenderer) {
-			const continuationVideos = await Playlist.getVideoContinuation(
-				continuationRenderer.continuationItemRenderer.continuationEndpoint
-					.continuationCommand.token,
-				continuationLimit,
-				continuationCount
-			);
-			videos.push(...continuationVideos);
-		}
-
-		return videos;
-	}
-
-	static getSideBarInfo<T extends true | false = true>(
+	private getSideBarInfo<T extends boolean = true>(
 		stats: YoutubeRawData,
 		parseInt: T
 	): T extends true ? number : string {

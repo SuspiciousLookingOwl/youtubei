@@ -32,19 +32,11 @@ const run = async () => {
 	const channelPlaylists = await video.channel.getPlaylists();
 
 	// you can also pass the playlist URL
-	const playlist = await youtube.getPlaylist("UUsBjURrPoezykLs9EqgamOA", { 
-		/* 
-		Get first 100 videos of the playlist. 
-		Set to 2 for 200, 3 for 300, and so on.
-		Default is 0 (get all videos on the playlist). 
-		Keep in mind that Youtube can only get 100 playlist videos at a time, 
-		so if you are fetching all videos from a playlist with 1000 videos, 
-		this package will send 10 different requests one at a time, 
-		which will make the proses 10x longer. 
-		For the fastest response, set it to 1
-		*/
-		continuationLimit: 1, 
-	}); 
+	const playlist = await youtube.getPlaylist("UUHnyfMqiRRG1u-2MsSQLbXA");
+	console.log(playlist.videos.length); // first 100 videos;
+	let newVideos = await playlist.next(); // load next 100 videos
+	console.log(playlist.videos.length); // 200 videos;
+	await playlist.next(0); // load all videos in the playlist
 
 };
 

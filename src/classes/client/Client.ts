@@ -1,4 +1,4 @@
-import { GetPlaylistOptions, SearchOptions } from "./types";
+import { SearchOptions } from "./types";
 import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { getQueryParameter, axios } from "../../common";
 
@@ -30,15 +30,7 @@ export default class YoutubeClient {
 	 *
 	 * @param playlistIdOrUrl
 	 */
-	async getPlaylist(
-		playlistIdOrUrl: string,
-		options: Partial<GetPlaylistOptions> = {}
-	): Promise<Playlist | undefined> {
-		options = {
-			continuationLimit: 0,
-			...options,
-		};
-
+	async getPlaylist(playlistIdOrUrl: string): Promise<Playlist | undefined> {
 		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
 
 		const response = await axios.post(`${I_END_POINT}/browse`, {
@@ -46,7 +38,7 @@ export default class YoutubeClient {
 		});
 
 		if (response.data.error || response.data.alerts) return undefined;
-		return new Playlist().load(response.data, options.continuationLimit);
+		return new Playlist().load(response.data);
 	}
 
 	/**
