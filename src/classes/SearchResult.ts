@@ -23,7 +23,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 			params: SearchResult.getSearchTypeParam(options.type),
 		});
 
-		this.load(
+		this.loadVideos(
 			response.data.contents.twoColumnSearchResultsRenderer.primaryContents
 				.sectionListRenderer.contents
 		);
@@ -32,22 +32,31 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 
 	/**
 	 * Load next search data
+	 *
+	 * @param count How many times to load the next data
 	 */
-	async next(): Promise<Array<SearchResultType<T>>> {
-		if (!this.latestContinuationToken) throw new Error("No Continuation");
-		const response = await axios.post(`${I_END_POINT}/search`, {
-			continuation: this.latestContinuationToken,
-		});
-		return this.load(
-			response.data.onResponseReceivedCommands[0].appendContinuationItemsAction
-				.continuationItems
-		);
+	async next(count = 1): Promise<Array<SearchResultType<T>>> {
+		const newVideo = [];
+		for (let i = 0; i < count; i++) {
+			if (!this.latestContinuationToken) break;
+			const response = await axios.post(`${I_END_POINT}/search`, {
+				continuation: this.latestContinuationToken,
+			});
+			newVideo.push(
+				...this.loadVideos(
+					response.data.onResponseReceivedCommands[0].appendContinuationItemsAction
+						.continuationItems
+				)
+			);
+		}
+
+		return newVideo;
 	}
 
 	/**
-	 * Load data from youtube
+	 * Load videos data from youtube
 	 */
-	private load(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
+	private loadVideos(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
 		const contents = sectionListContents
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
 			.pop().itemSectionRenderer.contents;
