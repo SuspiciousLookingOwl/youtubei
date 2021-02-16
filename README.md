@@ -18,7 +18,6 @@ const youtube = new Client();
 const run = async () => {
 	const videos = await youtube.search("Never gonna give you up", {
 		type: "video", // video | playlist | channel | all
-		limit: 10,
 	});
 
 	console.log(videos.length); // 20
