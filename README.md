@@ -36,7 +36,7 @@ const run = async () => {
 	console.log(playlist.videos.length); // first 100 videos;
 	let newVideos = await playlist.next(); // load next 100 videos
 	console.log(playlist.videos.length); // 200 videos;
-	await playlist.next(0); // load all videos in the playlist
+	await playlist.next(0); // load the rest videos in the playlist
 
 };
 
