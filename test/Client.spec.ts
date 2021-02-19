@@ -27,6 +27,7 @@ describe("Client", () => {
 			expect(video.title).toBe("Rick Astley - Never Gonna Give You Up (Video)");
 			expect(video.duration).toBe(213);
 			expect(video.thumbnail).toStartWith("https://i.ytimg.com/");
+			expect(video.thumbnails.length).toBeGreaterThan(1);
 			expect(video.channel?.id).toBe("UCuAXFkgsw1L7xaCfnd5JJOw");
 			expect(video.channel?.name).toBe("Official Rick Astley");
 			expect(video.channel?.url).toBe(

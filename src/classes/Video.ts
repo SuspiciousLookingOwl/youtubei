@@ -70,11 +70,7 @@ export default class Video implements VideoAttributes {
 		this.channel = new Channel({
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,
-			thumbnail: thumbnail.thumbnails[thumbnail.thumbnails.length - 1].url.startsWith(
-				"https:"
-			)
-				? thumbnail.thumbnails[thumbnail.thumbnails.length - 1].url
-				: "https:" + thumbnail.thumbnails[thumbnail.thumbnails.length - 1].url,
+			thumbnails: thumbnail.thumbnails,
 			url: `https://www.youtube.com/channel/${title.runs[0].navigationEndpoint.browseEndpoint.browseId}`,
 		});
 

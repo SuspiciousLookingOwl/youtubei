@@ -1,26 +1,25 @@
-import { axios, YoutubeRawData } from "../common";
-import { PlaylistCompact, VideoCompact } from ".";
+import { axios, Thumbnail, YoutubeRawData } from "../common";
+import { BaseCompact, PlaylistCompact, VideoCompact } from ".";
 import { I_END_POINT } from "../constants";
 
 interface ChannelProperties {
 	id: string;
 	name: string;
 	url: string;
-	thumbnail?: string;
+	thumbnails: Thumbnail[];
 	videoCount?: number;
 }
 
 /**
  * Represent a Youtube Channel
  */
-export default class Channel implements ChannelProperties {
-	id!: string;
+export default class Channel extends BaseCompact implements ChannelProperties {
 	name!: string;
 	url!: string;
-	thumbnail?: string;
 	videoCount?: number;
 
 	constructor(channel: Partial<ChannelProperties> = {}) {
+		super();
 		Object.assign(this, channel);
 	}
 
@@ -86,7 +85,7 @@ export default class Channel implements ChannelProperties {
 
 		this.id = channelId;
 		this.name = title.simpleText;
-		this.thumbnail = `https:${thumbnail.thumbnails[thumbnail.thumbnails.length - 1].url}`;
+		this.thumbnails = thumbnail.thumbnails;
 		this.url = "https://www.youtube.com" + navigationEndpoint.browseEndpoint.canonicalBaseUrl;
 		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
 

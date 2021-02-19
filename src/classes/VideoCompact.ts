@@ -1,11 +1,11 @@
-import { getDuration, YoutubeRawData } from "../common";
-import Channel from "./Channel";
+import { getDuration, Thumbnail, YoutubeRawData } from "../common";
+import { BaseCompact, Channel } from ".";
 
 interface VideoCompactAttributes {
 	id: string;
 	title: string;
+	thumbnails: Thumbnail[];
 	duration: number | null;
-	thumbnail: string;
 	isLiveContent: boolean;
 	channel?: Channel;
 	uploadDate?: string;
@@ -15,16 +15,16 @@ interface VideoCompactAttributes {
 /**
  * Represent a compact video (e.g. from search result, playlist's videos, channel's videos)
  */
-export default class VideoCompact implements VideoCompactAttributes {
-	id!: string;
+export default class VideoCompact extends BaseCompact implements VideoCompactAttributes {
 	title!: string;
 	duration!: number | null;
-	thumbnail!: string;
 	isLiveContent!: boolean;
 	channel?: Channel;
 	uploadDate?: string;
 	viewCount?: number;
+
 	constructor(videoCompact: Partial<VideoCompactAttributes> = {}) {
+		super();
 		Object.assign(this, videoCompact);
 	}
 
@@ -49,7 +49,7 @@ export default class VideoCompact implements VideoCompactAttributes {
 
 		this.id = videoId;
 		this.title = title.simpleText || title.runs[0]?.text;
-		this.thumbnail = thumbnail.thumbnails[thumbnail.thumbnails.length - 1].url;
+		this.thumbnails = thumbnail.thumbnails;
 		this.uploadDate = publishedTimeText ? publishedTimeText.simpleText : undefined;
 
 		this.duration =
