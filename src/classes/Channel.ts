@@ -83,10 +83,12 @@ export default class Channel extends BaseCompact implements ChannelProperties {
 	load(youtubeRawData: YoutubeRawData): Channel {
 		const { channelId, title, thumbnail, videoCountText, navigationEndpoint } = youtubeRawData;
 
+		const { browseId, canonicalBaseUrl } = navigationEndpoint.browseEndpoint;
+
 		this.id = channelId;
 		this.name = title.simpleText;
 		this.thumbnails = thumbnail.thumbnails;
-		this.url = "https://www.youtube.com" + navigationEndpoint.browseEndpoint.canonicalBaseUrl;
+		this.url = "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`);
 		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
 
 		return this;

@@ -72,7 +72,7 @@ export default class VideoCompact extends BaseCompact implements VideoCompactAtt
 			this.channel = ({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
-				url: `https://www.youtube.com${canonicalBaseUrl}`,
+				url: "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`),
 			} as unknown) as Channel;
 		}
 
