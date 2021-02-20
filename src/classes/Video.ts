@@ -50,14 +50,17 @@ export default class Video implements VideoAttributes {
 		const contents =
 			youtubeRawData[3].response.contents.twoColumnWatchNextResults.results.results.contents;
 
-		const primaryInfo = contents[0].videoPrimaryInfoRenderer;
-		const secondaryInfo = contents[1].videoSecondaryInfoRenderer;
+		const primaryInfo = contents.find((c: YoutubeRawData) => "videoPrimaryInfoRenderer" in c)
+			.videoPrimaryInfoRenderer;
+		const secondaryInfo = contents.find(
+			(c: YoutubeRawData) => "videoSecondaryInfoRenderer" in c
+		).videoSecondaryInfoRenderer;
 		const videoDetails = youtubeRawData[2].playerResponse.videoDetails;
 		const videoInfo = { ...secondaryInfo, ...primaryInfo, videoDetails };
 
 		// Basic information
 		this.id = videoInfo.videoDetails.videoId;
-		this.title = videoInfo.title.runs[0].text;
+		this.title = videoInfo.videoDetails.title;
 		this.duration = +videoInfo.videoDetails.lengthSeconds || null;
 		this.uploadDate = videoInfo.dateText.simpleText;
 		this.viewCount = +videoInfo.videoDetails.viewCount;
