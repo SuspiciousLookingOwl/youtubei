@@ -1,5 +1,5 @@
 import { axios, Thumbnail, YoutubeRawData } from "../common";
-import { BaseCompact, PlaylistCompact, VideoCompact } from ".";
+import { Base, PlaylistCompact, VideoCompact } from ".";
 import { I_END_POINT } from "../constants";
 
 interface ChannelProperties {
@@ -13,7 +13,7 @@ interface ChannelProperties {
 /**
  * Represent a Youtube Channel
  */
-export default class Channel extends BaseCompact implements ChannelProperties {
+export default class Channel extends Base implements ChannelProperties {
 	name!: string;
 	url!: string;
 	videoCount?: number;

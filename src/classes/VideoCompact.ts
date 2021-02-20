@@ -1,5 +1,5 @@
 import { getDuration, Thumbnail, YoutubeRawData } from "../common";
-import { BaseCompact, Channel } from ".";
+import { Base, Channel } from ".";
 
 interface VideoCompactAttributes {
 	id: string;
@@ -15,7 +15,7 @@ interface VideoCompactAttributes {
 /**
  * Represent a compact video (e.g. from search result, playlist's videos, channel's videos)
  */
-export default class VideoCompact extends BaseCompact implements VideoCompactAttributes {
+export default class VideoCompact extends Base implements VideoCompactAttributes {
 	title!: string;
 	duration!: number | null;
 	isLiveContent!: boolean;

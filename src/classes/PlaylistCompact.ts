@@ -1,5 +1,5 @@
 import { Thumbnail, YoutubeRawData } from "../common";
-import BaseCompact from "./BaseCompact";
+import Base from "./Base";
 import Channel from "./Channel";
 
 interface PlaylistCompactAttributes {
@@ -13,7 +13,7 @@ interface PlaylistCompactAttributes {
 /**
  * Represent a Compact Playlist (e.g. from search result, upNext / related of a video)
  */
-export default class PlaylistCompact extends BaseCompact implements PlaylistCompactAttributes {
+export default class PlaylistCompact extends Base implements PlaylistCompactAttributes {
 	title!: string;
 	channel?: Channel;
 	videoCount!: number;

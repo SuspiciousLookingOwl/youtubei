@@ -1,6 +1,6 @@
 import { Thumbnail } from "../common";
 
-export default class BaseCompact {
+export default class Base {
 	id!: string;
 	thumbnails!: Thumbnail[];
 
