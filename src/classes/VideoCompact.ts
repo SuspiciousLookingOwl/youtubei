@@ -69,11 +69,11 @@ export default class VideoCompact extends BaseCompact implements VideoCompactAtt
 				ownerText || shortBylineText
 			).runs[0].navigationEndpoint.browseEndpoint;
 
-			this.channel = ({
+			this.channel = new Channel({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
 				url: "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`),
-			} as unknown) as Channel;
+			});
 		}
 
 		if (!this.isLiveContent)
