@@ -1,11 +1,11 @@
-import { PlaylistCompact, VideoCompact, Channel } from ".";
-import { YoutubeRawData } from "../common";
+import { PlaylistCompact, VideoCompact, Channel, Base } from ".";
+import { Thumbnail, YoutubeRawData } from "../common";
 
 interface VideoAttributes {
 	id: string;
 	title: string;
 	duration: number | null;
-	thumbnail: string;
+	thumbnails: Thumbnail[];
 	description: string;
 	channel: Channel;
 	uploadDate: string;
@@ -21,11 +21,10 @@ interface VideoAttributes {
 /**
  * Represent a Video
  */
-export default class Video implements VideoAttributes {
+export default class Video extends Base implements VideoAttributes {
 	id!: string;
 	title!: string;
 	duration!: number | null;
-	thumbnail!: string;
 	description!: string;
 	channel!: Channel;
 	uploadDate!: string;
@@ -38,6 +37,7 @@ export default class Video implements VideoAttributes {
 	related!: (VideoCompact | PlaylistCompact)[];
 
 	constructor(video: Partial<VideoAttributes> = {}) {
+		super();
 		Object.assign(this, video);
 	}
 
@@ -65,8 +65,7 @@ export default class Video implements VideoAttributes {
 		this.uploadDate = videoInfo.dateText.simpleText;
 		this.viewCount = +videoInfo.videoDetails.viewCount;
 		this.isLiveContent = videoInfo.videoDetails.isLiveContent;
-		const thumbnails = videoInfo.videoDetails.thumbnail.thumbnails;
-		this.thumbnail = thumbnails[thumbnails.length - 1].url;
+		this.thumbnails = videoInfo.videoDetails.thumbnail.thumbnails;
 
 		// Channel
 		const { title, thumbnail } = videoInfo.owner.videoOwnerRenderer;
