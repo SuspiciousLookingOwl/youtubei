@@ -2,6 +2,8 @@
 
 `Youtubei` is made to replace my other library [scrape-yt](https://github.com/SuspiciousLookingOwl/scrape-yt/). Instead of scrapping data from Youtube page, `youtubei` fetches data by sending a request directly to `https://www.youtube.com/youtubei/v1`, which should be faster and provide more reliable result.
 
+<b>Requires Node >= 12</b>
+
 ## Installation
 ```
 npm i youtubei
