@@ -1,4 +1,4 @@
-import { axios, Thumbnail, YoutubeRawData } from "../common";
+import { http, Thumbnail, YoutubeRawData } from "../common";
 import { Base, PlaylistCompact, VideoCompact } from ".";
 import { I_END_POINT } from "../constants";
 
@@ -29,12 +29,12 @@ export default class Channel extends Base implements ChannelProperties {
 	 * TODO: Add continuation support
 	 */
 	async getVideos(): Promise<VideoCompact[]> {
-		const response = await axios.post(`${I_END_POINT}/browse`, {
+		const response = await http.post(`${I_END_POINT}/browse`, {
 			browseId: this.id,
 			params: "EgZ2aWRlb3M%3D",
 		});
 
-		return response.data.contents.twoColumnBrowseResultsRenderer.tabs[1].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items
+		return response.contents.twoColumnBrowseResultsRenderer.tabs[1].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items
 			.filter((i: YoutubeRawData) => i.gridVideoRenderer)
 			.map((i: YoutubeRawData) => new VideoCompact().load(i.gridVideoRenderer));
 	}
@@ -45,13 +45,13 @@ export default class Channel extends Base implements ChannelProperties {
 	 * TODO: Add continuation support
 	 */
 	async getPlaylists(): Promise<PlaylistCompact[]> {
-		const response = await axios.post(`${I_END_POINT}/browse`, {
+		const response = await http.post(`${I_END_POINT}/browse`, {
 			browseId: this.id,
 			params: "EglwbGF5bGlzdHM%3D",
 		});
 
 		const section =
-			response.data.contents.twoColumnBrowseResultsRenderer.tabs[2].tabRenderer.content
+			response.contents.twoColumnBrowseResultsRenderer.tabs[2].tabRenderer.content
 				.sectionListRenderer;
 
 		let gridPlaylistRenderer;

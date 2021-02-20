@@ -1,6 +1,6 @@
 import { SearchResultType, SearchOptions } from "./client";
 import { I_END_POINT } from "../constants";
-import { axios, extendsBuiltIn, YoutubeRawData } from "../common";
+import { http, extendsBuiltIn, YoutubeRawData } from "../common";
 import { Channel, PlaylistCompact, VideoCompact } from "..";
 
 @extendsBuiltIn()
@@ -18,14 +18,14 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param options Search Options
 	 */
 	async init(query: string, options: SearchOptions): Promise<SearchResult<T>> {
-		const response = await axios.post(`${I_END_POINT}/search`, {
+		const response = await http.post(`${I_END_POINT}/search`, {
 			query,
 			params: SearchResult.getSearchTypeParam(options.type),
 		});
 
 		this.loadVideos(
-			response.data.contents.twoColumnSearchResultsRenderer.primaryContents
-				.sectionListRenderer.contents
+			response.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer
+				.contents
 		);
 		return this;
 	}
@@ -39,12 +39,12 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 		const newVideo = [];
 		for (let i = 0; i < count; i++) {
 			if (!this.latestContinuationToken) break;
-			const response = await axios.post(`${I_END_POINT}/search`, {
+			const response = await http.post(`${I_END_POINT}/search`, {
 				continuation: this.latestContinuationToken,
 			});
 			newVideo.push(
 				...this.loadVideos(
-					response.data.onResponseReceivedCommands[0].appendContinuationItemsAction
+					response.onResponseReceivedCommands[0].appendContinuationItemsAction
 						.continuationItems
 				)
 			);

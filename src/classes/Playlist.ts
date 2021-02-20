@@ -1,4 +1,4 @@
-import { axios, YoutubeRawData } from "../common";
+import { http, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 import Channel from "./Channel";
 import VideoCompact from "./VideoCompact";
@@ -94,12 +94,12 @@ export default class Playlist implements PlaylistAttributes {
 		const newVideos: VideoCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this.latestContinuationToken) break;
-			const response = await axios.post(`${I_END_POINT}/browse`, {
+			const response = await http.post(`${I_END_POINT}/browse`, {
 				continuation: this.latestContinuationToken,
 			});
 
 			const playlistContents =
-				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
+				response.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
 			newVideos.push(...this.getVideos(playlistContents));
 

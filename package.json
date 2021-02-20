@@ -7,9 +7,7 @@
 	"directories": {
 		"test": "test"
 	},
-	"dependencies": {
-		"axios": "^0.21.0"
-	},
+	"dependencies": {},
 	"devDependencies": {
 		"@types/jest": "^26.0.19",
 		"@types/node": "^14.14.12",
