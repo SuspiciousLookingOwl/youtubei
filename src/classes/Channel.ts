@@ -30,11 +30,13 @@ export default class Channel extends Base implements ChannelProperties {
 	 */
 	async getVideos(): Promise<VideoCompact[]> {
 		const response = await http.post(`${I_END_POINT}/browse`, {
-			browseId: this.id,
-			params: "EgZ2aWRlb3M%3D",
+			data: {
+				browseId: this.id,
+				params: "EgZ2aWRlb3M%3D",
+			},
 		});
 
-		return response.contents.twoColumnBrowseResultsRenderer.tabs[1].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items
+		return response.data.contents.twoColumnBrowseResultsRenderer.tabs[1].tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer.items
 			.filter((i: YoutubeRawData) => i.gridVideoRenderer)
 			.map((i: YoutubeRawData) => new VideoCompact().load(i.gridVideoRenderer));
 	}
@@ -46,12 +48,14 @@ export default class Channel extends Base implements ChannelProperties {
 	 */
 	async getPlaylists(): Promise<PlaylistCompact[]> {
 		const response = await http.post(`${I_END_POINT}/browse`, {
-			browseId: this.id,
-			params: "EglwbGF5bGlzdHM%3D",
+			data: {
+				browseId: this.id,
+				params: "EglwbGF5bGlzdHM%3D",
+			},
 		});
 
 		const section =
-			response.contents.twoColumnBrowseResultsRenderer.tabs[2].tabRenderer.content
+			response.data.contents.twoColumnBrowseResultsRenderer.tabs[2].tabRenderer.content
 				.sectionListRenderer;
 
 		let gridPlaylistRenderer;

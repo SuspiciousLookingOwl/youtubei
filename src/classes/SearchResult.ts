@@ -19,13 +19,12 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 */
 	async init(query: string, options: SearchOptions): Promise<SearchResult<T>> {
 		const response = await http.post(`${I_END_POINT}/search`, {
-			query,
-			params: SearchResult.getSearchTypeParam(options.type),
+			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
 		});
 
 		this.loadVideos(
-			response.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer
-				.contents
+			response.data.contents.twoColumnSearchResultsRenderer.primaryContents
+				.sectionListRenderer.contents
 		);
 		return this;
 	}
@@ -40,11 +39,11 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 		for (let i = 0; i < count; i++) {
 			if (!this.latestContinuationToken) break;
 			const response = await http.post(`${I_END_POINT}/search`, {
-				continuation: this.latestContinuationToken,
+				data: { continuation: this.latestContinuationToken },
 			});
 			newVideo.push(
 				...this.loadVideos(
-					response.onResponseReceivedCommands[0].appendContinuationItemsAction
+					response.data.onResponseReceivedCommands[0].appendContinuationItemsAction
 						.continuationItems
 				)
 			);

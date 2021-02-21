@@ -95,11 +95,11 @@ export default class Playlist implements PlaylistAttributes {
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this.latestContinuationToken) break;
 			const response = await http.post(`${I_END_POINT}/browse`, {
-				continuation: this.latestContinuationToken,
+				data: { continuation: this.latestContinuationToken },
 			});
 
 			const playlistContents =
-				response.onResponseReceivedActions[0].appendContinuationItemsAction
+				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
 			newVideos.push(...this.getVideos(playlistContents));
 

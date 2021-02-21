@@ -34,11 +34,11 @@ export default class YoutubeClient {
 		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
 
 		const response = await http.post(`${I_END_POINT}/browse`, {
-			browseId: `VL${playlistId}`,
+			data: { browseId: `VL${playlistId}` },
 		});
 
-		if (response.error || response.alerts) return undefined;
-		return new Playlist().load(response);
+		if (response.data.error || response.data.alerts) return undefined;
+		return new Playlist().load(response.data);
 	}
 
 	/**
@@ -49,9 +49,11 @@ export default class YoutubeClient {
 	async getVideo(videoIdOrUrl: string): Promise<Video | undefined> {
 		const videoId = getQueryParameter(videoIdOrUrl, "v");
 
-		const response = await http.get(`${WATCH_END_POINT}`, { v: videoId, pbj: 1 });
+		const response = await http.get(`${WATCH_END_POINT}`, {
+			params: { v: videoId, pbj: "1" },
+		});
 
-		if (!response[3].response.contents) return undefined;
-		return new Video().load(response);
+		if (!response.data[3].response.contents) return undefined;
+		return new Video().load(response.data);
 	}
 }
