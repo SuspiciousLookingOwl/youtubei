@@ -22,7 +22,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
 		});
 
-		this.loadVideos(
+		this.loadSearchResult(
 			response.data.contents.twoColumnSearchResultsRenderer.primaryContents
 				.sectionListRenderer.contents
 		);
@@ -35,27 +35,27 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param count How many times to load the next data
 	 */
 	async next(count = 1): Promise<Array<SearchResultType<T>>> {
-		const newVideo = [];
+		const newSearchResults = [];
 		for (let i = 0; i < count; i++) {
 			if (!this.latestContinuationToken) break;
 			const response = await http.post(`${I_END_POINT}/search`, {
 				data: { continuation: this.latestContinuationToken },
 			});
-			newVideo.push(
-				...this.loadVideos(
+			newSearchResults.push(
+				...this.loadSearchResult(
 					response.data.onResponseReceivedCommands[0].appendContinuationItemsAction
 						.continuationItems
 				)
 			);
 		}
-
-		return newVideo;
+		this.push(...newSearchResults);
+		return newSearchResults;
 	}
 
 	/**
 	 * Load videos data from youtube
 	 */
-	private loadVideos(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
+	private loadSearchResult(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
 		const contents = sectionListContents
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
 			.pop().itemSectionRenderer.contents;
