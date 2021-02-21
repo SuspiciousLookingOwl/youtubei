@@ -39,6 +39,16 @@ describe("Video", () => {
 		expect(video.related.length).toBeGreaterThan(0);
 	});
 
+	it("load video comments", async () => {
+		expect(video.comments.length).toBe(0);
+		let comments = await video.nextComments();
+		expect(comments.length).toBe(20);
+		expect(video.comments.length).toBe(20);
+		comments = await video.nextComments(2);
+		expect(comments.length).toBe(40);
+		expect(video.comments.length).toBe(60);
+	});
+
 	it("match live getVideo result", () => {
 		expect(liveVideo.isLiveContent).toBeTrue();
 		expect(liveVideo.duration).toBeNull();
