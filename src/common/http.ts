@@ -8,9 +8,9 @@ import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../consta
 import { YoutubeRawData } from "./types";
 
 interface Options extends https.RequestOptions {
-	params?: Record<string, any>;
-	data?: any;
-	headers?: Record<string, string>;
+	params: Record<string, any>;
+	data: any;
+	headers: Record<string, string>;
 }
 
 interface Response<T = any> {
@@ -23,21 +23,30 @@ class HTTP {
 	/**
 	 * Send request to Youtube
 	 */
-	static request(options: Options): Promise<Response> {
+	static request(partialOptions: Partial<Options>): Promise<Response> {
 		return new Promise((resolve, reject) => {
-			options = {
+			const options = {
 				hostname: BASE_URL,
 				port: 443,
-				...options,
-				path: `${options.path}?${qs.stringify(options.params)}`,
+				...partialOptions,
+				path: `${partialOptions.path}?${qs.stringify(partialOptions.params)}`,
 				headers: {
 					"x-youtube-client-version": INNERTUBE_CLIENT_VERSION,
 					"x-youtube-client-name": "1",
-					"Content-Type": "application/json",
-					"Accept-Encoding": "gzip",
-					...options.headers,
+					"content-type": "application/json",
+					"accept-encoding": "gzip",
+					...partialOptions.headers,
 				},
 			};
+
+			let body = options.data || "";
+			if (options.data) {
+				if (options.headers["content-type"] === "application/x-www-form-urlencoded") {
+					body = qs.stringify(body);
+				} else if (options.headers["content-type"] === "application/json") {
+					body = JSON.stringify(body);
+				}
+			}
 
 			const request = https.request(options, (res) => {
 				if (res.headers["content-encoding"] === "gzip") {
@@ -75,7 +84,7 @@ class HTTP {
 			});
 
 			request.on("error", reject);
-			request.write(options.data ? JSON.stringify(options.data) : "");
+			request.write(body);
 			request.end();
 		});
 	}
@@ -83,7 +92,7 @@ class HTTP {
 	/**
 	 * Send GET request to Youtube
 	 */
-	static async get(path: string, options: Options): Promise<YoutubeRawData> {
+	static async get(path: string, options: Partial<Options>): Promise<YoutubeRawData> {
 		options = {
 			method: "GET",
 			path,
@@ -96,7 +105,7 @@ class HTTP {
 	/**
 	 * Send POST request to Youtube
 	 */
-	static async post(path: string, options: Options): Promise<YoutubeRawData> {
+	static async post(path: string, options: Partial<Options>): Promise<YoutubeRawData> {
 		options = {
 			method: "POST",
 			path,
