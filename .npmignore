@@ -1,8 +1,4 @@
-.github
-.temp
-tests
-src
+**
 
-.eslintignore
-.eslintrc.js
-tsconfig.json
+!dist/**
+!README.md
