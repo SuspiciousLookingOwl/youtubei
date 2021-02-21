@@ -1,5 +1,6 @@
-import { PlaylistCompact, VideoCompact, Channel, Base } from ".";
-import { Thumbnail, YoutubeRawData } from "../common";
+import { PlaylistCompact, VideoCompact, Channel, Base, Comment } from ".";
+import { http, Thumbnail, YoutubeRawData } from "../common";
+import { COMMENT_END_POINT } from "../constants";
 
 interface VideoAttributes {
 	id: string;
@@ -16,6 +17,7 @@ interface VideoAttributes {
 	tags: string[];
 	upNext: VideoCompact | PlaylistCompact;
 	related: (VideoCompact | PlaylistCompact)[];
+	comments: Comment[];
 }
 
 /**
@@ -35,6 +37,13 @@ export default class Video extends Base implements VideoAttributes {
 	tags!: string[];
 	upNext!: VideoCompact | PlaylistCompact;
 	related!: (VideoCompact | PlaylistCompact)[];
+	comments!: Comment[];
+
+	private latestCommentContinuation?: {
+		token?: string;
+		itct?: string;
+		xsrfToken?: string;
+	};
 
 	constructor(video: Partial<VideoAttributes> = {}) {
 		super();
@@ -57,6 +66,18 @@ export default class Video extends Base implements VideoAttributes {
 		).videoSecondaryInfoRenderer;
 		const videoDetails = youtubeRawData[2].playerResponse.videoDetails;
 		const videoInfo = { ...secondaryInfo, ...primaryInfo, videoDetails };
+
+		// Comment Continuation Token
+		this.comments = [];
+		const continuation = contents.find((c: YoutubeRawData) => "itemSectionRenderer" in c)
+			?.itemSectionRenderer.continuations[0].nextContinuationData;
+		if (continuation) {
+			this.latestCommentContinuation = {
+				token: continuation.continuation,
+				itct: continuation.clickTrackingParams,
+				xsrfToken: youtubeRawData[3].xsrf_token,
+			};
+		}
 
 		// Basic information
 		this.id = videoInfo.videoDetails.videoId;
@@ -121,5 +142,53 @@ export default class Video extends Base implements VideoAttributes {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Load next comments of the video
+	 *
+	 * @param count How many times to load the next comments.
+	 */
+	async nextComments(count = 1): Promise<Comment[]> {
+		const newComments: Comment[] = [];
+
+		for (let i = 0; i < count || count == 0; i++) {
+			if (!this.latestCommentContinuation) break;
+
+			// Send request
+			const response = await http.post(COMMENT_END_POINT, {
+				data: { session_token: this.latestCommentContinuation.xsrfToken },
+				headers: {
+					"content-type": "application/x-www-form-urlencoded",
+				},
+				params: {
+					action_get_comments: "1",
+					pbj: "1",
+					ctoken: this.latestCommentContinuation.token,
+					continuation: this.latestCommentContinuation.token,
+					itct: this.latestCommentContinuation.itct,
+				},
+			});
+
+			const {
+				contents: comments,
+				continuations,
+			} = response.data.response.continuationContents.itemSectionContinuation;
+
+			const continuation = continuations?.pop().nextContinuationData || undefined;
+			this.latestCommentContinuation = continuation
+				? {
+						token: continuation.continuation,
+						itct: continuation.clickTrackingParams,
+						xsrfToken: response.data.xsrf_token,
+				  }
+				: undefined;
+
+			for (const comment of comments.map((c: YoutubeRawData) => c.commentThreadRenderer)) {
+				newComments.push(new Comment({ video: this }).load(comment));
+			}
+		}
+		this.comments.push(...newComments);
+		return newComments;
 	}
 }
