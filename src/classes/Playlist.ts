@@ -24,7 +24,7 @@ export default class Playlist implements PlaylistAttributes {
 	lastUpdatedAt!: string;
 	channel?: Channel;
 	videos!: VideoCompact[];
-	private latestContinuationToken!: string;
+	private _continuation!: string;
 
 	constructor(playlist: Partial<Playlist> = {}) {
 		Object.assign(this, playlist);
@@ -62,7 +62,7 @@ export default class Playlist implements PlaylistAttributes {
 		const videos = this.getVideos(playlistContents);
 
 		// Video Continuation Token
-		this.latestContinuationToken =
+		this._continuation =
 			playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
 
 		this.videos = videos;
@@ -93,9 +93,9 @@ export default class Playlist implements PlaylistAttributes {
 	async next(count = 1): Promise<VideoCompact[]> {
 		const newVideos: VideoCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
-			if (!this.latestContinuationToken) break;
+			if (!this._continuation) break;
 			const response = await http.post(`${I_END_POINT}/browse`, {
-				data: { continuation: this.latestContinuationToken },
+				data: { continuation: this._continuation },
 			});
 
 			const playlistContents =
@@ -103,7 +103,7 @@ export default class Playlist implements PlaylistAttributes {
 					.continuationItems;
 			newVideos.push(...this.getVideos(playlistContents));
 
-			this.latestContinuationToken =
+			this._continuation =
 				playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
 		}
 

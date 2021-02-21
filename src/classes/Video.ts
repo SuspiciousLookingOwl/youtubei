@@ -39,7 +39,7 @@ export default class Video extends Base implements VideoAttributes {
 	related!: (VideoCompact | PlaylistCompact)[];
 	comments!: Comment[];
 
-	private latestCommentContinuation?: {
+	private _commentContinuation?: {
 		token?: string;
 		itct?: string;
 		xsrfToken?: string;
@@ -72,7 +72,7 @@ export default class Video extends Base implements VideoAttributes {
 		const continuation = contents.find((c: YoutubeRawData) => "itemSectionRenderer" in c)
 			?.itemSectionRenderer.continuations[0].nextContinuationData;
 		if (continuation) {
-			this.latestCommentContinuation = {
+			this._commentContinuation = {
 				token: continuation.continuation,
 				itct: continuation.clickTrackingParams,
 				xsrfToken: youtubeRawData[3].xsrf_token,
@@ -153,20 +153,18 @@ export default class Video extends Base implements VideoAttributes {
 		const newComments: Comment[] = [];
 
 		for (let i = 0; i < count || count == 0; i++) {
-			if (!this.latestCommentContinuation) break;
+			if (!this._commentContinuation) break;
 
 			// Send request
 			const response = await http.post(COMMENT_END_POINT, {
-				data: { session_token: this.latestCommentContinuation.xsrfToken },
-				headers: {
-					"content-type": "application/x-www-form-urlencoded",
-				},
+				data: { session_token: this._commentContinuation.xsrfToken },
+				headers: { "content-type": "application/x-www-form-urlencoded" },
 				params: {
 					action_get_comments: "1",
 					pbj: "1",
-					ctoken: this.latestCommentContinuation.token,
-					continuation: this.latestCommentContinuation.token,
-					itct: this.latestCommentContinuation.itct,
+					ctoken: this._commentContinuation.token,
+					continuation: this._commentContinuation.token,
+					itct: this._commentContinuation.itct,
 				},
 			});
 
@@ -176,7 +174,7 @@ export default class Video extends Base implements VideoAttributes {
 			} = response.data.response.continuationContents.itemSectionContinuation;
 
 			const continuation = continuations?.pop().nextContinuationData || undefined;
-			this.latestCommentContinuation = continuation
+			this._commentContinuation = continuation
 				? {
 						token: continuation.continuation,
 						itct: continuation.clickTrackingParams,

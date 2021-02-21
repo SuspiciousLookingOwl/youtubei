@@ -1,4 +1,4 @@
-export { default as Client } from "./client/Client";
+export { default as Client, SearchOptions, SearchType } from "./Client";
 export { default as Base } from "./Base";
 export { default as VideoCompact } from "./VideoCompact";
 export { default as Channel } from "./Channel";

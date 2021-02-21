@@ -1,11 +1,19 @@
-import { SearchResultType, SearchOptions } from "./client";
+import { SearchOptions } from "./Client";
 import { I_END_POINT } from "../constants";
 import { http, extendsBuiltIn, YoutubeRawData } from "../common";
 import { Channel, PlaylistCompact, VideoCompact } from "..";
 
+export type SearchResultType<T> = T extends { type: "video" }
+	? VideoCompact
+	: T extends { type: "channel" }
+	? Channel
+	: T extends { type: "playlist" }
+	? PlaylistCompact
+	: VideoCompact | Channel | PlaylistCompact;
+
 @extendsBuiltIn()
 export default class SearchResult<T> extends Array<SearchResultType<T>> {
-	private latestContinuationToken!: string;
+	private _continuation!: string;
 
 	constructor() {
 		super();
@@ -37,9 +45,9 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	async next(count = 1): Promise<Array<SearchResultType<T>>> {
 		const newSearchResults = [];
 		for (let i = 0; i < count; i++) {
-			if (!this.latestContinuationToken) break;
+			if (!this._continuation) break;
 			const response = await http.post(`${I_END_POINT}/search`, {
-				data: { continuation: this.latestContinuationToken },
+				data: { continuation: this._continuation },
 			});
 			newSearchResults.push(
 				...this.loadSearchResult(
@@ -63,7 +71,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 			.filter((c: Record<string, unknown>) => "continuationItemRenderer" in c)
 			.pop().continuationItemRenderer?.continuationEndpoint?.continuationCommand.token;
 
-		this.latestContinuationToken = continuationToken;
+		this._continuation = continuationToken;
 		const newContent = [];
 
 		for (const content of contents) {

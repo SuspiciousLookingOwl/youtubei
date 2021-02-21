@@ -1,8 +1,13 @@
-import { SearchOptions } from "./types";
-import { I_END_POINT, WATCH_END_POINT } from "../../constants";
-import { getQueryParameter, http } from "../../common";
+import { I_END_POINT, WATCH_END_POINT } from "../constants";
+import { getQueryParameter, http } from "../common";
 
-import { Playlist, Video, SearchResult } from "..";
+import { Playlist, Video, SearchResult } from ".";
+
+export type SearchType = "video" | "channel" | "playlist" | "all";
+
+export type SearchOptions = {
+	type: SearchType;
+};
 
 export default class YoutubeClient {
 	/**

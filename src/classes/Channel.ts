@@ -2,7 +2,7 @@ import { http, Thumbnail, YoutubeRawData } from "../common";
 import { Base, PlaylistCompact, VideoCompact } from ".";
 import { I_END_POINT } from "../constants";
 
-interface ChannelProperties {
+interface ChannelAttributes {
 	id: string;
 	name: string;
 	url: string;
@@ -13,12 +13,12 @@ interface ChannelProperties {
 /**
  * Represent a Youtube Channel
  */
-export default class Channel extends Base implements ChannelProperties {
+export default class Channel extends Base implements ChannelAttributes {
 	name!: string;
 	url!: string;
 	videoCount?: number;
 
-	constructor(channel: Partial<ChannelProperties> = {}) {
+	constructor(channel: Partial<ChannelAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
 	}
