@@ -7,6 +7,8 @@ import qs from "querystring";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { YoutubeRawData } from "./types";
 
+let cookie = "";
+
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
 	data: any;
@@ -35,6 +37,7 @@ class HTTP {
 					"x-youtube-client-name": "1",
 					"content-type": "application/json",
 					"accept-encoding": "gzip",
+					cookie,
 					...partialOptions.headers,
 				},
 			};
@@ -49,6 +52,7 @@ class HTTP {
 			}
 
 			const request = https.request(options, (res) => {
+				cookie = res.headers["set-cookie"]?.join(";") || cookie;
 				if (res.headers["content-encoding"] === "gzip") {
 					const gunzip = zlib.createGunzip();
 					res.pipe(gunzip);
