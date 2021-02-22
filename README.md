@@ -4,10 +4,13 @@
 
 <b>Requires Node >= 12</b>
 
+#### [Documentation](https://youtubei.netlify.app/)
+
 ## Installation
 ```
 npm i youtubei
 ```
+
 
 ## Example
 ```js
@@ -44,7 +47,3 @@ const run = async () => {
 
 run();
 ```
-
-## Documentation
-
-Coming soon.
