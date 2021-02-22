@@ -97,7 +97,7 @@ export default class Playlist implements PlaylistAttributes {
 	/**
 	 * Load next 100 videos of the playlist
 	 *
-	 * Example:
+	 * @example
 	 * ```js
 	 * const playlist = await youtube.getPlaylist(PLAYLIST_ID);
 	 * console.log(playlist.videos) // first 100 videos

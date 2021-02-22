@@ -167,7 +167,7 @@ export default class Video extends Base implements VideoAttributes {
 	/**
 	 * Load next 20 comments of the video
 	 *
-	 * Example:
+	 * @example
 	 * ```js
 	 * const video = await youtube.getVideo(VIDEO_ID);
 	 * console.log(video.comments) // first 20 comments

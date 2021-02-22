@@ -47,7 +47,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	/**
 	 * Load next search data. Youtube returns inconsistent amount of search result, it usually varies from 18 to 20
 	 *
-	 * Example:
+	 * @example
 	 * ```js
 	 * const videos = await youtube.search("keyword", { type: "video" });
 	 * console.log(videos) // first 18-20 videos from the search result
