@@ -11,19 +11,21 @@ export type SearchResultType<T> = T extends { type: "video" }
 	? PlaylistCompact
 	: VideoCompact | Channel | PlaylistCompact;
 
+/**
+ * Represents search result, usually returned from `client.search();`
+ *
+ * @noInheritDoc
+ */
 @extendsBuiltIn()
 export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	private _continuation!: string;
-
-	constructor() {
-		super();
-	}
 
 	/**
 	 * Initialize data from search
 	 *
 	 * @param query Search query
 	 * @param options Search Options
+	 * @hidden
 	 */
 	async init(query: string, options: SearchOptions): Promise<SearchResult<T>> {
 		const response = await http.post(`${I_END_POINT}/search`, {
@@ -38,7 +40,17 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	}
 
 	/**
-	 * Load next search data
+	 * Load next search data. Youtube returns inconsistent amount of search result, it usually varies from 18 to 20
+	 *
+	 * Example:
+	 * ```js
+	 * const videos = await youtube.search("keyword", { type: "video" });
+	 * console.log(videos) // first 18-20 videos from the search result
+	 *
+	 * let newVideos = await videos.next();
+	 * console.log(newVideos) // 18-20 loaded videos
+	 * console.log(videos) // 36-40 first videos from the search result
+	 * ```
 	 *
 	 * @param count How many times to load the next data
 	 */
@@ -60,9 +72,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 		return newSearchResults;
 	}
 
-	/**
-	 * Load videos data from youtube
-	 */
+	/** Load videos data from youtube */
 	private loadSearchResult(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
 		const contents = sectionListContents
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
@@ -91,6 +101,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * Get type query value
 	 *
 	 * @param type Search type
+	 * @hidden
 	 */
 	static getSearchTypeParam(type: "video" | "playlist" | "channel" | "all"): string {
 		const searchType = {

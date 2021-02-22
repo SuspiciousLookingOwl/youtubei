@@ -57,6 +57,7 @@ module.exports = {
 				excludePrivate: true,
 				excludeProtected: true,
 				disableSources: true,
+				plugin: ["typedoc-plugin-no-inherit"],
 			},
 		],
 		require.resolve("@cmfcmf/docusaurus-search-local"),

@@ -20,24 +20,41 @@ interface VideoAttributes {
 	comments: Comment[];
 }
 
-/**
- * Represent a Video
- */
+/** Represents a Video, usually returned from `client.getVideo()`  */
 export default class Video extends Base implements VideoAttributes {
+	/** The video's ID */
 	id!: string;
+	/** The title of this video */
 	title!: string;
+	/** The duration of this video in second, null if the video is live */
 	duration!: number | null;
+	/** Thumbnails of the video with different sizes */
 	thumbnails!: Thumbnails;
+	/** The description of this video */
 	description!: string;
+	/** The channel who uploads this video */
 	channel!: Channel;
+	/** The date this video is uploaded at */
 	uploadDate!: string;
+	/** How many view does this video have, null if the view count is hidden */
 	viewCount!: number | null;
+	/** How many like does this video have, null if the like count hidden */
 	likeCount!: number | null;
+	/** How many dislike does this video have, null if the dislike count is hidden */
 	dislikeCount!: number | null;
+	/** Whether this video is a live content or not */
 	isLiveContent!: boolean;
+	/** The tags of this video */
 	tags!: string[];
+	/** Next video / playlist recommended by Youtube */
 	upNext!: VideoCompact | PlaylistCompact;
+	/** Videos / playlists related to this video  */
 	related!: (VideoCompact | PlaylistCompact)[];
+	/**
+	 * Comments of this video
+	 *
+	 * You need to load the comment first by calling `video.nextComments()` as youtube doesn't send any comments data when loading the video (from `client.getVideo()`)
+	 */
 	comments!: Comment[];
 
 	private _commentContinuation?: {
@@ -46,6 +63,7 @@ export default class Video extends Base implements VideoAttributes {
 		xsrfToken?: string;
 	};
 
+	/** @hidden */
 	constructor(video: Partial<VideoAttributes> = {}) {
 		super();
 		Object.assign(this, video);
@@ -55,6 +73,7 @@ export default class Video extends Base implements VideoAttributes {
 	 * Load instance attributes from youtube raw data
 	 *
 	 * @param youtubeRawData raw object from youtubei
+	 * @hidden
 	 */
 	load(youtubeRawData: YoutubeRawData): Video {
 		const contents =
@@ -146,9 +165,21 @@ export default class Video extends Base implements VideoAttributes {
 	}
 
 	/**
-	 * Load next comments of the video
+	 * Load next 20 comments of the video
 	 *
-	 * @param count How many times to load the next comments.
+	 * Example:
+	 * ```js
+	 * const video = await youtube.getVideo(VIDEO_ID);
+	 * console.log(video.comments) // first 20 comments
+	 *
+	 * let newComments = await video.nextComments();
+	 * console.log(newComments) // 20 loaded comments
+	 * console.log(video.comments) // first 40 comments
+	 *
+	 * await video.nextComments(0); // load the rest of the comments in the playlist
+	 * ```
+	 *
+	 * @param count How many times to load the next comments. Set 0 to load all comments (might take a while on a video with many comments!)
 	 */
 	async nextComments(count = 1): Promise<Comment[]> {
 		const newComments: Comment[] = [];

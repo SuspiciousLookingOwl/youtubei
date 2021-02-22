@@ -11,15 +11,20 @@ interface PlaylistCompactAttributes {
 	videoCount: number;
 }
 
-/**
- * Represent a Compact Playlist (e.g. from search result, upNext / related of a video)
- */
+/** Represents a Compact Playlist (e.g. from search result, upNext / related of a video) */
 export default class PlaylistCompact extends Base implements PlaylistCompactAttributes {
+	/** The playlist's ID */
+	id!: string;
+	/** The playlist's title */
 	title!: string;
+	/** Thumbnails of the playlist with different sizes */
 	thumbnails!: Thumbnails;
+	/** The channel that made this playlist */
 	channel?: Channel;
+	/** How many videos in this playlist */
 	videoCount!: number;
 
+	/** @hidden */
 	constructor(playlist: Partial<PlaylistCompactAttributes> = {}) {
 		super();
 		Object.assign(this, playlist);
@@ -29,6 +34,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 	 * Load instance attributes from youtube raw data
 	 *
 	 * @param youtubeRawData raw object from youtubei
+	 * @hidden
 	 */
 	load(youtubeRawData: YoutubeRawData): PlaylistCompact {
 		const {

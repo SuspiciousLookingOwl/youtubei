@@ -12,19 +12,26 @@ interface VideoCompactAttributes {
 	viewCount?: number;
 }
 
-/**
- * Represent a compact video (e.g. from search result, playlist's videos, channel's videos)
- */
+/** Represent a compact video (e.g. from search result, playlist's videos, channel's videos) */
 export default class VideoCompact extends Base implements VideoCompactAttributes {
+	/** The video's ID */
 	id!: string;
+	/** The title of the video */
 	title!: string;
+	/** Thumbnails of the video with different sizes */
 	thumbnails!: Thumbnails;
+	/** The duration of this video in second, null if the video is live */
 	duration!: number | null;
+	/** Whether this video is a live content or not */
 	isLiveContent!: boolean;
+	/** The channel who uploads this video */
 	channel?: Channel;
+	/** The date this video is uploaded at */
 	uploadDate?: string;
+	/** How many view does this video have, null if the view count is hidden */
 	viewCount?: number;
 
+	/** @hidden */
 	constructor(videoCompact: Partial<VideoCompactAttributes> = {}) {
 		super();
 		Object.assign(this, videoCompact);
@@ -34,6 +41,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	 * Load instance attributes from youtube raw data
 	 *
 	 * @param youtubeRawData raw object from youtubei
+	 * @hidden
 	 */
 	load(youtubeRawData: YoutubeRawData): VideoCompact {
 		const {
@@ -85,6 +93,9 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 		return this;
 	}
 
+	/**
+	 * Whether this video is private / deleted or not, only useful in playlist's videos
+	 */
 	get isPrivateOrDeleted(): boolean {
 		return !this.duration;
 	}

@@ -10,26 +10,28 @@ interface ChannelAttributes {
 	videoCount?: number;
 }
 
-/**
- * Represent a Youtube Channel
- */
+/**  Represents a Youtube Channel */
 export default class Channel extends Base implements ChannelAttributes {
+	/** The channel's ID */
+	id!: string;
+	/** The channel's name */
 	name!: string;
+	/** The URL to the channel page */
 	url!: string;
+	/** Thumbnails of the Channel with different sizes */
 	thumbnails!: Thumbnails;
+	/** How many video does this channel have */
 	videoCount?: number;
 
+	/** @hidden */
 	constructor(channel: Partial<ChannelAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
 	}
 
-	/**
-	 * Get videos from current Channel
-	 *
-	 * TODO: Add continuation support
-	 */
+	/** Get videos from current Channel */
 	async getVideos(): Promise<VideoCompact[]> {
+		// TODO: Add continuation support
 		const response = await http.post(`${I_END_POINT}/browse`, {
 			data: {
 				browseId: this.id,
@@ -42,12 +44,9 @@ export default class Channel extends Base implements ChannelAttributes {
 			.map((i: YoutubeRawData) => new VideoCompact().load(i.gridVideoRenderer));
 	}
 
-	/**
-	 * Get playlists from current channel
-	 *
-	 * TODO: Add continuation support
-	 */
+	/** Get playlists from current channel */
 	async getPlaylists(): Promise<PlaylistCompact[]> {
+		// TODO: Add continuation support
 		const response = await http.post(`${I_END_POINT}/browse`, {
 			data: {
 				browseId: this.id,
@@ -84,6 +83,7 @@ export default class Channel extends Base implements ChannelAttributes {
 	 * Load instance attributes from youtube raw data
 	 *
 	 * @param youtubeRawData raw object from youtubei
+	 * @hidden
 	 */
 	load(youtubeRawData: YoutubeRawData): Channel {
 		const { channelId, title, thumbnail, videoCountText, navigationEndpoint } = youtubeRawData;

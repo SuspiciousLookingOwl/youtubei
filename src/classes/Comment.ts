@@ -14,24 +14,31 @@ interface CommentAttributes {
 }
 
 /**
- * Represent a Comment
- *
- * TODO: Add replies
+ * Represents a Comment / Reply
  */
 export default class Comment extends Base implements CommentAttributes {
-	/**
-	 * The comment ID
-	 */
+	/** The comment's ID */
 	id!: string;
+	/** The video this comment belongs to */
 	video!: Video;
+	/** The comment's author */
 	author!: Channel;
+	/** The content of this comment */
 	content!: string;
+	/** The publish date of the comment */
 	publishDate!: string;
+	/** How many likes does this comment have */
 	likeCount!: number;
+	/** Whether the comment is posted by the video uploader / owner */
 	isAuthorChannelOwner!: boolean;
+	/** Whether the comment is pinned */
 	isPinnedComment!: boolean;
+	/** Comment's reply count */
 	replyCount!: number;
 
+	// TODO: Add replies
+
+	/** @hidden */
 	constructor(channel: Partial<CommentAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
@@ -41,6 +48,7 @@ export default class Comment extends Base implements CommentAttributes {
 	 * Load instance attributes from youtube raw data
 	 *
 	 * @param youtubeRawData raw object from youtubei
+	 * @hidden
 	 */
 	load(data: YoutubeRawData): Comment {
 		const {
@@ -78,7 +86,7 @@ export default class Comment extends Base implements CommentAttributes {
 	}
 
 	/**
-	 * Link to video with highlighted comment
+	 * URL to the video with this comment being highlighted (appear on top of the comment)
 	 */
 	get url(): string {
 		return `https://www.youtube.com?watch=${this.video.id}&lc=${this.id}`;

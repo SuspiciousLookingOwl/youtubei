@@ -9,13 +9,9 @@ export type SearchOptions = {
 	type: SearchType;
 };
 
+/** Youtube Client */
 export default class YoutubeClient {
-	/**
-	 * Searches for videos / playlists / channels
-	 *
-	 * @param {string} query
-	 * @param {SearchOptions} searchOptions
-	 */
+	/** Searches for videos / playlists / channels */
 	async search<T extends SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
@@ -30,11 +26,7 @@ export default class YoutubeClient {
 		return result;
 	}
 
-	/**
-	 * Get playlist information and its videos by playlist id or URL
-	 *
-	 * @param playlistIdOrUrl
-	 */
+	/** Get playlist information and its videos by playlist id or URL */
 	async getPlaylist(playlistIdOrUrl: string): Promise<Playlist | undefined> {
 		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
 
@@ -46,11 +38,7 @@ export default class YoutubeClient {
 		return new Playlist().load(response.data);
 	}
 
-	/**
-	 * Get video information by video id or URL
-	 *
-	 * @param videoIdOrUrl
-	 */
+	/** Get video information by video id or URL */
 	async getVideo(videoIdOrUrl: string): Promise<Video | undefined> {
 		const videoId = getQueryParameter(videoIdOrUrl, "v");
 

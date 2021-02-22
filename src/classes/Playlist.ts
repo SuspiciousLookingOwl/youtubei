@@ -14,19 +14,26 @@ interface PlaylistAttributes {
 	videos: VideoCompact[];
 }
 
-/**
- * Represent a Playlist
- */
+/** Represents a Playlist, usually returned from `client.getPlaylist()` */
 export default class Playlist implements PlaylistAttributes {
+	/** The playlist's ID */
 	id!: string;
+	/** The title of this playlist */
 	title!: string;
+	/** How many videos in this playlist */
 	videoCount!: number;
+	/** How many viewers does this playlist have */
 	viewCount!: number;
+	/** Last time this playlist is updated */
 	lastUpdatedAt!: string;
+	/** The channel that made this playlist */
 	channel?: Channel;
+	/** Videos in the playlist */
 	videos!: VideoCompact[];
+
 	private _continuation!: string;
 
+	/** @hidden */
 	constructor(playlist: Partial<Playlist> = {}) {
 		Object.assign(this, playlist);
 	}
@@ -35,6 +42,7 @@ export default class Playlist implements PlaylistAttributes {
 	 * Load instance attributes from youtube raw data
 	 *
 	 * @param youtubeRawData raw object from youtubei
+	 * @hidden
 	 */
 	load(youtubeRawData: YoutubeRawData): Playlist {
 		const sidebarRenderer = youtubeRawData.sidebar.playlistSidebarRenderer.items;
@@ -87,7 +95,19 @@ export default class Playlist implements PlaylistAttributes {
 	}
 
 	/**
-	 * Load next videos of the playlist
+	 * Load next 100 videos of the playlist
+	 *
+	 * Example:
+	 * ```js
+	 * const playlist = await youtube.getPlaylist(PLAYLIST_ID);
+	 * console.log(playlist.videos) // first 100 videos
+	 *
+	 * let newVideos = await playlist.next();
+	 * console.log(newVideos) // 100 loaded videos
+	 * console.log(playlist.videos) // first 200 videos
+	 *
+	 * await playlist.next(0); // load the rest of the videos in the playlist
+	 * ```
 	 *
 	 * @param count How many times to load the next videos. Set 0 to load all videos (might take a while on a large playlist!)
 	 */

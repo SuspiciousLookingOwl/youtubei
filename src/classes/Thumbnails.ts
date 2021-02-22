@@ -6,13 +6,16 @@ interface Thumbnail {
 	height: number;
 }
 
+/** Represents Thumbnails, usually found inside Playlist / Channel / Video, etc. */
 @extendsBuiltIn()
 export default class Thumbnails extends Array<Thumbnail> {
+	/** Load instance attributes from youtube raw data */
 	load(thumbnails: Thumbnail[]): Thumbnails {
 		this.push(...thumbnails);
 		return this;
 	}
 
+	/** Returns thumbnail with the highest resolution */
 	get best(): string {
 		const thumbnail = this[this.length - 1].url;
 		if (thumbnail.startsWith("//")) return `https:${thumbnail}`;
