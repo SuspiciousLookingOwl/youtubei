@@ -173,7 +173,7 @@ export default class Video extends Base implements VideoAttributes {
 				continuations,
 			} = response.data.response.continuationContents.itemSectionContinuation;
 
-			const continuation = continuations?.pop().nextContinuationData || undefined;
+			const continuation = continuations?.pop().nextContinuationData;
 			this._commentContinuation = continuation
 				? {
 						token: continuation.continuation,

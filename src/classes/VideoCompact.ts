@@ -50,7 +50,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 		this.id = videoId;
 		this.title = title.simpleText || title.runs[0]?.text;
 		this.thumbnails = thumbnail.thumbnails;
-		this.uploadDate = publishedTimeText ? publishedTimeText.simpleText : undefined;
+		this.uploadDate = publishedTimeText?.simpleText;
 
 		this.duration =
 			getDuration(
