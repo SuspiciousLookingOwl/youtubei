@@ -1,3 +1,4 @@
+import { Thumbnails } from ".";
 import { http, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 import Channel from "./Channel";
@@ -75,7 +76,7 @@ export default class Playlist implements PlaylistAttributes {
 			this.channel = new Channel({
 				id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 				name: title.runs[0].text,
-				thumbnails: thumbnail.thumbnails,
+				thumbnails: new Thumbnails().load(thumbnail.thumbnails),
 				url:
 					"https://www.youtube.com" +
 					title.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url,

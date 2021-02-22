@@ -1,11 +1,12 @@
-import { Thumbnail, YoutubeRawData } from "../common";
+import { Thumbnails } from ".";
+import { YoutubeRawData } from "../common";
 import Base from "./Base";
 import Channel from "./Channel";
 
 interface PlaylistCompactAttributes {
 	id: string;
 	title: string;
-	thumbnails: Thumbnail[];
+	thumbnails: Thumbnails;
 	channel?: Channel;
 	videoCount: number;
 }
@@ -15,6 +16,7 @@ interface PlaylistCompactAttributes {
  */
 export default class PlaylistCompact extends Base implements PlaylistCompactAttributes {
 	title!: string;
+	thumbnails!: Thumbnails;
 	channel?: Channel;
 	videoCount!: number;
 
@@ -47,7 +49,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 		let { thumbnails } = youtubeRawData;
 		if (!thumbnails) thumbnails = thumbnail.thumbnails;
 		else thumbnails = thumbnails[0].thumbnails;
-		this.thumbnails = thumbnails;
+		this.thumbnails = new Thumbnails().load(thumbnails);
 
 		// Channel
 		if (shortBylineText && shortBylineText.simpleText !== "YouTube") {

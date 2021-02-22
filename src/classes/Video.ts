@@ -1,12 +1,12 @@
-import { PlaylistCompact, VideoCompact, Channel, Base, Comment } from ".";
-import { http, Thumbnail, YoutubeRawData } from "../common";
+import { PlaylistCompact, VideoCompact, Channel, Base, Comment, Thumbnails } from ".";
+import { http, YoutubeRawData } from "../common";
 import { COMMENT_END_POINT } from "../constants";
 
 interface VideoAttributes {
 	id: string;
 	title: string;
 	duration: number | null;
-	thumbnails: Thumbnail[];
+	thumbnails: Thumbnails;
 	description: string;
 	channel: Channel;
 	uploadDate: string;
@@ -27,6 +27,7 @@ export default class Video extends Base implements VideoAttributes {
 	id!: string;
 	title!: string;
 	duration!: number | null;
+	thumbnails!: Thumbnails;
 	description!: string;
 	channel!: Channel;
 	uploadDate!: string;
@@ -86,14 +87,14 @@ export default class Video extends Base implements VideoAttributes {
 		this.uploadDate = videoInfo.dateText.simpleText;
 		this.viewCount = +videoInfo.videoDetails.viewCount;
 		this.isLiveContent = videoInfo.videoDetails.isLiveContent;
-		this.thumbnails = videoInfo.videoDetails.thumbnail.thumbnails;
+		this.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
 
 		// Channel
 		const { title, thumbnail } = videoInfo.owner.videoOwnerRenderer;
 		this.channel = new Channel({
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,
-			thumbnails: thumbnail.thumbnails,
+			thumbnails: new Thumbnails().load(thumbnail.thumbnails),
 			url: `https://www.youtube.com/channel/${title.runs[0].navigationEndpoint.browseEndpoint.browseId}`,
 		});
 

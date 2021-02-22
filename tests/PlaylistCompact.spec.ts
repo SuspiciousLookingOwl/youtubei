@@ -17,7 +17,7 @@ describe("PlaylistCompact", () => {
 		expect(playlist instanceof PlaylistCompact).toBeTrue();
 		expect(typeof playlist.id).toBe("string");
 		expect(typeof playlist.title).toBe("string");
-		expect(typeof playlist.thumbnail).toBe("string");
+		expect(typeof playlist.thumbnails.best).toBe("string");
 		expect(typeof playlist.videoCount).toBe("number");
 	});
 });

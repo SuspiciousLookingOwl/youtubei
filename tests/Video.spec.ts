@@ -28,7 +28,7 @@ describe("Video", () => {
 		expect(video.channel?.id).toBe("UCuAXFkgsw1L7xaCfnd5JJOw");
 		expect(video.channel?.name).toBe("Official Rick Astley");
 		expect(video.channel?.url).toBe("https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw");
-		expect(video.channel?.thumbnail).toStartWith("https://yt3.ggpht.com");
+		expect(video.channel?.thumbnails.best).toStartWith("https://yt3.ggpht.com");
 		expect(typeof video.uploadDate).toBe("string");
 		expect(video.viewCount).toBeGreaterThan(680000000);
 		expect(video.likeCount).toBeGreaterThan(5200000);

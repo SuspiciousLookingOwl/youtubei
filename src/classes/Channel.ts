@@ -1,12 +1,12 @@
-import { http, Thumbnail, YoutubeRawData } from "../common";
-import { Base, PlaylistCompact, VideoCompact } from ".";
+import { http, YoutubeRawData } from "../common";
+import { Base, PlaylistCompact, Thumbnails, VideoCompact } from ".";
 import { I_END_POINT } from "../constants";
 
 interface ChannelAttributes {
 	id: string;
 	name: string;
 	url: string;
-	thumbnails: Thumbnail[];
+	thumbnails: Thumbnails;
 	videoCount?: number;
 }
 
@@ -16,6 +16,7 @@ interface ChannelAttributes {
 export default class Channel extends Base implements ChannelAttributes {
 	name!: string;
 	url!: string;
+	thumbnails!: Thumbnails;
 	videoCount?: number;
 
 	constructor(channel: Partial<ChannelAttributes> = {}) {
@@ -91,7 +92,7 @@ export default class Channel extends Base implements ChannelAttributes {
 
 		this.id = channelId;
 		this.name = title.simpleText;
-		this.thumbnails = thumbnail.thumbnails;
+		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
 		this.url = "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`);
 		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
 

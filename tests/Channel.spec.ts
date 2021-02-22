@@ -16,7 +16,7 @@ describe("Channel", () => {
 	it("match 1st channel from search result", () => {
 		expect(channel.id).toBe("UCsBjURrPoezykLs9EqgamOA");
 		expect(channel.name).toBe("Fireship");
-		expect(typeof channel.thumbnail).toBe("string");
+		expect(typeof channel.thumbnails.best).toBe("string");
 		expect(channel.videoCount).toBeGreaterThan(200);
 	});
 

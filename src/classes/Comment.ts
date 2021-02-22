@@ -1,4 +1,4 @@
-import { Base, Channel, Video } from ".";
+import { Base, Channel, Thumbnails, Video } from ".";
 import { YoutubeRawData } from "../common";
 
 interface CommentAttributes {
@@ -70,7 +70,7 @@ export default class Comment extends Base implements CommentAttributes {
 		this.author = new Channel({
 			id: browseId,
 			name: authorText.simpleText,
-			thumbnails: authorThumbnail.thumbnails,
+			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
 			url: "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`),
 		});
 

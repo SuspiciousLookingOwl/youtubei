@@ -21,12 +21,12 @@ describe("Playlist", () => {
 		expect(playlist.channel?.id).toBe("UCHnyfMqiRRG1u-2MsSQLbXA");
 		expect(playlist.channel?.name).toBe("Veritasium");
 		expect(playlist.channel?.url).toBe("https://www.youtube.com/c/veritasium");
-		expect(playlist.channel?.thumbnail).toStartWith("https://yt3.ggpht.com");
+		expect(playlist.channel?.thumbnails.best).toStartWith("https://yt3.ggpht.com");
 		expect(playlist.videos.length).toBe(100);
 		expect(typeof playlist.videos[0].id).toBe("string");
 		expect(typeof playlist.videos[0].title).toBe("string");
 		expect(typeof playlist.videos[0].duration).toBe("number");
-		expect(playlist.videos[0].thumbnail).toStartWith("https://i.ytimg.com/");
+		expect(playlist.videos[0].thumbnails.best).toStartWith("https://i.ytimg.com/");
 	});
 
 	it("match invalid getPlaylist", async () => {
