@@ -1,6 +1,7 @@
 import { getDuration, YoutubeRawData } from "../common";
 import { Base, Channel, Thumbnails } from ".";
 
+/** @hidden */
 interface VideoCompactAttributes {
 	id: string;
 	title: string;

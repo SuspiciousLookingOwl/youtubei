@@ -4,6 +4,7 @@ import { I_END_POINT } from "../constants";
 import Channel from "./Channel";
 import VideoCompact from "./VideoCompact";
 
+/** @hidden */
 interface PlaylistAttributes {
 	id: string;
 	title: string;

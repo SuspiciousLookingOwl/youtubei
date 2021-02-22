@@ -3,6 +3,7 @@ import { YoutubeRawData } from "../common";
 import Base from "./Base";
 import Channel from "./Channel";
 
+/** @hidden */
 interface PlaylistCompactAttributes {
 	id: string;
 	title: string;

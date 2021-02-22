@@ -53,6 +53,7 @@ module.exports = {
 			"docusaurus-plugin-typedoc",
 			{
 				entryPoints: ["../src/classes/"],
+				mode: "file",
 				tsconfig: "../tsconfig.json",
 				excludePrivate: true,
 				excludeProtected: true,

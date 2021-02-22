@@ -1,3 +1,5 @@
+/** @ignore */ /** */
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import https from "https";
@@ -9,19 +11,22 @@ import { YoutubeRawData } from "./types";
 
 let cookie = "";
 
+/** @hidden */
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
 	data: any;
 	headers: Record<string, string>;
 }
 
+/** @hidden */
 interface Response<T = any> {
 	data: T;
 	headers: IncomingHttpHeaders;
 	status: number | undefined;
 }
 
-class HTTP {
+/** @hidden */
+export default class HTTP {
 	/**
 	 * Send request to Youtube
 	 */
@@ -129,5 +134,3 @@ class HTTP {
 		return await HTTP.request(options);
 	}
 }
-
-export default HTTP;

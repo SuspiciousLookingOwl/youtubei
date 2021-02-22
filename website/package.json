@@ -5,11 +5,12 @@
 	"scripts": {
 		"docusaurus": "docusaurus",
 		"start": "docusaurus start",
-		"build": "docusaurus build",
+		"build": "npm run format && docusaurus build",
 		"swizzle": "docusaurus swizzle",
 		"deploy": "docusaurus deploy",
 		"serve": "docusaurus serve",
-		"clear": "docusaurus clear"
+		"clear": "docusaurus clear",
+		"format": "node ./scripts/format.js"
 	},
 	"dependencies": {
 		"@cmfcmf/docusaurus-search-local": "^0.5.0",

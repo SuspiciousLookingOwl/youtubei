@@ -2,6 +2,7 @@ import { http, YoutubeRawData } from "../common";
 import { Base, PlaylistCompact, Thumbnails, VideoCompact } from ".";
 import { I_END_POINT } from "../constants";
 
+/** @hidden */
 interface ChannelAttributes {
 	id: string;
 	name: string;

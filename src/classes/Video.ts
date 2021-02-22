@@ -2,6 +2,11 @@ import { PlaylistCompact, VideoCompact, Channel, Base, Comment, Thumbnails } fro
 import { http, YoutubeRawData } from "../common";
 import { COMMENT_END_POINT } from "../constants";
 
+/**
+ * @hidden
+ * @ignore
+ * @internal
+ */
 interface VideoAttributes {
 	id: string;
 	title: string;

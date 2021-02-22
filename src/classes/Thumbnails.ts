@@ -1,24 +1,29 @@
 import { extendsBuiltIn } from "../common";
 
+/** @hidden */
 interface Thumbnail {
 	url: string;
 	width: number;
 	height: number;
 }
 
-@extendsBuiltIn()
 /**
  * Represents Thumbnails, usually found inside Playlist / Channel / Video, etc.
  *
  * @noInheritDoc
  */
+@extendsBuiltIn()
 export default class Thumbnails extends Array<Thumbnail> {
 	/** @hidden */
 	constructor() {
 		super();
 	}
 
-	/** Load instance attributes from youtube raw data */
+	/**
+	 * Load instance attributes from youtube raw data
+	 *
+	 * @hidden
+	 */
 	load(thumbnails: Thumbnail[]): Thumbnails {
 		this.push(...thumbnails);
 		return this;

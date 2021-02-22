@@ -1,5 +1,6 @@
 import { URL } from "url";
 
+/** @hidden */
 export const getDuration = (s: string): number => {
 	s = s.replace(/:/g, ".");
 	const spl = s.split(".");
@@ -20,6 +21,7 @@ export const getDuration = (s: string): number => {
 	}
 };
 
+/** @hidden */
 export const getQueryParameter = (url: string, queryName: string): string => {
 	try {
 		return new URL(url).searchParams.get(queryName) || url;

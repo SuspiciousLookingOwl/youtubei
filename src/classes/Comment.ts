@@ -1,6 +1,7 @@
 import { Base, Channel, Thumbnails, Video } from ".";
 import { YoutubeRawData } from "../common";
 
+/** @hidden */
 interface CommentAttributes {
 	id: string;
 	video: Video;
@@ -86,7 +87,7 @@ export default class Comment extends Base implements CommentAttributes {
 	}
 
 	/**
-	 * URL to the video with this comment being highlighted (appear on top of the comment)
+	 * URL to the video with this comment being highlighted (appears on top of the comment section)
 	 */
 	get url(): string {
 		return `https://www.youtube.com?watch=${this.video.id}&lc=${this.id}`;
