@@ -52,10 +52,11 @@ module.exports = {
 		[
 			"docusaurus-plugin-typedoc",
 			{
-				entryPoints: ["../src/classes/index.ts"],
+				entryPoints: ["../src/classes/"],
 				tsconfig: "../tsconfig.json",
 				excludePrivate: true,
 				excludeProtected: true,
+				ignoreCompilerErrors: true,
 				disableSources: true,
 				plugin: ["typedoc-plugin-no-inherit"],
 			},
