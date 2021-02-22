@@ -10,7 +10,7 @@ export type SearchOptions = {
 };
 
 /** Youtube Client */
-export default class YoutubeClient {
+export default class Client {
 	/** Searches for videos / playlists / channels */
 	async search<T extends SearchOptions>(
 		query: string,
