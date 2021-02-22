@@ -6,9 +6,18 @@ interface Thumbnail {
 	height: number;
 }
 
-/** Represents Thumbnails, usually found inside Playlist / Channel / Video, etc. */
 @extendsBuiltIn()
+/**
+ * Represents Thumbnails, usually found inside Playlist / Channel / Video, etc.
+ *
+ * @noInheritDoc
+ */
 export default class Thumbnails extends Array<Thumbnail> {
+	/** @hidden */
+	constructor() {
+		super();
+	}
+
 	/** Load instance attributes from youtube raw data */
 	load(thumbnails: Thumbnail[]): Thumbnails {
 		this.push(...thumbnails);

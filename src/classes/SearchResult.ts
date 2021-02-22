@@ -20,6 +20,11 @@ export type SearchResultType<T> = T extends { type: "video" }
 export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	private _continuation!: string;
 
+	/** @hidden */
+	constructor() {
+		super();
+	}
+
 	/**
 	 * Initialize data from search
 	 *
