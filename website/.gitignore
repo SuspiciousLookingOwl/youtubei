@@ -22,3 +22,6 @@ yarn-error.log*
 # Generated data
 /docs/api
 typedoc-sidebar.js
+
+# Local netlify folder
+.netlify

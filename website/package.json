@@ -5,12 +5,14 @@
 	"scripts": {
 		"docusaurus": "docusaurus",
 		"start": "docusaurus start",
-		"build": "npm run format && docusaurus build",
+		"build": "npm run docusaurus && npm run format && npm run plugin:remove && docusaurus build && npm run plugin:add",
 		"swizzle": "docusaurus swizzle",
 		"deploy": "docusaurus deploy",
 		"serve": "docusaurus serve",
 		"clear": "docusaurus clear",
-		"format": "node ./scripts/format.js"
+		"format": "node ./scripts/format.js",
+		"plugin:remove": "npx run-func ./scripts/pluginsManager.js removePlugins",
+		"plugin:add": "npx run-func ./scripts/pluginsManager.js addPlugins"
 	},
 	"dependencies": {
 		"@cmfcmf/docusaurus-search-local": "^0.5.0",
