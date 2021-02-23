@@ -123,8 +123,6 @@ export default class Channel extends Base implements ChannelAttributes {
 
 	/**
 	 * Parse tab data from request, tab name is ignored if it's a continuation data
-	 *
-	 * @hidden
 	 */
 	private static parseTabData(
 		name: "videos" | "playlists",
@@ -141,8 +139,6 @@ export default class Channel extends Base implements ChannelAttributes {
 
 	/**
 	 * Get continuation token from items (if exists)
-	 *
-	 * @hidden
 	 */
 	private static getContinuationFromItems(items: YoutubeRawData): string | undefined {
 		return items[items.length - 1].continuationItemRenderer?.continuationEndpoint
