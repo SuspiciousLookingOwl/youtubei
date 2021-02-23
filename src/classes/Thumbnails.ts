@@ -1,6 +1,5 @@
 import { extendsBuiltIn } from "../common";
 
-/** @hidden */
 interface Thumbnail {
 	url: string;
 	width: number;
