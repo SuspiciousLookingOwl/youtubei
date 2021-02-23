@@ -55,12 +55,12 @@ export default class Playlist implements PlaylistAttributes {
 
 		const { stats } = primaryRenderer;
 		if (primaryRenderer.stats.length === 3) {
-			this.videoCount = this.getSideBarInfo(stats[0], true);
-			this.viewCount = this.getSideBarInfo(stats[1], true);
-			this.lastUpdatedAt = this.getSideBarInfo(stats[2], false);
+			this.videoCount = Playlist.getSideBarInfo(stats[0], true);
+			this.viewCount = Playlist.getSideBarInfo(stats[1], true);
+			this.lastUpdatedAt = Playlist.getSideBarInfo(stats[2], false);
 		} else if (stats.length === 2) {
-			this.videoCount = this.getSideBarInfo(stats[0], true);
-			this.lastUpdatedAt = this.getSideBarInfo(stats[1], false);
+			this.videoCount = Playlist.getSideBarInfo(stats[0], true);
+			this.lastUpdatedAt = Playlist.getSideBarInfo(stats[1], false);
 		}
 
 		// Videos
@@ -69,7 +69,7 @@ export default class Playlist implements PlaylistAttributes {
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer.contents;
 
-		const videos = this.getVideos(playlistContents);
+		const videos = Playlist.getVideos(playlistContents);
 
 		// Video Continuation Token
 		this._continuation =
@@ -123,7 +123,7 @@ export default class Playlist implements PlaylistAttributes {
 			const playlistContents =
 				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
-			newVideos.push(...this.getVideos(playlistContents));
+			newVideos.push(...Playlist.getVideos(playlistContents));
 
 			this._continuation =
 				playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
@@ -138,7 +138,7 @@ export default class Playlist implements PlaylistAttributes {
 	 *
 	 * @param playlistContents raw object from youtubei
 	 */
-	private getVideos(playlistContents: YoutubeRawData): VideoCompact[] {
+	private static getVideos(playlistContents: YoutubeRawData): VideoCompact[] {
 		const videosRenderer = playlistContents.map((c: YoutubeRawData) => c.playlistVideoRenderer);
 		const videos = [];
 		for (const videoRenderer of videosRenderer) {
@@ -148,7 +148,7 @@ export default class Playlist implements PlaylistAttributes {
 		return videos;
 	}
 
-	private getSideBarInfo<T extends boolean = true>(
+	private static getSideBarInfo<T extends boolean = true>(
 		stats: YoutubeRawData,
 		parseInt: T
 	): T extends true ? number : string {
