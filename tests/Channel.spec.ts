@@ -20,13 +20,13 @@ describe("Channel", () => {
 		expect(channel.videoCount).toBeGreaterThan(200);
 	});
 
-	it("getVideos", async () => {
-		const videos = await channel.getVideos();
+	it("load videos", async () => {
+		const videos = await channel.nextVideos(2);
 		expect(videos.length).toBeGreaterThan(1);
 	});
 
-	it("getPlaylist", async () => {
-		const playlists = await channel.getPlaylists();
+	it("load playlists", async () => {
+		const playlists = await channel.nextPlaylists(2);
 		expect(playlists.length).toBeGreaterThan(1);
 	});
 });
