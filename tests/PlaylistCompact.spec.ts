@@ -1,4 +1,4 @@
-import { Client, PlaylistCompact, SearchResult } from "../dist";
+import { Client, PlaylistCompact, SearchResult } from "../src";
 import "jest-extended";
 
 const youtube = new Client();
