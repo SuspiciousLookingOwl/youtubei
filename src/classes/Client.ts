@@ -2,6 +2,7 @@ import { I_END_POINT, WATCH_END_POINT } from "../constants";
 import { getQueryParameter, http } from "../common";
 
 import { Playlist, Video, SearchResult } from ".";
+import { SearchResultType } from "./SearchResult";
 
 export type SearchType = "video" | "channel" | "playlist" | "all";
 
@@ -24,6 +25,14 @@ export default class Client {
 		const result = new SearchResult();
 		await result.init(query, options);
 		return result;
+	}
+
+	/** Search for videos / playlists / channels and returns the first result */
+	async findOne<T extends SearchOptions>(
+		query: string,
+		searchOptions?: Partial<T>
+	): Promise<SearchResultType<T> | undefined> {
+		return (await this.search(query, searchOptions)).shift();
 	}
 
 	/** Get playlist information and its videos by playlist id or URL */
