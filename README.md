@@ -47,3 +47,8 @@ const run = async () => {
 
 run();
 ```
+
+## Features to be added
+- [ ] Live chat event listener
+- [ ] Get Comment replies
+- [ ] Get Channel Playlists / Videos continuation
