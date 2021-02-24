@@ -23,6 +23,7 @@ class LiveVideo extends Video {
 	private _timeoutMs = 0;
 	private _chatQueue: Chat[] = [];
 
+	/** @hidden */
 	load(data: YoutubeRawData): LiveVideo {
 		super.load(data);
 
@@ -32,6 +33,11 @@ class LiveVideo extends Video {
 		return this;
 	}
 
+	/**
+	 * Start polling for get live chat request
+	 *
+	 * @param delay chat delay in millisecond
+	 */
 	async playChat(delay = 0): Promise<void> {
 		this.delay = delay;
 		const response = await http.post(LIVE_CHAT_END_POINT, {
@@ -52,7 +58,8 @@ class LiveVideo extends Video {
 		);
 	}
 
-	async parseChat(data: YoutubeRawData): Promise<void> {
+	/** @hidden */
+	parseChat(data: YoutubeRawData): void {
 		const chats = data.continuationContents.liveChatContinuation.actions.flatMap(
 			(a: YoutubeRawData) => a.addChatItemAction?.item.liveChatTextMessageRenderer || []
 		);
