@@ -41,5 +41,6 @@ export default class Thumbnails extends Array<Thumbnail> {
 	private static parseThumbnailUrl({ url }: Thumbnail) {
 		if (url.startsWith("//")) return `https:${url}`;
 		if (!url.startsWith("https://")) return `https://${url}`;
+		else return url;
 	}
 }
