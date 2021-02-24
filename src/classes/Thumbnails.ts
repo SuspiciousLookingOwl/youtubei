@@ -28,11 +28,18 @@ export default class Thumbnails extends Array<Thumbnail> {
 		return this;
 	}
 
-	/** Returns thumbnail with the highest resolution */
-	get best(): string {
-		const thumbnail = this[this.length - 1].url;
-		if (thumbnail.startsWith("//")) return `https:${thumbnail}`;
-		if (!thumbnail.startsWith("https://")) return `https://${thumbnail}`;
-		return thumbnail;
+	/** Returns thumbnail with the lowest resolution, usually the first element of the Thumbnails array */
+	get min(): string | undefined {
+		return Thumbnails.parseThumbnailUrl(this[0]);
+	}
+
+	/** Returns thumbnail with the highest resolution, usually the last element of the Thumbnails array */
+	get best(): string | undefined {
+		return Thumbnails.parseThumbnailUrl(this[this.length - 1]);
+	}
+
+	private static parseThumbnailUrl({ url }: Thumbnail) {
+		if (url.startsWith("//")) return `https:${url}`;
+		if (!url.startsWith("https://")) return `https://${url}`;
 	}
 }
