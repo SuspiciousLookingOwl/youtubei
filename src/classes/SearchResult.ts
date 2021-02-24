@@ -1,7 +1,6 @@
-import { SearchOptions } from "./Client";
 import { I_END_POINT } from "../constants";
 import { http, extendsBuiltIn, YoutubeRawData } from "../common";
-import { Channel, PlaylistCompact, VideoCompact } from "..";
+import { Channel, PlaylistCompact, VideoCompact, SearchOptions } from ".";
 
 export type SearchResultType<T> = T extends { type: "video" }
 	? VideoCompact
