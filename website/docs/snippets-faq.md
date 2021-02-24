@@ -74,3 +74,18 @@ await video.nextComments(0); // load the rest of the comments
 console.log(video.comments); // all comments on the video
 
 ```
+
+### How to listen to chat event on live video?
+
+```js
+// get the video
+const video = await youtube.getVideo(LIVE_VIDEO_ID);
+
+// add event listener
+video.on("chat", (chat) => {
+	console.log(`${chat.author.name}:  ${chat.message}`);
+});
+
+video.playChat(5000); // 5000ms chat delay
+
+```
