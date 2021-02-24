@@ -1,7 +1,7 @@
 import { I_END_POINT, WATCH_END_POINT } from "../constants";
 import { getQueryParameter, http } from "../common";
 
-import { Playlist, Video, SearchResult } from ".";
+import { Playlist, Video, SearchResult, LiveVideo } from ".";
 import { SearchResultType } from "./SearchResult";
 
 export type SearchType = "video" | "channel" | "playlist" | "all";
@@ -48,7 +48,7 @@ export default class Client {
 	}
 
 	/** Get video information by video id or URL */
-	async getVideo(videoIdOrUrl: string): Promise<Video | undefined> {
+	async getVideo(videoIdOrUrl: string): Promise<Video | LiveVideo | undefined> {
 		const videoId = getQueryParameter(videoIdOrUrl, "v");
 
 		const response = await http.get(`${WATCH_END_POINT}`, {
@@ -56,6 +56,8 @@ export default class Client {
 		});
 
 		if (!response.data[3].response.contents) return undefined;
-		return new Video().load(response.data);
+		return !response.data[2].playerResponse.playabilityStatus.liveStreamability
+			? new Video().load(response.data)
+			: new LiveVideo().load(response.data);
 	}
 }
