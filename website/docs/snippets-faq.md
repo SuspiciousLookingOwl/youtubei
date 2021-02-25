@@ -86,6 +86,8 @@ video.on("chat", (chat) => {
 	console.log(`${chat.author.name}:  ${chat.message}`);
 });
 
-video.playChat(5000); // 5000ms chat delay
+video.playChat(5000); // start chat polling with 5000ms chat delay
+
+video.stopChat(); // stop chat polling
 
 ```
