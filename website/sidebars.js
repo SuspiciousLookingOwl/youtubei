@@ -4,6 +4,6 @@ module.exports = {
 	sidebar: {
 		General: ["quickstart", "snippets-faq"],
 		Classes: typedocSidebar.find((t) => t.label === "Classes").items,
-		Other: ["api/index"],
+		Other: ["api/index", "api/globals"],
 	},
 };
