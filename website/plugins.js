@@ -2,9 +2,10 @@ module.exports = [
 	[
 		"docusaurus-plugin-typedoc",
 		{
-			entryPoints: ["../src/classes/"],
+			inputFiles: ["../src/classes"],
 			mode: "file",
 			tsconfig: "../tsconfig.json",
+			exclude: ["**/common/**/*", "**/constants.ts"],
 			excludePrivate: true,
 			excludeProtected: true,
 			ignoreCompilerErrors: true,
