@@ -1,24 +1,19 @@
-import { Base, Channel, Video } from ".";
+import { Base, Channel, Video, BaseAttributes } from ".";
 import { YoutubeRawData } from "../common";
 
 /** @hidden */
-interface ChatAttributes {
-	id: string;
+interface ChatAttributes extends BaseAttributes {
 	video: Video;
 	author: Channel;
 	message: string;
 	timestamp: number;
 }
 
-/**
- * Represents a Comment / Reply
- */
+/** Represents a chat in a live stream */
 export default class Chat extends Base implements ChatAttributes {
-	/** The comment's ID */
-	id!: string;
 	/** The video this chat belongs to */
 	video!: Video;
-	/** The comment's author */
+	/** The chat's author */
 	author!: Channel;
 	/** The message of this chat */
 	message!: string;
@@ -32,9 +27,8 @@ export default class Chat extends Base implements ChatAttributes {
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
 	load(data: YoutubeRawData): Chat {

@@ -2,11 +2,7 @@ import { BaseVideo, BaseVideoAttributes, Comment } from ".";
 import { http, YoutubeRawData } from "../common";
 import { COMMENT_END_POINT } from "../constants";
 
-/**
- * @hidden
- * @ignore
- * @internal
- */
+/** @hidden */
 interface VideoAttributes extends BaseVideoAttributes {
 	duration: number | null;
 	comments: Comment[];
@@ -36,17 +32,16 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
-	load(youtubeRawData: YoutubeRawData): Video {
-		super.load(youtubeRawData);
+	load(data: YoutubeRawData): Video {
+		super.load(data);
 
 		const contents =
-			youtubeRawData[3].response.contents.twoColumnWatchNextResults.results.results.contents;
-		const videoInfo = BaseVideo.parseRawData(youtubeRawData);
+			data[3].response.contents.twoColumnWatchNextResults.results.results.contents;
+		const videoInfo = BaseVideo.parseRawData(data);
 
 		// Comment Continuation Token
 		this.comments = [];
@@ -56,7 +51,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 			this._commentContinuation = {
 				token: continuation.continuation,
 				itct: continuation.clickTrackingParams,
-				xsrfToken: youtubeRawData[3].xsrf_token,
+				xsrfToken: data[3].xsrf_token,
 			};
 		}
 
@@ -67,21 +62,24 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	}
 
 	/**
-	 * Load next 20 comments of the video
+	 * Load next 20 comments of the video, and push the loaded comments to {@link Video.comments}
 	 *
 	 * @example
 	 * ```js
 	 * const video = await youtube.getVideo(VIDEO_ID);
+	 * await video.nextComments();
 	 * console.log(video.comments) // first 20 comments
 	 *
 	 * let newComments = await video.nextComments();
 	 * console.log(newComments) // 20 loaded comments
 	 * console.log(video.comments) // first 40 comments
 	 *
-	 * await video.nextComments(0); // load the rest of the comments in the playlist
+	 * await video.nextComments(0); // load the rest of the comments in the video
 	 * ```
 	 *
 	 * @param count How many times to load the next comments. Set 0 to load all comments (might take a while on a video with many comments!)
+	 *
+	 * @returns Loaded comments
 	 */
 	async nextComments(count = 1): Promise<Comment[]> {
 		const newComments: Comment[] = [];

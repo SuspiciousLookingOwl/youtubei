@@ -1,11 +1,9 @@
-import { Thumbnails } from ".";
+import { Thumbnails, BaseAttributes, Base } from ".";
 import { YoutubeRawData } from "../common";
-import Base from "./Base";
 import Channel from "./Channel";
 
 /** @hidden */
-interface PlaylistCompactAttributes {
-	id: string;
+interface PlaylistCompactAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
 	channel?: Channel;
@@ -14,8 +12,6 @@ interface PlaylistCompactAttributes {
 
 /** Represents a Compact Playlist (e.g. from search result, upNext / related of a video) */
 export default class PlaylistCompact extends Base implements PlaylistCompactAttributes {
-	/** The playlist's ID */
-	id!: string;
 	/** The playlist's title */
 	title!: string;
 	/** Thumbnails of the playlist with different sizes */
@@ -32,12 +28,11 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
-	load(youtubeRawData: YoutubeRawData): PlaylistCompact {
+	load(data: YoutubeRawData): PlaylistCompact {
 		const {
 			playlistId,
 			title,
@@ -45,7 +40,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 			shortBylineText,
 			videoCount,
 			videoCountShortText,
-		} = youtubeRawData;
+		} = data;
 
 		this.id = playlistId;
 		this.title = title.simpleText || title.runs[0].text;
@@ -53,7 +48,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 			+(videoCount ?? videoCountShortText.simpleText)?.replace(/[^0-9]/g, "") || 0;
 
 		// Thumbnail
-		let { thumbnails } = youtubeRawData;
+		let { thumbnails } = data;
 		if (!thumbnails) thumbnails = thumbnail.thumbnails;
 		else thumbnails = thumbnails[0].thumbnails;
 		this.thumbnails = new Thumbnails().load(thumbnails);

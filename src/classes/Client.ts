@@ -4,20 +4,30 @@ import { getQueryParameter, http } from "../common";
 import { Playlist, Video, SearchResult, LiveVideo } from ".";
 import { SearchResultType } from "./SearchResult";
 
-export type SearchType = "video" | "channel" | "playlist" | "all";
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace Client {
+	export type SearchType = "video" | "channel" | "playlist" | "all";
 
-export type SearchOptions = {
-	type: SearchType;
-};
+	export type SearchOptions = {
+		/** Search type, can be `"video"`, `"channel"`, `"playlist"`, or `"all"` */
+		type: SearchType;
+	};
+}
 
 /** Youtube Client */
 export default class Client {
-	/** Searches for videos / playlists / channels */
-	async search<T extends SearchOptions>(
+	/**
+	 * Searches for videos / playlists / channels
+	 *
+	 * @param query The search query
+	 * @param searchOptions Search options
+	 *
+	 */
+	async search<T extends Client.SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
 	): Promise<SearchResult<T>> {
-		const options: SearchOptions = {
+		const options: Client.SearchOptions = {
 			type: "all",
 			...searchOptions,
 		};
@@ -27,8 +37,12 @@ export default class Client {
 		return result;
 	}
 
-	/** Search for videos / playlists / channels and returns the first result */
-	async findOne<T extends SearchOptions>(
+	/**
+	 * Search for videos / playlists / channels and returns the first result
+	 *
+	 * @return Can be {@link VideoCompact} | {@link PlaylistCompact} | {@link Channel} | `undefined`
+	 */
+	async findOne<T extends Client.SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
 	): Promise<SearchResultType<T> | undefined> {

@@ -1,7 +1,8 @@
 import { I_END_POINT } from "../constants";
 import { http, extendsBuiltIn, YoutubeRawData } from "../common";
-import { Channel, PlaylistCompact, VideoCompact, SearchOptions } from ".";
+import { Channel, PlaylistCompact, VideoCompact, ClientTypes } from ".";
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export type SearchResultType<T> = T extends { type: "video" }
 	? VideoCompact
 	: T extends { type: "channel" }
@@ -9,9 +10,26 @@ export type SearchResultType<T> = T extends { type: "video" }
 	: T extends { type: "playlist" }
 	? PlaylistCompact
 	: VideoCompact | Channel | PlaylistCompact;
-
 /**
- * Represents search result, usually returned from `client.search();`
+ * Represents search result, usually returned from `client.search();`.
+ *
+ * {@link SearchResult} is a subclass of [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+ * with {@link SearchResult.next} method to navigate through pagination
+ *
+ * @example
+ * ```ts
+ * const searchResult = await youtube.search("Keyword");
+ *
+ * console.log(searchResult); // search result from first page
+ *
+ * let nextSearchResult = await searchResult.next();
+ * console.log(nextSearchResult); // search result from second page
+ *
+ * nextSearchResult = await searchResult.next();
+ * console.log(nextSearchResult); // search result from third page
+ *
+ * console.log(searchResult); // search result from first, second, and third page.
+ * ```
  *
  * @noInheritDoc
  */
@@ -31,7 +49,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param options Search Options
 	 * @hidden
 	 */
-	async init(query: string, options: SearchOptions): Promise<SearchResult<T>> {
+	async init(query: string, options: ClientTypes.SearchOptions): Promise<SearchResult<T>> {
 		const response = await http.post(`${I_END_POINT}/search`, {
 			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
 		});

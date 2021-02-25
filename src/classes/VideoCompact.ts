@@ -1,9 +1,8 @@
 import { getDuration, YoutubeRawData } from "../common";
-import { Base, Channel, Thumbnails } from ".";
+import { Base, Channel, Thumbnails, BaseAttributes } from ".";
 
 /** @hidden */
-interface VideoCompactAttributes {
-	id: string;
+interface VideoCompactAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
 	duration: number | null;
@@ -15,8 +14,6 @@ interface VideoCompactAttributes {
 
 /** Represent a compact video (e.g. from search result, playlist's videos, channel's videos) */
 export default class VideoCompact extends Base implements VideoCompactAttributes {
-	/** The video's ID */
-	id!: string;
 	/** The title of the video */
 	title!: string;
 	/** Thumbnails of the video with different sizes */
@@ -39,12 +36,11 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
-	load(youtubeRawData: YoutubeRawData): VideoCompact {
+	load(data: YoutubeRawData): VideoCompact {
 		const {
 			videoId,
 			title,
@@ -56,7 +52,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 			viewCountText,
 			badges,
 			thumbnailOverlays,
-		} = youtubeRawData;
+		} = data;
 
 		this.id = videoId;
 		this.title = title.simpleText || title.runs[0]?.text;
@@ -94,9 +90,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 		return this;
 	}
 
-	/**
-	 * Whether this video is private / deleted or not, only useful in playlist's videos
-	 */
+	/** Whether this video is private / deleted or not, only useful in playlist's videos */
 	get isPrivateOrDeleted(): boolean {
 		return !this.duration;
 	}

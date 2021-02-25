@@ -9,6 +9,8 @@ interface Thumbnail {
 /**
  * Represents Thumbnails, usually found inside Playlist / Channel / Video, etc.
  *
+ * {@link Thumbnails} is an array of {@link Thumbnail}
+ *
  * @noInheritDoc
  */
 @extendsBuiltIn()
@@ -19,7 +21,7 @@ export default class Thumbnails extends Array<Thumbnail> {
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
 	 * @hidden
 	 */
@@ -28,12 +30,26 @@ export default class Thumbnails extends Array<Thumbnail> {
 		return this;
 	}
 
-	/** Returns thumbnail with the lowest resolution, usually the first element of the Thumbnails array */
+	/**
+	 * Returns thumbnail with the lowest resolution, usually the first element of the Thumbnails array
+	 *
+	 * @example
+	 * ```js
+	 * const min = video.thumbnails.min;
+	 * ```
+	 */
 	get min(): string | undefined {
 		return Thumbnails.parseThumbnailUrl(this[0]);
 	}
 
-	/** Returns thumbnail with the highest resolution, usually the last element of the Thumbnails array */
+	/**
+	 * Returns thumbnail with the highest resolution, usually the last element of the Thumbnails array
+	 *
+	 * @example
+	 * ```js
+	 * const min = video.thumbnails.min;
+	 * ```
+	 */
 	get best(): string | undefined {
 		return Thumbnails.parseThumbnailUrl(this[this.length - 1]);
 	}

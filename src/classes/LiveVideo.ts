@@ -4,6 +4,11 @@ import { Chat, BaseVideo } from ".";
 import { LIVE_CHAT_END_POINT } from "../constants";
 import { BaseVideoAttributes } from "./BaseVideo";
 
+/** @hidden */
+interface LiveVideoAttributes extends BaseVideoAttributes {
+	watchingCount: number;
+}
+
 interface LiveVideoEvents {
 	chat: (chat: Chat) => void;
 }
@@ -14,11 +19,6 @@ declare interface LiveVideo {
 		event: T,
 		...args: Parameters<LiveVideoEvents[T]>
 	): boolean;
-}
-
-/** @hidden */
-interface LiveVideoAttributes extends BaseVideoAttributes {
-	watchingCount: number;
 }
 
 /** Represents a video that's currently live, usually returned from `client.getVideo()` */
@@ -33,7 +33,11 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	private _isChatPlaying = false;
 	private _chatQueue: Chat[] = [];
 
-	/** @hidden */
+	/**
+	 * Load this instance with raw data from Youtube
+	 *
+	 * @hidden
+	 */
 	load(data: YoutubeRawData): LiveVideo {
 		super.load(data);
 
@@ -69,6 +73,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 		clearTimeout(this._chatRequestPoolingTimeout);
 	}
 
+	/** Start request polling */
 	private async pollChatContinuation() {
 		const response = await http.post(LIVE_CHAT_END_POINT, {
 			data: { continuation: this._chatContinuation },
@@ -88,6 +93,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 		);
 	}
 
+	/** Parse chat data from Youtube and add to chatQueue */
 	private parseChat(data: YoutubeRawData): void {
 		const chats = data.continuationContents.liveChatContinuation.actions.flatMap(
 			(a: YoutubeRawData) => a.addChatItemAction?.item.liveChatTextMessageRenderer || []

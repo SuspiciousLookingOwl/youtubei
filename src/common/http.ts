@@ -1,5 +1,3 @@
-/** @ignore */ /** */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import https from "https";
@@ -11,21 +9,18 @@ import { YoutubeRawData } from "./types";
 
 let cookie = "";
 
-/** @hidden */
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
 	data: any;
 	headers: Record<string, string>;
 }
 
-/** @hidden */
 interface Response<T = any> {
 	data: T;
 	headers: IncomingHttpHeaders;
 	status: number | undefined;
 }
 
-/** @hidden */
 export default class HTTP {
 	/**
 	 * Send request to Youtube
@@ -68,11 +63,15 @@ export default class HTTP {
 						})
 						.on("end", () => {
 							const data = JSON.parse(buffer.join("").toString());
-							resolve({
-								status: res.statusCode,
-								headers: res.headers,
-								data,
-							});
+							HTTP.returnPromise(
+								{
+									status: res.statusCode,
+									headers: res.headers,
+									data,
+								},
+								resolve,
+								reject
+							);
 						})
 						.on("error", reject);
 				} else {
@@ -82,11 +81,15 @@ export default class HTTP {
 					})
 						.on("end", () => {
 							const data = JSON.parse(body);
-							resolve({
-								status: res.statusCode,
-								headers: res.headers,
-								data,
-							});
+							HTTP.returnPromise(
+								{
+									status: res.statusCode,
+									headers: res.headers,
+									data,
+								},
+								resolve,
+								reject
+							);
 						})
 						.on("error", reject);
 				}
@@ -96,6 +99,15 @@ export default class HTTP {
 			request.write(body);
 			request.end();
 		});
+	}
+
+	private static returnPromise(
+		response: Response,
+		resolve: (val: any) => void,
+		reject: (reason: any) => void
+	) {
+		if (response.status === 500) reject(response.data);
+		resolve(response);
 	}
 
 	/**

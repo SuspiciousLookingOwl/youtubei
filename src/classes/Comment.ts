@@ -1,9 +1,8 @@
-import { Base, Channel, Thumbnails, Video } from ".";
+import { Base, Channel, Thumbnails, Video, BaseAttributes } from ".";
 import { YoutubeRawData } from "../common";
 
 /** @hidden */
-interface CommentAttributes {
-	id: string;
+interface CommentAttributes extends BaseAttributes {
 	video: Video;
 	author: Channel;
 	content: string;
@@ -14,12 +13,8 @@ interface CommentAttributes {
 	replyCount: number;
 }
 
-/**
- * Represents a Comment / Reply
- */
+/** Represents a Comment / Reply */
 export default class Comment extends Base implements CommentAttributes {
-	/** The comment's ID */
-	id!: string;
 	/** The video this comment belongs to */
 	video!: Video;
 	/** The comment's author */
@@ -46,9 +41,8 @@ export default class Comment extends Base implements CommentAttributes {
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
 	load(data: YoutubeRawData): Comment {
@@ -86,9 +80,7 @@ export default class Comment extends Base implements CommentAttributes {
 		return this;
 	}
 
-	/**
-	 * URL to the video with this comment being highlighted (appears on top of the comment section)
-	 */
+	/** URL to the video with this comment being highlighted (appears on top of the comment section) */
 	get url(): string {
 		return `https://www.youtube.com?watch=${this.video.id}&lc=${this.id}`;
 	}

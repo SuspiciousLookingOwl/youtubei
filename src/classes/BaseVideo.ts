@@ -1,13 +1,8 @@
-import { PlaylistCompact, VideoCompact, Channel, Base, Thumbnails } from ".";
+import { PlaylistCompact, VideoCompact, Channel, Base, BaseAttributes, Thumbnails } from ".";
 import { YoutubeRawData } from "../common";
 
-/**
- * @hidden
- * @ignore
- * @internal
- */
-export interface BaseVideoAttributes {
-	id: string;
+/** @hidden */
+export interface BaseVideoAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
 	description: string;
@@ -24,15 +19,13 @@ export interface BaseVideoAttributes {
 
 /** Represents a Video  */
 export default class BaseVideo extends Base implements BaseVideoAttributes {
-	/** The video's ID */
-	id!: string;
 	/** The title of this video */
 	title!: string;
 	/** Thumbnails of the video with different sizes */
 	thumbnails!: Thumbnails;
 	/** The description of this video */
 	description!: string;
-	/** The channel who uploads this video */
+	/** The channel that uploaded this video */
 	channel!: Channel;
 	/** The date this video is uploaded at */
 	uploadDate!: string;
@@ -58,19 +51,18 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
-	load(youtubeRawData: YoutubeRawData): BaseVideo {
-		const videoInfo = BaseVideo.parseRawData(youtubeRawData);
+	load(data: YoutubeRawData): BaseVideo {
+		const videoInfo = BaseVideo.parseRawData(data);
 
 		// Basic information
 		this.id = videoInfo.videoDetails.videoId;
 		this.title = videoInfo.videoDetails.title;
 		this.uploadDate = videoInfo.dateText.simpleText;
-		this.viewCount = +videoInfo.videoDetails.viewCount;
+		this.viewCount = +videoInfo.videoDetails.viewCount || null;
 		this.isLiveContent = videoInfo.videoDetails.isLiveContent;
 		this.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
 
@@ -108,8 +100,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		// Up Next and related videos
 		this.related = [];
 		const secondaryContents =
-			youtubeRawData[3].response.contents.twoColumnWatchNextResults.secondaryResults
-				.secondaryResults.results;
+			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
+				.results;
 		for (const secondaryContent of secondaryContents) {
 			if ("compactAutoplayRenderer" in secondaryContent) {
 				const content = secondaryContent.compactAutoplayRenderer.contents[0];

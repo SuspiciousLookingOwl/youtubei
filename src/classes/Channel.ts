@@ -1,10 +1,9 @@
 import { http, YoutubeRawData } from "../common";
-import { Base, PlaylistCompact, Thumbnails, VideoCompact } from ".";
+import { Base, PlaylistCompact, Thumbnails, VideoCompact, BaseAttributes } from ".";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
-interface ChannelAttributes {
-	id: string;
+interface ChannelAttributes extends BaseAttributes {
 	name: string;
 	url: string;
 	thumbnails: Thumbnails;
@@ -13,8 +12,6 @@ interface ChannelAttributes {
 
 /**  Represents a Youtube Channel */
 export default class Channel extends Base implements ChannelAttributes {
-	/** The channel's ID */
-	id!: string;
 	/** The channel's name */
 	name!: string;
 	/** The URL to the channel page */
@@ -38,9 +35,44 @@ export default class Channel extends Base implements ChannelAttributes {
 	}
 
 	/**
-	 * Load next 30 videos made by the channel
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @return New fetched videos
+	 * @hidden
+	 */
+	load(data: YoutubeRawData): Channel {
+		const { channelId, title, thumbnail, videoCountText, navigationEndpoint } = data;
+		const { browseId, canonicalBaseUrl } = navigationEndpoint.browseEndpoint;
+
+		this.id = channelId;
+		this.name = title.simpleText;
+		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
+		this.url = "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`);
+		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
+		this.videos = [];
+		this.playlists = [];
+
+		return this;
+	}
+
+	/**
+	 * Load next 30 videos made by the channel, and push the loaded videos to {@link Channel.videos}
+	 *
+	 * @example
+	 * ```js
+	 * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
+	 * await channel.nextVideos();
+	 * console.log(channel.videos) // first 30 videos
+	 *
+	 * let newVideos = await channel.nextVideos();
+	 * console.log(newVideos) // 30 loaded videos
+	 * console.log(channel.videos) // first 60 videos
+	 *
+	 * await channel.nextVideos(0); // load the rest of the videos in the channel
+	 * ```
+	 *
+	 * @param count How many time to load the next videos, pass `0` to load all
+	 *
+	 * @return New loaded videos
 	 */
 	async nextVideos(count = 1): Promise<VideoCompact[]> {
 		const newVideos: VideoCompact[] = [];
@@ -62,9 +94,24 @@ export default class Channel extends Base implements ChannelAttributes {
 	}
 
 	/**
-	 * Load next 30 playlists made by the channel
+	 * Load next 30 playlists made by the channel, and push the loaded playlists to {@link Channel.playlists}
 	 *
-	 * @return New fetched playlists
+	 * @example
+	 * ```js
+	 * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
+	 * await channel.nextPlaylists();
+	 * console.log(channel.playlists) // first 30 playlists
+	 *
+	 * let newPlaylists = await channel.nextPlaylists();
+	 * console.log(newPlaylists) // 30 loaded playlists
+	 * console.log(channel.playlists) // first 60 playlists
+	 *
+	 * await channel.nextPlaylists(0); // load the rest of the playlists in the channel
+	 * ```
+	 *
+	 * @param count How many time to load the next playlists, pass `0` to load all
+	 *
+	 * @return New loaded playlists
 	 */
 	async nextPlaylists(count = 1): Promise<PlaylistCompact[]> {
 		const newPlaylists: PlaylistCompact[] = [];
@@ -85,30 +132,7 @@ export default class Channel extends Base implements ChannelAttributes {
 		return newPlaylists;
 	}
 
-	/**
-	 * Load instance attributes from youtube raw data
-	 *
-	 * @param youtubeRawData raw object from youtubei
-	 * @hidden
-	 */
-	load(youtubeRawData: YoutubeRawData): Channel {
-		const { channelId, title, thumbnail, videoCountText, navigationEndpoint } = youtubeRawData;
-		const { browseId, canonicalBaseUrl } = navigationEndpoint.browseEndpoint;
-
-		this.id = channelId;
-		this.name = title.simpleText;
-		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
-		this.url = "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`);
-		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
-		this.videos = [];
-		this.playlists = [];
-
-		return this;
-	}
-
-	/**
-	 * Get tab data from youtube
-	 */
+	/** Get tab data from youtube */
 	private async getTabData(name: "videos" | "playlists") {
 		const params = name === "videos" ? "EgZ2aWRlb3M%3D" : "EglwbGF5bGlzdHMgAQ%3D%3D";
 		const continuation =
@@ -121,9 +145,7 @@ export default class Channel extends Base implements ChannelAttributes {
 		return Channel.parseTabData(name, response.data);
 	}
 
-	/**
-	 * Parse tab data from request, tab name is ignored if it's a continuation data
-	 */
+	/** Parse tab data from request, tab name is ignored if it's a continuation data */
 	private static parseTabData(
 		name: "videos" | "playlists",
 		data: YoutubeRawData
@@ -137,9 +159,7 @@ export default class Channel extends Base implements ChannelAttributes {
 		);
 	}
 
-	/**
-	 * Get continuation token from items (if exists)
-	 */
+	/** Get continuation token from items (if exists) */
 	private static getContinuationFromItems(items: YoutubeRawData): string | undefined {
 		return items[items.length - 1].continuationItemRenderer?.continuationEndpoint
 			.continuationCommand.token;

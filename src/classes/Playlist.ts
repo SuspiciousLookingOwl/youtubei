@@ -1,12 +1,9 @@
-import { Thumbnails } from ".";
+import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base } from ".";
 import { http, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
-import Channel from "./Channel";
-import VideoCompact from "./VideoCompact";
 
 /** @hidden */
-interface PlaylistAttributes {
-	id: string;
+interface PlaylistAttributes extends BaseAttributes {
 	title: string;
 	videoCount: number;
 	viewCount: number;
@@ -16,9 +13,7 @@ interface PlaylistAttributes {
 }
 
 /** Represents a Playlist, usually returned from `client.getPlaylist()` */
-export default class Playlist implements PlaylistAttributes {
-	/** The playlist's ID */
-	id!: string;
+export default class Playlist extends Base implements PlaylistAttributes {
 	/** The title of this playlist */
 	title!: string;
 	/** How many videos in this playlist */
@@ -36,17 +31,17 @@ export default class Playlist implements PlaylistAttributes {
 
 	/** @hidden */
 	constructor(playlist: Partial<Playlist> = {}) {
+		super();
 		Object.assign(this, playlist);
 	}
 
 	/**
-	 * Load instance attributes from youtube raw data
+	 * Load this instance with raw data from Youtube
 	 *
-	 * @param youtubeRawData raw object from youtubei
 	 * @hidden
 	 */
-	load(youtubeRawData: YoutubeRawData): Playlist {
-		const sidebarRenderer = youtubeRawData.sidebar.playlistSidebarRenderer.items;
+	load(data: YoutubeRawData): Playlist {
+		const sidebarRenderer = data.sidebar.playlistSidebarRenderer.items;
 		const primaryRenderer = sidebarRenderer[0].playlistSidebarPrimaryInfoRenderer;
 
 		// Basic information
@@ -65,17 +60,15 @@ export default class Playlist implements PlaylistAttributes {
 
 		// Videos
 		const playlistContents =
-			youtubeRawData.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
+			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer.contents;
 
-		const videos = Playlist.getVideos(playlistContents);
+		this.videos = Playlist.getVideos(playlistContents);
 
 		// Video Continuation Token
 		this._continuation =
 			playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
-
-		this.videos = videos;
 
 		// Channel
 		const videoOwner =
@@ -96,7 +89,7 @@ export default class Playlist implements PlaylistAttributes {
 	}
 
 	/**
-	 * Load next 100 videos of the playlist
+	 * Load next 100 videos of the playlist, and push the loaded videos to {@link Playlist.videos}
 	 *
 	 * @example
 	 * ```js
