@@ -21,6 +21,7 @@ class LiveVideo extends Video {
 	private _chatRequestPoolingTimeout!: NodeJS.Timeout;
 	private _chatContinuation!: string;
 	private _timeoutMs = 0;
+	private _isChatPlaying = false;
 	private _chatQueue: Chat[] = [];
 
 	/** @hidden */
@@ -38,8 +39,21 @@ class LiveVideo extends Video {
 	 *
 	 * @param delay chat delay in millisecond
 	 */
-	async playChat(delay = 0): Promise<void> {
+	playChat(delay = 0): void {
+		if (this._isChatPlaying) return;
 		this.delay = delay;
+		this._isChatPlaying = true;
+		this.pollChatContinuation();
+	}
+
+	/** Stop request polling for live chat */
+	stopChat(): void {
+		if (!this._chatRequestPoolingTimeout) return;
+		this._isChatPlaying = false;
+		clearTimeout(this._chatRequestPoolingTimeout);
+	}
+
+	private async pollChatContinuation() {
 		const response = await http.post(LIVE_CHAT_END_POINT, {
 			data: { continuation: this._chatContinuation },
 		});
@@ -53,19 +67,12 @@ class LiveVideo extends Video {
 		this._timeoutMs = timedContinuation.timeoutMs;
 		this._chatContinuation = timedContinuation.continuation;
 		this._chatRequestPoolingTimeout = setTimeout(
-			() => this.playChat(this.delay),
+			() => this.pollChatContinuation(),
 			this._timeoutMs
 		);
 	}
 
-	/** Stop request polling for live chat */
-	stopChat(): void {
-		if (!this._chatRequestPoolingTimeout) return;
-		clearTimeout(this._chatRequestPoolingTimeout);
-	}
-
-	/** @hidden */
-	parseChat(data: YoutubeRawData): void {
+	private parseChat(data: YoutubeRawData): void {
 		const chats = data.continuationContents.liveChatContinuation.actions.flatMap(
 			(a: YoutubeRawData) => a.addChatItemAction?.item.liveChatTextMessageRenderer || []
 		);
