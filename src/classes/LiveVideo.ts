@@ -58,6 +58,12 @@ class LiveVideo extends Video {
 		);
 	}
 
+	/** Stop request polling for live chat */
+	stopChat(): void {
+		if (!this._chatRequestPoolingTimeout) return;
+		clearTimeout(this._chatRequestPoolingTimeout);
+	}
+
 	/** @hidden */
 	parseChat(data: YoutubeRawData): void {
 		const chats = data.continuationContents.liveChatContinuation.actions.flatMap(
