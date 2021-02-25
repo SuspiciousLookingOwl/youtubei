@@ -1,11 +1,11 @@
-import { Client, Video } from "../src";
+import { Client, Video, LiveVideo } from "../src";
 import "jest-extended";
 
 const youtube = new Client();
 
 describe("Video", () => {
 	let video: Video;
-	let liveVideo: Video;
+	let liveVideo: LiveVideo;
 	let endedLiveVideo: Video;
 	let incorrectVideo: undefined;
 
@@ -13,7 +13,7 @@ describe("Video", () => {
 		video = (await youtube.getVideo("dQw4w9WgXcQ")) as Video;
 		liveVideo = (await youtube.getVideo(
 			"https://www.youtube.com/watch?v=5qap5aO4i9A"
-		)) as Video;
+		)) as LiveVideo;
 		endedLiveVideo = (await youtube.getVideo(
 			"https://www.youtube.com/watch?v=iXn9O-Rzb_M"
 		)) as Video;
@@ -50,8 +50,9 @@ describe("Video", () => {
 	});
 
 	it("match live getVideo result", () => {
+		expect(liveVideo instanceof LiveVideo).toBeTrue();
+		expect(typeof liveVideo.watchingCount).toBe("number");
 		expect(liveVideo.isLiveContent).toBeTrue();
-		expect(liveVideo.duration).toBeNull();
 	});
 
 	it("match ended live getVideo result", () => {
