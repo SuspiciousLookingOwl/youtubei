@@ -49,5 +49,4 @@ run();
 ```
 
 ## Features to be added
-- [ ] Live chat event listener
 - [ ] Get Comment replies
