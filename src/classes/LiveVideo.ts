@@ -1,7 +1,8 @@
 import { EventEmitter } from "events";
 import { applyMixins, http, YoutubeRawData } from "../common";
-import { Chat, Video } from ".";
+import { Chat, BaseVideo } from ".";
 import { LIVE_CHAT_END_POINT } from "../constants";
+import { BaseVideoAttributes } from "./BaseVideo";
 
 interface LiveVideoEvents {
 	chat: (chat: Chat) => void;
@@ -15,9 +16,17 @@ declare interface LiveVideo {
 	): boolean;
 }
 
-class LiveVideo extends Video {
-	delay = 0;
+/** @hidden */
+interface LiveVideoAttributes extends BaseVideoAttributes {
+	watchingCount: number;
+}
 
+/** Represents a video that's currently live, usually returned from `client.getVideo()` */
+class LiveVideo extends BaseVideo implements LiveVideoAttributes {
+	/** Number of people who's watching the live stream right now */
+	watchingCount!: number;
+
+	private _delay = 0;
 	private _chatRequestPoolingTimeout!: NodeJS.Timeout;
 	private _chatContinuation!: string;
 	private _timeoutMs = 0;
@@ -27,6 +36,13 @@ class LiveVideo extends Video {
 	/** @hidden */
 	load(data: YoutubeRawData): LiveVideo {
 		super.load(data);
+
+		const videoInfo = BaseVideo.parseRawData(data);
+
+		this.watchingCount = +videoInfo.viewCount.videoViewCountRenderer.viewCount.runs
+			.map((r: YoutubeRawData) => r.text)
+			.join(" ")
+			.replace(/[^0-9]/g, "");
 
 		this._chatContinuation =
 			data[3].response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.continuations[0].reloadContinuationData.continuation;
@@ -41,7 +57,7 @@ class LiveVideo extends Video {
 	 */
 	playChat(delay = 0): void {
 		if (this._isChatPlaying) return;
-		this.delay = delay;
+		this._delay = delay;
 		this._isChatPlaying = true;
 		this.pollChatContinuation();
 	}
@@ -83,7 +99,7 @@ class LiveVideo extends Video {
 			this._chatQueue.push(chat);
 			setTimeout(() => {
 				this.emit("chat", chat);
-			}, chat.timestamp / 1000 - (new Date().getTime() - this.delay));
+			}, chat.timestamp / 1000 - (new Date().getTime() - this._delay));
 		}
 	}
 }

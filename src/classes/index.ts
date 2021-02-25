@@ -1,5 +1,6 @@
 export { default as Client, SearchOptions, SearchType } from "./Client";
 export { default as Base } from "./Base";
+export { default as BaseVideo, BaseVideoAttributes } from "./BaseVideo";
 export { default as VideoCompact } from "./VideoCompact";
 export { default as Thumbnails } from "./Thumbnails";
 export { default as Channel } from "./Channel";
