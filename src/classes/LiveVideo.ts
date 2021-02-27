@@ -13,7 +13,11 @@ interface LiveVideoEvents {
 }
 
 declare interface LiveVideo {
-	on<T extends keyof LiveVideoEvents>(event: T, listener: LiveVideoEvents[T]): this;
+	on<T extends keyof LiveVideoEvents>(
+		event: T,
+		listener: LiveVideoEvents[T]
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	): AsyncIterableIterator<any>;
 	emit<T extends keyof LiveVideoEvents>(
 		event: T,
 		...args: Parameters<LiveVideoEvents[T]>
