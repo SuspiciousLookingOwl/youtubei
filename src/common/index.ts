@@ -1,4 +1,4 @@
-export { default as http } from "./http";
+export { default as HTTP } from "./HTTP";
 export * from "./helper";
 export * from "./types";
 export * from "./decorators";

@@ -69,6 +69,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		// Channel
 		const { title, thumbnail } = videoInfo.owner.videoOwnerRenderer;
 		this.channel = new Channel({
+			client: this.client,
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,
 			thumbnails: new Thumbnails().load(thumbnail.thumbnails),
@@ -106,15 +107,25 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			if ("compactAutoplayRenderer" in secondaryContent) {
 				const content = secondaryContent.compactAutoplayRenderer.contents[0];
 				if ("compactVideoRenderer" in content) {
-					this.upNext = new VideoCompact().load(content.compactVideoRenderer);
+					this.upNext = new VideoCompact({ client: this.client }).load(
+						content.compactVideoRenderer
+					);
 				} else if ("compactRadioRenderer" in content) {
-					this.upNext = new PlaylistCompact().load(content.compactRadioRenderer);
+					this.upNext = new PlaylistCompact({ client: this.client }).load(
+						content.compactRadioRenderer
+					);
 				}
 			} else if ("compactVideoRenderer" in secondaryContent) {
-				this.related.push(new VideoCompact().load(secondaryContent.compactVideoRenderer));
+				this.related.push(
+					new VideoCompact({ client: this.client }).load(
+						secondaryContent.compactVideoRenderer
+					)
+				);
 			} else if ("compactRadioRenderer" in secondaryContent) {
 				this.related.push(
-					new PlaylistCompact().load(secondaryContent.compactRadioRenderer)
+					new PlaylistCompact({ client: this.client }).load(
+						secondaryContent.compactRadioRenderer
+					)
 				);
 			}
 		}

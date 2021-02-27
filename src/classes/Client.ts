@@ -1,5 +1,5 @@
 import { I_END_POINT, WATCH_END_POINT } from "../constants";
-import { getQueryParameter, http } from "../common";
+import { getQueryParameter, HTTP } from "../common";
 
 import { Playlist, Video, SearchResult, LiveVideo } from ".";
 import { SearchResultType } from "./SearchResult";
@@ -16,6 +16,12 @@ export namespace Client {
 
 /** Youtube Client */
 export default class Client {
+	http: HTTP;
+
+	constructor(cookie = "") {
+		this.http = new HTTP(cookie);
+	}
+
 	/**
 	 * Searches for videos / playlists / channels
 	 *
@@ -33,7 +39,7 @@ export default class Client {
 		};
 
 		const result = new SearchResult();
-		await result.init(query, options);
+		await result.init(this, query, options);
 		return result;
 	}
 
@@ -53,25 +59,25 @@ export default class Client {
 	async getPlaylist(playlistIdOrUrl: string): Promise<Playlist | undefined> {
 		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
 
-		const response = await http.post(`${I_END_POINT}/browse`, {
+		const response = await this.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: `VL${playlistId}` },
 		});
 
 		if (response.data.error || response.data.alerts) return undefined;
-		return new Playlist().load(response.data);
+		return new Playlist({ client: this }).load(response.data);
 	}
 
 	/** Get video information by video id or URL */
 	async getVideo(videoIdOrUrl: string): Promise<Video | LiveVideo | undefined> {
 		const videoId = getQueryParameter(videoIdOrUrl, "v");
 
-		const response = await http.get(`${WATCH_END_POINT}`, {
+		const response = await this.http.get(`${WATCH_END_POINT}`, {
 			params: { v: videoId, pbj: "1" },
 		});
 
 		if (!response.data[3].response.contents) return undefined;
 		return !response.data[2].playerResponse.playabilityStatus.liveStreamability
-			? new Video().load(response.data)
-			: new LiveVideo().load(response.data);
+			? new Video({ client: this }).load(response.data)
+			: new LiveVideo({ client: this }).load(response.data);
 	}
 }

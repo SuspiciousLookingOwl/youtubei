@@ -1,5 +1,5 @@
-import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base } from ".";
-import { http, YoutubeRawData } from "../common";
+import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base, Client } from ".";
+import { YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
@@ -64,7 +64,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer.contents;
 
-		this.videos = Playlist.getVideos(playlistContents);
+		this.videos = Playlist.getVideos(playlistContents, this.client);
 
 		// Video Continuation Token
 		this._continuation =
@@ -82,6 +82,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				url:
 					"https://www.youtube.com" +
 					title.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url,
+				client: this.client,
 			});
 		}
 
@@ -109,14 +110,14 @@ export default class Playlist extends Base implements PlaylistAttributes {
 		const newVideos: VideoCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this._continuation) break;
-			const response = await http.post(`${I_END_POINT}/browse`, {
+			const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 				data: { continuation: this._continuation },
 			});
 
 			const playlistContents =
 				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
-			newVideos.push(...Playlist.getVideos(playlistContents));
+			newVideos.push(...Playlist.getVideos(playlistContents, this.client));
 
 			this._continuation =
 				playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
@@ -131,12 +132,12 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	 *
 	 * @param playlistContents raw object from youtubei
 	 */
-	private static getVideos(playlistContents: YoutubeRawData): VideoCompact[] {
+	private static getVideos(playlistContents: YoutubeRawData, client: Client): VideoCompact[] {
 		const videosRenderer = playlistContents.map((c: YoutubeRawData) => c.playlistVideoRenderer);
 		const videos = [];
 		for (const videoRenderer of videosRenderer) {
 			if (!videoRenderer) continue;
-			videos.push(new VideoCompact().load(videoRenderer));
+			videos.push(new VideoCompact({ client }).load(videoRenderer));
 		}
 		return videos;
 	}

@@ -49,6 +49,7 @@ export default class Chat extends Base implements ChatAttributes {
 			name: authorName.simpleText,
 			thumbnails: authorPhoto.thumbnails,
 			url: `https://www.youtube.com/channel/${authorExternalChannelId}`,
+			client: this.client,
 		});
 		this.timestamp = timestampUsec;
 		return this;

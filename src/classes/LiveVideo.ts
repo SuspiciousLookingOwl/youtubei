@@ -1,5 +1,5 @@
 import { EventEmitter } from "events";
-import { applyMixins, http, YoutubeRawData } from "../common";
+import { applyMixins, YoutubeRawData } from "../common";
 import { Chat, BaseVideo, BaseVideoAttributes } from ".";
 import { LIVE_CHAT_END_POINT } from "../constants";
 
@@ -78,7 +78,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 
 	/** Start request polling */
 	private async pollChatContinuation() {
-		const response = await http.post(LIVE_CHAT_END_POINT, {
+		const response = await this.client.http.post(LIVE_CHAT_END_POINT, {
 			data: { continuation: this._chatContinuation },
 		});
 
@@ -103,7 +103,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 		);
 
 		for (const rawChatData of chats) {
-			const chat = new Chat().load(rawChatData);
+			const chat = new Chat({ client: this.client }).load(rawChatData);
 			if (this._chatQueue.find((c) => c.id === chat.id)) continue;
 			this._chatQueue.push(chat);
 			setTimeout(() => {

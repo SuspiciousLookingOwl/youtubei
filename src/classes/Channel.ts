@@ -1,4 +1,4 @@
-import { http, YoutubeRawData } from "../common";
+import { YoutubeRawData } from "../common";
 import { Base, PlaylistCompact, Thumbnails, VideoCompact, BaseAttributes } from ".";
 import { I_END_POINT } from "../constants";
 
@@ -85,7 +85,9 @@ export default class Channel extends Base implements ChannelAttributes {
 			newVideos.push(
 				...items
 					.filter((i: YoutubeRawData) => i.gridVideoRenderer)
-					.map((i: YoutubeRawData) => new VideoCompact().load(i.gridVideoRenderer))
+					.map((i: YoutubeRawData) =>
+						new VideoCompact({ client: this.client }).load(i.gridVideoRenderer)
+					)
 			);
 		}
 
@@ -124,7 +126,9 @@ export default class Channel extends Base implements ChannelAttributes {
 			newPlaylists.push(
 				...items
 					.filter((i: YoutubeRawData) => i.gridPlaylistRenderer)
-					.map((i: YoutubeRawData) => new PlaylistCompact().load(i.gridPlaylistRenderer))
+					.map((i: YoutubeRawData) =>
+						new PlaylistCompact({ client: this.client }).load(i.gridPlaylistRenderer)
+					)
 			);
 		}
 
@@ -138,7 +142,7 @@ export default class Channel extends Base implements ChannelAttributes {
 		const continuation =
 			name === "videos" ? this._videoContinuation : this._playlistContinuation;
 
-		const response = await http.post(`${I_END_POINT}/browse`, {
+		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: this.id, params, continuation },
 		});
 

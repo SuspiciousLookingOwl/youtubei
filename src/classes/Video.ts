@@ -1,5 +1,5 @@
 import { BaseVideo, BaseVideoAttributes, Comment } from ".";
-import { http, YoutubeRawData } from "../common";
+import { YoutubeRawData } from "../common";
 import { COMMENT_END_POINT } from "../constants";
 
 /** @hidden */
@@ -88,7 +88,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 			if (!this._commentContinuation) break;
 
 			// Send request
-			const response = await http.post(COMMENT_END_POINT, {
+			const response = await this.client.http.post(COMMENT_END_POINT, {
 				data: { session_token: this._commentContinuation.xsrfToken },
 				headers: { "content-type": "application/x-www-form-urlencoded" },
 				params: {
@@ -115,7 +115,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 				: undefined;
 
 			for (const comment of comments.map((c: YoutubeRawData) => c.commentThreadRenderer)) {
-				newComments.push(new Comment({ video: this }).load(comment));
+				newComments.push(new Comment({ video: this, client: this.client }).load(comment));
 			}
 		}
 		this.comments.push(...newComments);

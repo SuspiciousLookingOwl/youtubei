@@ -59,6 +59,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 				id: shortBylineText.runs[0].navigationEndpoint.browseEndpoint.browseId,
 				name: shortBylineText.runs[0].text,
 				url: `https://www.youtube.com${shortBylineText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url}`,
+				client: this.client,
 			});
 		}
 

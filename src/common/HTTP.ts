@@ -7,8 +7,6 @@ import qs from "querystring";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { YoutubeRawData } from "./types";
 
-let cookie = "";
-
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
 	data: any;
@@ -22,10 +20,48 @@ interface Response<T = any> {
 }
 
 export default class HTTP {
+	private cookie: string;
+
+	constructor(cookie = "") {
+		this.cookie = cookie;
+	}
+
+	/** Send GET request to Youtube */
+	async get(path: string, options: Partial<Options>): Promise<YoutubeRawData> {
+		options = {
+			method: "GET",
+			path,
+			...options,
+		};
+
+		return await this.request(options);
+	}
+
+	/** Send POST request to Youtube */
+	async post(path: string, options: Partial<Options>): Promise<YoutubeRawData> {
+		options = {
+			method: "POST",
+			path,
+			...options,
+			params: { key: INNERTUBE_API_KEY, ...options.params },
+			data: {
+				context: {
+					client: {
+						clientName: "WEB",
+						clientVersion: INNERTUBE_CLIENT_VERSION,
+					},
+				},
+				...options.data,
+			},
+		};
+
+		return await this.request(options);
+	}
+
 	/**
 	 * Send request to Youtube
 	 */
-	static request(partialOptions: Partial<Options>): Promise<Response> {
+	private request(partialOptions: Partial<Options>): Promise<Response> {
 		return new Promise((resolve, reject) => {
 			const options = {
 				hostname: BASE_URL,
@@ -37,7 +73,7 @@ export default class HTTP {
 					"x-youtube-client-name": "1",
 					"content-type": "application/json",
 					"accept-encoding": "gzip",
-					cookie,
+					cookie: this.cookie,
 					...partialOptions.headers,
 				},
 			};
@@ -52,7 +88,7 @@ export default class HTTP {
 			}
 
 			const request = https.request(options, (res) => {
-				cookie = res.headers["set-cookie"]?.join(";") || cookie;
+				this.cookie = res.headers["set-cookie"]?.join(";") || this.cookie;
 				if (res.headers["content-encoding"] === "gzip") {
 					const gunzip = zlib.createGunzip();
 					res.pipe(gunzip);
@@ -108,41 +144,5 @@ export default class HTTP {
 	) {
 		if (response.status === 500) reject(response.data);
 		resolve(response);
-	}
-
-	/**
-	 * Send GET request to Youtube
-	 */
-	static async get(path: string, options: Partial<Options>): Promise<YoutubeRawData> {
-		options = {
-			method: "GET",
-			path,
-			...options,
-		};
-
-		return await HTTP.request(options);
-	}
-
-	/**
-	 * Send POST request to Youtube
-	 */
-	static async post(path: string, options: Partial<Options>): Promise<YoutubeRawData> {
-		options = {
-			method: "POST",
-			path,
-			...options,
-			params: { key: INNERTUBE_API_KEY, ...options.params },
-			data: {
-				context: {
-					client: {
-						clientName: "WEB",
-						clientVersion: INNERTUBE_CLIENT_VERSION,
-					},
-				},
-				...options.data,
-			},
-		};
-
-		return await HTTP.request(options);
 	}
 }

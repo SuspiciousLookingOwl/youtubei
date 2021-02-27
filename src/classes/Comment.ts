@@ -75,6 +75,7 @@ export default class Comment extends Base implements CommentAttributes {
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
 			url: "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`),
+			client: this.client,
 		});
 
 		return this;

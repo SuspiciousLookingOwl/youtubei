@@ -1,6 +1,6 @@
 import { I_END_POINT } from "../constants";
-import { http, extendsBuiltIn, YoutubeRawData } from "../common";
-import { Channel, PlaylistCompact, VideoCompact, ClientTypes } from ".";
+import { extendsBuiltIn, YoutubeRawData } from "../common";
+import { Channel, PlaylistCompact, VideoCompact, ClientTypes, Client } from ".";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export type SearchResultType<T> = T extends { type: "video" }
@@ -35,6 +35,7 @@ export type SearchResultType<T> = T extends { type: "video" }
  */
 @extendsBuiltIn()
 export default class SearchResult<T> extends Array<SearchResultType<T>> {
+	private client!: Client;
 	private _continuation!: string;
 
 	/** @hidden */
@@ -49,8 +50,13 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param options Search Options
 	 * @hidden
 	 */
-	async init(query: string, options: ClientTypes.SearchOptions): Promise<SearchResult<T>> {
-		const response = await http.post(`${I_END_POINT}/search`, {
+	async init(
+		client: Client,
+		query: string,
+		options: ClientTypes.SearchOptions
+	): Promise<SearchResult<T>> {
+		this.client = client;
+		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
 		});
 
@@ -80,7 +86,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 		const newSearchResults = [];
 		for (let i = 0; i < count; i++) {
 			if (!this._continuation) break;
-			const response = await http.post(`${I_END_POINT}/search`, {
+			const response = await this.client.http.post(`${I_END_POINT}/search`, {
 				data: { continuation: this._continuation },
 			});
 			newSearchResults.push(
@@ -108,11 +114,15 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 
 		for (const content of contents) {
 			if ("playlistRenderer" in content)
-				newContent.push(new PlaylistCompact().load(content.playlistRenderer));
+				newContent.push(
+					new PlaylistCompact({ client: this.client }).load(content.playlistRenderer)
+				);
 			else if ("videoRenderer" in content)
-				newContent.push(new VideoCompact().load(content.videoRenderer));
+				newContent.push(
+					new VideoCompact({ client: this.client }).load(content.videoRenderer)
+				);
 			else if ("channelRenderer" in content)
-				newContent.push(new Channel().load(content.channelRenderer));
+				newContent.push(new Channel({ client: this.client }).load(content.channelRenderer));
 		}
 
 		this.push(...(newContent as Array<SearchResultType<T>>));
