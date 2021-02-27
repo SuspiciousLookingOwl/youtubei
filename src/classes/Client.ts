@@ -12,14 +12,31 @@ export namespace Client {
 		/** Search type, can be `"video"`, `"channel"`, `"playlist"`, or `"all"` */
 		type: SearchType;
 	};
+
+	export type ClientOptions = {
+		cookie: string;
+		/** 2-chars language code for localization */
+		hl: string;
+		/** 2-chars country code  */
+		gl: string;
+	};
 }
 
 /** Youtube Client */
 export default class Client {
+	/** @hidden */
 	http: HTTP;
+	/** @hidden */
+	options: Client.ClientOptions;
 
-	constructor(cookie = "") {
-		this.http = new HTTP(cookie);
+	constructor(options: Partial<Client.ClientOptions> = {}) {
+		this.options = {
+			hl: "en",
+			gl: "US",
+			cookie: "",
+			...options,
+		};
+		this.http = new HTTP(this);
 	}
 
 	/**

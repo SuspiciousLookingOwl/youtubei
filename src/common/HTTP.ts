@@ -6,6 +6,7 @@ import zlib from "zlib";
 import qs from "querystring";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { YoutubeRawData } from "./types";
+import { Client } from "../classes";
 
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
@@ -20,10 +21,15 @@ interface Response<T = any> {
 }
 
 export default class HTTP {
-	private cookie: string;
+	private _cookie: string;
+	private _hl: string;
+	private _gl: string;
 
-	constructor(cookie = "") {
-		this.cookie = cookie;
+	constructor(client: Client) {
+		const { hl, cookie, gl } = client.options;
+		this._cookie = cookie;
+		this._hl = hl;
+		this._gl = gl;
 	}
 
 	/** Send GET request to Youtube */
@@ -49,6 +55,8 @@ export default class HTTP {
 					client: {
 						clientName: "WEB",
 						clientVersion: INNERTUBE_CLIENT_VERSION,
+						hl: this._hl,
+						gl: this._gl,
 					},
 				},
 				...options.data,
@@ -73,7 +81,7 @@ export default class HTTP {
 					"x-youtube-client-name": "1",
 					"content-type": "application/json",
 					"accept-encoding": "gzip",
-					cookie: this.cookie,
+					cookie: this._cookie,
 					...partialOptions.headers,
 				},
 			};
@@ -88,7 +96,11 @@ export default class HTTP {
 			}
 
 			const request = https.request(options, (res) => {
-				this.cookie = res.headers["set-cookie"]?.join(";") || this.cookie;
+				if (res.headers["set-cookie"]?.length)
+					this._cookie = `${this._cookie} ${res.headers["set-cookie"]
+						?.map((c) => c.split(";").shift())
+						.join(";")}`;
+
 				if (res.headers["content-encoding"] === "gzip") {
 					const gunzip = zlib.createGunzip();
 					res.pipe(gunzip);
