@@ -47,7 +47,3 @@ const run = async () => {
 
 run();
 ```
-
-## Features to be added
-- [ ] Get Comment replies
-- [ ] Add related continuation support
