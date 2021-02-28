@@ -32,6 +32,8 @@ export default class Channel extends Base implements ChannelAttributes {
 	constructor(channel: Partial<ChannelAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
+		this.videos = [];
+		this.playlists = [];
 	}
 
 	/**
