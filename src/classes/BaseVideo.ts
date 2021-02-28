@@ -1,5 +1,6 @@
 import { PlaylistCompact, VideoCompact, Channel, Base, BaseAttributes, Thumbnails } from ".";
 import { YoutubeRawData } from "../common";
+import { I_END_POINT } from "../constants";
 
 /** @hidden */
 export interface BaseVideoAttributes extends BaseAttributes {
@@ -43,6 +44,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	upNext!: VideoCompact | PlaylistCompact;
 	/** Videos / playlists related to this video  */
 	related!: (VideoCompact | PlaylistCompact)[];
+
+	_relatedContinuation!: string;
 
 	/** @hidden */
 	constructor(video: Partial<BaseVideoAttributes> = {}) {
@@ -130,7 +133,47 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			}
 		}
 
+		// Related continuation
+		this._relatedContinuation = BaseVideo.getRelatedContinuation(secondaryContents);
+
 		return this;
+	}
+
+	/** Load next related videos / playlists */
+	async nextRelated(count = 1): Promise<(VideoCompact | PlaylistCompact)[]> {
+		const newRelated: (VideoCompact | PlaylistCompact)[] = [];
+		for (let i = 0; i < count || count == 0; i++) {
+			if (this._relatedContinuation === undefined) break;
+
+			const response = await this.client.http.post(`${I_END_POINT}/next`, {
+				data: { continuation: this._relatedContinuation },
+			});
+
+			const secondaryContents =
+				response.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
+					.continuationItems;
+
+			for (const secondaryContent of secondaryContents) {
+				if ("compactVideoRenderer" in secondaryContent) {
+					this.related.push(
+						new VideoCompact({ client: this.client }).load(
+							secondaryContent.compactVideoRenderer
+						)
+					);
+				} else if ("compactRadioRenderer" in secondaryContent) {
+					this.related.push(
+						new PlaylistCompact({ client: this.client }).load(
+							secondaryContent.compactRadioRenderer
+						)
+					);
+				}
+			}
+
+			this._relatedContinuation = BaseVideo.getRelatedContinuation(secondaryContents);
+		}
+
+		this.related.push(...newRelated);
+		return newRelated;
 	}
 
 	/** @hidden */
@@ -145,5 +188,13 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		).videoSecondaryInfoRenderer;
 		const videoDetails = data[2].playerResponse.videoDetails;
 		return { ...secondaryInfo, ...primaryInfo, videoDetails };
+	}
+
+	private static getRelatedContinuation(secondaryContents: YoutubeRawData) {
+		const lastSecondaryContent = secondaryContents[secondaryContents.length - 1];
+		return "continuationItemRenderer" in lastSecondaryContent
+			? lastSecondaryContent.continuationItemRenderer.continuationEndpoint.continuationCommand
+					.token
+			: undefined;
 	}
 }
