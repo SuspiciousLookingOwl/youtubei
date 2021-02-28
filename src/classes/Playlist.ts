@@ -77,9 +77,8 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 				name: title.runs[0].text,
 				thumbnails: new Thumbnails().load(thumbnail.thumbnails),
-				url:
-					"https://www.youtube.com" +
-					title.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url,
+				customUrlName:
+					title.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl || null,
 				client: this.client,
 			});
 		}

@@ -5,7 +5,7 @@ import { I_END_POINT } from "../constants";
 /** @hidden */
 interface ChannelAttributes extends BaseAttributes {
 	name: string;
-	url: string;
+	customUrlName: string | null;
 	thumbnails: Thumbnails;
 	videoCount?: number;
 }
@@ -14,8 +14,8 @@ interface ChannelAttributes extends BaseAttributes {
 export default class Channel extends Base implements ChannelAttributes {
 	/** The channel's name */
 	name!: string;
-	/** The URL to the channel page */
-	url!: string;
+	/** The Custom URL name of the channel */
+	customUrlName!: string | null;
 	/** Thumbnails of the Channel with different sizes */
 	thumbnails!: Thumbnails;
 	/** How many video does this channel have */
@@ -36,6 +36,16 @@ export default class Channel extends Base implements ChannelAttributes {
 		this.playlists = [];
 	}
 
+	/** The URL of the channel page */
+	get url(): string {
+		return `https://www.youtube.com/channel/${this.id}`;
+	}
+
+	/** The custom URL of the channel page */
+	get customUrl(): string | null {
+		return this.customUrlName ? `https://www.youtube.com${this.customUrlName}` : null;
+	}
+
 	/**
 	 * Load this instance with raw data from Youtube
 	 *
@@ -43,12 +53,12 @@ export default class Channel extends Base implements ChannelAttributes {
 	 */
 	load(data: YoutubeRawData): Channel {
 		const { channelId, title, thumbnail, videoCountText, navigationEndpoint } = data;
-		const { browseId, canonicalBaseUrl } = navigationEndpoint.browseEndpoint;
+		const { canonicalBaseUrl } = navigationEndpoint.browseEndpoint;
 
 		this.id = channelId;
 		this.name = title.simpleText;
 		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
-		this.url = "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`);
+		this.customUrlName = canonicalBaseUrl || null;
 		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
 		this.videos = [];
 		this.playlists = [];

@@ -84,7 +84,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,
 			thumbnails: new Thumbnails().load(thumbnail.thumbnails),
-			url: `https://www.youtube.com/channel/${title.runs[0].navigationEndpoint.browseEndpoint.browseId}`,
+			customUrlName: title.runs[0].navigationEndpoint.browseEndpoint.canonicalBaseUrl || null,
 		});
 
 		// Like Count and Dislike Count

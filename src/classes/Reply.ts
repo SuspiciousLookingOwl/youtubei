@@ -65,7 +65,7 @@ export default class Reply extends Base implements ReplyAttributes {
 			id: browseId,
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
-			url: "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`),
+			customUrlName: canonicalBaseUrl || null,
 			client: this.client,
 		});
 

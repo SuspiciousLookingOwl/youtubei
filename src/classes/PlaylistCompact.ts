@@ -53,10 +53,12 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 
 		// Channel
 		if (shortBylineText && shortBylineText.simpleText !== "YouTube") {
+			const shortByLine = shortBylineText.runs[0];
 			this.channel = new Channel({
-				id: shortBylineText.runs[0].navigationEndpoint.browseEndpoint.browseId,
-				name: shortBylineText.runs[0].text,
-				url: `https://www.youtube.com${shortBylineText.runs[0].navigationEndpoint.commandMetadata.webCommandMetadata.url}`,
+				id: shortByLine.navigationEndpoint.browseEndpoint.browseId,
+				name: shortByLine.text,
+				customUrlName:
+					shortByLine.navigationEndpoint.browseEndpoint.canonicalBaseUrl || null,
 				client: this.client,
 			});
 		}

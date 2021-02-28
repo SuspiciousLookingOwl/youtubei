@@ -84,7 +84,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 			this.channel = new Channel({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
-				url: "https://www.youtube.com" + (canonicalBaseUrl || `/channel/${browseId}`),
+				customUrlName: canonicalBaseUrl || null,
 				client: this.client,
 			});
 		}

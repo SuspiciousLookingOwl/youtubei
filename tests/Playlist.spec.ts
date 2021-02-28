@@ -20,7 +20,7 @@ describe("Playlist", () => {
 		expect(typeof playlist.lastUpdatedAt).toBe("string");
 		expect(playlist.channel?.id).toBe("UCHnyfMqiRRG1u-2MsSQLbXA");
 		expect(playlist.channel?.name).toBe("Veritasium");
-		expect(playlist.channel?.url).toBe("https://www.youtube.com/c/veritasium");
+		expect(playlist.channel?.customUrl).toBe("https://www.youtube.com/c/veritasium");
 		expect(playlist.channel?.thumbnails.best).toStartWith("https://yt3.ggpht.com");
 		expect(playlist.videos.length).toBe(100);
 		expect(typeof playlist.videos[0].id).toBe("string");
