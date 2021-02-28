@@ -49,6 +49,11 @@ describe("Video", () => {
 		expect(video.comments.length).toBeGreaterThan(55);
 	});
 
+	it("load next related", async () => {
+		await video.nextRelated(2);
+		expect(video.related.length).toBeGreaterThan(40);
+	});
+
 	it("match live getVideo result", () => {
 		expect(liveVideo instanceof LiveVideo).toBeTrue();
 		expect(typeof liveVideo.watchingCount).toBe("number");
