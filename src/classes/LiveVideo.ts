@@ -36,6 +36,12 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	private _isChatPlaying = false;
 	private _chatQueue: Chat[] = [];
 
+	/** @hidden */
+	constructor(video: Partial<LiveVideoAttributes> = {}) {
+		super();
+		Object.assign(this, video);
+	}
+
 	/**
 	 * Load this instance with raw data from Youtube
 	 *
