@@ -1,5 +1,6 @@
-import { Base, Channel, Thumbnails, Video, BaseAttributes } from ".";
+import { Base, Channel, Thumbnails, Video, BaseAttributes, Reply } from ".";
 import { YoutubeRawData } from "../common";
+import { COMMENT_END_POINT } from "../constants";
 
 /** @hidden */
 interface CommentAttributes extends BaseAttributes {
@@ -31,13 +32,19 @@ export default class Comment extends Base implements CommentAttributes {
 	isPinnedComment!: boolean;
 	/** Comment's reply count */
 	replyCount!: number;
+	/** Comment's loaded replies */
+	replies!: Reply[];
 
-	// TODO: Add replies
+	private _replyContinuation?: {
+		token?: string;
+		itct?: string;
+		xsrfToken?: string;
+	};
 
 	/** @hidden */
-	constructor(channel: Partial<CommentAttributes> = {}) {
+	constructor(comment: Partial<CommentAttributes> = {}) {
 		super();
-		Object.assign(this, channel);
+		Object.assign(this, comment);
 	}
 
 	/**
@@ -68,6 +75,18 @@ export default class Comment extends Base implements CommentAttributes {
 		this.isPinnedComment = !!pinnedCommentBadge;
 		this.replyCount = replyCount;
 
+		// Reply Continuation
+		this.replies = [];
+		const continuation =
+			data.replies?.commentRepliesRenderer.continuations[0].nextContinuationData;
+		if (continuation) {
+			this._replyContinuation = {
+				token: continuation.continuation,
+				itct: continuation.clickTrackingParams,
+				xsrfToken: this.video._commentContinuation?.xsrfToken,
+			};
+		}
+
 		// Author
 		const { browseId, canonicalBaseUrl } = authorEndpoint.browseEndpoint;
 		this.author = new Channel({
@@ -84,5 +103,54 @@ export default class Comment extends Base implements CommentAttributes {
 	/** URL to the video with this comment being highlighted (appears on top of the comment section) */
 	get url(): string {
 		return `https://www.youtube.com?watch=${this.video.id}&lc=${this.id}`;
+	}
+
+	/** Load next replies of the comment */
+	async nextReplies(count = 1): Promise<Reply[]> {
+		const newReplies: Reply[] = [];
+		for (let i = 0; i < count || count == 0; i++) {
+			if (!this._replyContinuation) break;
+
+			// Send request
+			const response = await this.client.http.post(COMMENT_END_POINT, {
+				data: { session_token: this._replyContinuation.xsrfToken },
+				headers: { "content-type": "application/x-www-form-urlencoded" },
+				params: {
+					action_get_comment_replies: "1",
+					pbj: "1",
+					ctoken: this._replyContinuation.token,
+					continuation: this._replyContinuation.token,
+					itct: this._replyContinuation?.itct,
+					type: "next",
+				},
+			});
+
+			const {
+				contents: items,
+				continuations,
+			} = response.data[1].response.continuationContents.commentRepliesContinuation;
+
+			if (continuations?.length) {
+				const continuation = continuations.shift().nextContinuationData;
+				this._replyContinuation = {
+					token: continuation.continuation,
+					itct: continuation.clickTrackingParams,
+					xsrfToken: response.data[1].xsrf_token,
+				};
+			} else {
+				this._replyContinuation = undefined;
+			}
+
+			newReplies.push(
+				...items.map((i: YoutubeRawData) =>
+					new Reply({ video: this.video, comment: this, client: this.client }).load(
+						i.commentRenderer
+					)
+				)
+			);
+		}
+
+		this.replies.push(...newReplies);
+		return newReplies;
 	}
 }

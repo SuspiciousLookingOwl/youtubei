@@ -5,6 +5,7 @@ export { default as VideoCompact } from "./VideoCompact";
 export { default as Thumbnails } from "./Thumbnails";
 export { default as Channel } from "./Channel";
 export { default as Comment } from "./Comment";
+export { default as Reply } from "./Reply";
 export { default as Chat } from "./Chat";
 export { default as PlaylistCompact } from "./PlaylistCompact";
 export { default as Playlist } from "./Playlist";

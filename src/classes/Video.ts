@@ -19,7 +19,8 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	 */
 	comments!: Comment[];
 
-	private _commentContinuation?: {
+	/** @hidden */
+	_commentContinuation?: {
 		token?: string;
 		itct?: string;
 		xsrfToken?: string;
