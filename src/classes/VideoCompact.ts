@@ -1,5 +1,5 @@
 import { getDuration, YoutubeRawData } from "../common";
-import { Base, Channel, Thumbnails, BaseAttributes } from ".";
+import { Base, Channel, Thumbnails, BaseAttributes, Video, LiveVideo } from ".";
 
 /** @hidden */
 interface VideoCompactAttributes extends BaseAttributes {
@@ -94,5 +94,17 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	/** Whether this video is private / deleted or not, only useful in playlist's videos */
 	get isPrivateOrDeleted(): boolean {
 		return !this.duration;
+	}
+
+	/**
+	 * Get {@link Video} object based on current video id
+	 *
+	 * Equivalent to
+	 * ```js
+	 * client.getVideo(videoCompact.id);
+	 * ```
+	 */
+	async getVideo(): Promise<Video | LiveVideo | undefined> {
+		return await this.client.getVideo(this.id);
 	}
 }
