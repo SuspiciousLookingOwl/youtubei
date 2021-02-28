@@ -42,7 +42,10 @@
 		"channel",
 		"related",
 		"comment",
-		"comments"
+		"comments",
+		"live",
+		"chat",
+		"live chat"
 	],
 	"author": "Vincent Jonathan",
 	"license": "MIT",
