@@ -1,4 +1,4 @@
-import { getDuration, YoutubeRawData } from "../common";
+import { getDuration, stripToInt, YoutubeRawData } from "../common";
 import { Base, Channel, Thumbnails, BaseAttributes, Video, LiveVideo } from ".";
 
 /** @hidden */
@@ -9,7 +9,7 @@ interface VideoCompactAttributes extends BaseAttributes {
 	isLiveContent: boolean;
 	channel?: Channel;
 	uploadDate?: string;
-	viewCount?: number;
+	viewCount?: number | null;
 }
 
 /** Represent a compact video (e.g. from search result, playlist's videos, channel's videos) */
@@ -27,12 +27,17 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	/** The date this video is uploaded at */
 	uploadDate?: string;
 	/** How many view does this video have, null if the view count is hidden */
-	viewCount?: number;
+	viewCount?: number | null;
 
 	/** @hidden */
 	constructor(videoCompact: Partial<VideoCompactAttributes> = {}) {
 		super();
 		Object.assign(this, videoCompact);
+	}
+
+	/** Whether this video is private / deleted or not, only useful in playlist's videos */
+	get isPrivateOrDeleted(): boolean {
+		return !this.duration;
 	}
 
 	/**
@@ -66,9 +71,9 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 					""
 			) || null;
 
-		this.isLiveContent = badges
-			? badges[0].metadataBadgeRenderer.style === "BADGE_STYLE_TYPE_LIVE_NOW"
-			: false;
+		this.isLiveContent = !!(
+			badges?.[0].metadataBadgeRenderer.style === "BADGE_STYLE_TYPE_LIVE_NOW"
+		);
 
 		// Channel
 		if (ownerText || shortBylineText) {
@@ -84,16 +89,9 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 			});
 		}
 
-		if (!this.isLiveContent)
-			this.viewCount = +viewCountText?.simpleText?.replace(/[^0-9]/g, "") || undefined;
-		else this.viewCount = +viewCountText?.runs[0].text.replace(/[^0-9]/g, "") || undefined;
+		this.viewCount = stripToInt(viewCountText?.simpleText || viewCountText?.runs[0].text);
 
 		return this;
-	}
-
-	/** Whether this video is private / deleted or not, only useful in playlist's videos */
-	get isPrivateOrDeleted(): boolean {
-		return !this.duration;
 	}
 
 	/**
@@ -104,7 +102,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	 * client.getVideo(videoCompact.id);
 	 * ```
 	 */
-	async getVideo(): Promise<Video | LiveVideo | undefined> {
-		return await this.client.getVideo(this.id);
+	async getVideo(): Promise<Video | LiveVideo> {
+		return (await this.client.getVideo(this.id)) as Video | LiveVideo;
 	}
 }

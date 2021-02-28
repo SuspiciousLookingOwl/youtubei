@@ -21,16 +21,6 @@ export default class Thumbnails extends Array<Thumbnail> {
 	}
 
 	/**
-	 * Load this instance with raw data from Youtube
-	 *
-	 * @hidden
-	 */
-	load(thumbnails: Thumbnail[]): Thumbnails {
-		this.push(...thumbnails);
-		return this;
-	}
-
-	/**
 	 * Returns thumbnail with the lowest resolution, usually the first element of the Thumbnails array
 	 *
 	 * @example
@@ -52,6 +42,16 @@ export default class Thumbnails extends Array<Thumbnail> {
 	 */
 	get best(): string | undefined {
 		return Thumbnails.parseThumbnailUrl(this[this.length - 1]);
+	}
+
+	/**
+	 * Load this instance with raw data from Youtube
+	 *
+	 * @hidden
+	 */
+	load(thumbnails: Thumbnail[]): Thumbnails {
+		this.push(...thumbnails);
+		return this;
 	}
 
 	private static parseThumbnailUrl({ url }: Thumbnail) {

@@ -1,5 +1,5 @@
 import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base, Client } from ".";
-import { YoutubeRawData } from "../common";
+import { getContinuationFromContents, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
@@ -27,7 +27,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	/** Videos in the playlist */
 	videos!: VideoCompact[];
 
-	private _continuation!: string;
+	private _continuation!: string | undefined;
 
 	/** @hidden */
 	constructor(playlist: Partial<Playlist> = {}) {
@@ -50,12 +50,12 @@ export default class Playlist extends Base implements PlaylistAttributes {
 
 		const { stats } = primaryRenderer;
 		if (primaryRenderer.stats.length === 3) {
-			this.videoCount = Playlist.getSideBarInfo(stats[0], true);
-			this.viewCount = Playlist.getSideBarInfo(stats[1], true);
-			this.lastUpdatedAt = Playlist.getSideBarInfo(stats[2], false);
+			this.videoCount = Playlist.parseSideBarInfo(stats[0], true);
+			this.viewCount = Playlist.parseSideBarInfo(stats[1], true);
+			this.lastUpdatedAt = Playlist.parseSideBarInfo(stats[2], false);
 		} else if (stats.length === 2) {
-			this.videoCount = Playlist.getSideBarInfo(stats[0], true);
-			this.lastUpdatedAt = Playlist.getSideBarInfo(stats[1], false);
+			this.videoCount = Playlist.parseSideBarInfo(stats[0], true);
+			this.lastUpdatedAt = Playlist.parseSideBarInfo(stats[1], false);
 		}
 
 		// Videos
@@ -64,15 +64,13 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer.contents;
 
-		this.videos = Playlist.getVideos(playlistContents, this.client);
+		this.videos = Playlist.parseVideos(playlistContents, this.client);
 
 		// Video Continuation Token
-		this._continuation =
-			playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+		this._continuation = getContinuationFromContents(playlistContents);
 
 		// Channel
-		const videoOwner =
-			sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner || undefined;
+		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
 		if (videoOwner) {
 			const { title, thumbnail } = videoOwner.videoOwnerRenderer;
 			this.channel = new Channel({
@@ -117,10 +115,9 @@ export default class Playlist extends Base implements PlaylistAttributes {
 			const playlistContents =
 				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
-			newVideos.push(...Playlist.getVideos(playlistContents, this.client));
+			newVideos.push(...Playlist.parseVideos(playlistContents, this.client));
 
-			this._continuation =
-				playlistContents[100]?.continuationItemRenderer.continuationEndpoint.continuationCommand.token;
+			this._continuation = getContinuationFromContents(playlistContents);
 		}
 
 		this.videos.push(...newVideos);
@@ -132,7 +129,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	 *
 	 * @param playlistContents raw object from youtubei
 	 */
-	private static getVideos(playlistContents: YoutubeRawData, client: Client): VideoCompact[] {
+	private static parseVideos(playlistContents: YoutubeRawData, client: Client): VideoCompact[] {
 		const videosRenderer = playlistContents.map((c: YoutubeRawData) => c.playlistVideoRenderer);
 		const videos = [];
 		for (const videoRenderer of videosRenderer) {
@@ -142,7 +139,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 		return videos;
 	}
 
-	private static getSideBarInfo<T extends boolean = true>(
+	private static parseSideBarInfo<T extends boolean = true>(
 		stats: YoutubeRawData,
 		parseInt: T
 	): T extends true ? number : string {

@@ -1,4 +1,5 @@
 import { URL } from "url";
+import { YoutubeRawData } from "./types";
 
 export const getDuration = (s: string): number => {
 	s = s.replace(/:/g, ".");
@@ -27,4 +28,17 @@ export const getQueryParameter = (url: string, queryName: string): string => {
 		/* not an URL */
 		return url;
 	}
+};
+
+export const stripToInt = (string: string): number | null => {
+	if (!string) return null;
+	return +string.replace(/[^0-9]/g, "");
+};
+
+export const getContinuationFromContents = (data: YoutubeRawData[]): string | undefined => {
+	const lastSecondaryContent = data[data.length - 1];
+	return "continuationItemRenderer" in lastSecondaryContent
+		? lastSecondaryContent.continuationItemRenderer.continuationEndpoint.continuationCommand
+				.token
+		: undefined;
 };

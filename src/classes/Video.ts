@@ -4,7 +4,7 @@ import { COMMENT_END_POINT } from "../constants";
 
 /** @hidden */
 interface VideoAttributes extends BaseVideoAttributes {
-	duration: number | null;
+	duration: number;
 	comments: Comment[];
 }
 

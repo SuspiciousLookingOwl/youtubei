@@ -1,5 +1,5 @@
 import { Thumbnails, BaseAttributes, Base, Playlist } from ".";
-import { YoutubeRawData } from "../common";
+import { stripToInt, YoutubeRawData } from "../common";
 import Channel from "./Channel";
 
 /** @hidden */
@@ -44,14 +44,12 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 
 		this.id = playlistId;
 		this.title = title.simpleText || title.runs[0].text;
-		this.videoCount =
-			+(videoCount ?? videoCountShortText.simpleText)?.replace(/[^0-9]/g, "") || 0;
+		this.videoCount = stripToInt(videoCount || videoCountShortText.simpleText) || 0;
 
 		// Thumbnail
-		let { thumbnails } = data;
-		if (!thumbnails) thumbnails = thumbnail.thumbnails;
-		else thumbnails = thumbnails[0].thumbnails;
-		this.thumbnails = new Thumbnails().load(thumbnails);
+		this.thumbnails = new Thumbnails().load(
+			data.thumbnails?.[0].thumbnails || thumbnail.thumbnails
+		);
 
 		// Channel
 		if (shortBylineText && shortBylineText.simpleText !== "YouTube") {

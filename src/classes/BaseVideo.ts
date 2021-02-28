@@ -1,5 +1,13 @@
-import { PlaylistCompact, VideoCompact, Channel, Base, BaseAttributes, Thumbnails } from ".";
-import { YoutubeRawData } from "../common";
+import {
+	PlaylistCompact,
+	VideoCompact,
+	Channel,
+	Base,
+	BaseAttributes,
+	Thumbnails,
+	Client,
+} from ".";
+import { getContinuationFromContents, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
@@ -45,7 +53,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	/** Videos / playlists related to this video  */
 	related!: (VideoCompact | PlaylistCompact)[];
 
-	_relatedContinuation!: string;
+	_relatedContinuation!: string | undefined;
 
 	/** @hidden */
 	constructor(video: Partial<BaseVideoAttributes> = {}) {
@@ -106,35 +114,16 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		const secondaryContents =
 			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
 				.results;
-		for (const secondaryContent of secondaryContents) {
-			if ("compactAutoplayRenderer" in secondaryContent) {
-				const content = secondaryContent.compactAutoplayRenderer.contents[0];
-				if ("compactVideoRenderer" in content) {
-					this.upNext = new VideoCompact({ client: this.client }).load(
-						content.compactVideoRenderer
-					);
-				} else if ("compactRadioRenderer" in content) {
-					this.upNext = new PlaylistCompact({ client: this.client }).load(
-						content.compactRadioRenderer
-					);
-				}
-			} else if ("compactVideoRenderer" in secondaryContent) {
-				this.related.push(
-					new VideoCompact({ client: this.client }).load(
-						secondaryContent.compactVideoRenderer
-					)
-				);
-			} else if ("compactRadioRenderer" in secondaryContent) {
-				this.related.push(
-					new PlaylistCompact({ client: this.client }).load(
-						secondaryContent.compactRadioRenderer
-					)
-				);
-			}
-		}
+
+		const upNext = secondaryContents.find(
+			(s: YoutubeRawData) => "compactAutoplayRenderer" in s
+		) as YoutubeRawData;
+		const content = upNext.compactAutoplayRenderer.contents[0];
+		this.upNext = BaseVideo.parseCompactRenderer(content, this.client)!;
+		this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
 
 		// Related continuation
-		this._relatedContinuation = BaseVideo.getRelatedContinuation(secondaryContents);
+		this._relatedContinuation = getContinuationFromContents(secondaryContents);
 
 		return this;
 	}
@@ -153,23 +142,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 				response.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
 					.continuationItems;
 
-			for (const secondaryContent of secondaryContents) {
-				if ("compactVideoRenderer" in secondaryContent) {
-					this.related.push(
-						new VideoCompact({ client: this.client }).load(
-							secondaryContent.compactVideoRenderer
-						)
-					);
-				} else if ("compactRadioRenderer" in secondaryContent) {
-					this.related.push(
-						new PlaylistCompact({ client: this.client }).load(
-							secondaryContent.compactRadioRenderer
-						)
-					);
-				}
-			}
-
-			this._relatedContinuation = BaseVideo.getRelatedContinuation(secondaryContents);
+			this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
+			this._relatedContinuation = getContinuationFromContents(secondaryContents);
 		}
 
 		this.related.push(...newRelated);
@@ -190,11 +164,20 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		return { ...secondaryInfo, ...primaryInfo, videoDetails };
 	}
 
-	private static getRelatedContinuation(secondaryContents: YoutubeRawData) {
-		const lastSecondaryContent = secondaryContents[secondaryContents.length - 1];
-		return "continuationItemRenderer" in lastSecondaryContent
-			? lastSecondaryContent.continuationItemRenderer.continuationEndpoint.continuationCommand
-					.token
-			: undefined;
+	private static parseRelated(
+		secondaryContents: YoutubeRawData[],
+		client: Client
+	): (VideoCompact | PlaylistCompact)[] {
+		return secondaryContents
+			.map((c: YoutubeRawData) => BaseVideo.parseCompactRenderer(c, client))
+			.filter((c): c is VideoCompact | PlaylistCompact => c !== undefined);
+	}
+
+	private static parseCompactRenderer(data: YoutubeRawData, client: Client) {
+		if ("compactVideoRenderer" in data) {
+			return new VideoCompact({ client }).load(data.compactVideoRenderer);
+		} else if ("compactRadioRenderer" in data) {
+			return new PlaylistCompact({ client }).load(data.compactRadioRenderer);
+		}
 	}
 }
