@@ -30,9 +30,9 @@ export default class Reply extends Base implements ReplyAttributes {
 	isAuthorChannelOwner!: boolean;
 
 	/** @hidden */
-	constructor(channel: Partial<ReplyAttributes> = {}) {
+	constructor(reply: Partial<ReplyAttributes> = {}) {
 		super();
-		Object.assign(this, channel);
+		Object.assign(this, reply);
 	}
 
 	/**
