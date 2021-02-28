@@ -1,4 +1,4 @@
-import { Thumbnails, BaseAttributes, Base } from ".";
+import { Thumbnails, BaseAttributes, Base, Playlist } from ".";
 import { YoutubeRawData } from "../common";
 import Channel from "./Channel";
 
@@ -64,5 +64,17 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 		}
 
 		return this;
+	}
+
+	/**
+	 * Get {@link Playlist} object based on current playlist id
+	 *
+	 * Equivalent to
+	 * ```js
+	 * client.getPlaylist(playlistCompact.id);
+	 * ```
+	 */
+	async getPlaylist(): Promise<Playlist | undefined> {
+		return await this.client.getPlaylist(this.id);
 	}
 }
