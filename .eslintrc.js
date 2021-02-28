@@ -14,6 +14,7 @@ module.exports = {
 	rules: {
 		"linebreak-style": ["error", "unix"],
 		"no-mixed-spaces-and-tabs": "off",
+		"no-non-null-assertion": "off",
 		indent: ["off", "tab"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
