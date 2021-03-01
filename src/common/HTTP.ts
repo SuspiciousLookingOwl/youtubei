@@ -101,46 +101,26 @@ export default class HTTP {
 						?.map((c) => c.split(";").shift())
 						.join(";")}`;
 
-				if (res.headers["content-encoding"] === "gzip") {
-					const gunzip = zlib.createGunzip();
-					res.pipe(gunzip);
-					const buffer: string[] = [];
-					gunzip
-						.on("data", (data) => {
-							buffer.push(data.toString());
-						})
-						.on("end", () => {
-							const data = JSON.parse(buffer.join("").toString());
-							HTTP.returnPromise(
-								{
-									status: res.statusCode,
-									headers: res.headers,
-									data,
-								},
-								resolve,
-								reject
-							);
-						})
-						.on("error", reject);
-				} else {
-					let body = "";
-					res.on("data", (data) => {
-						body += data;
+				const gunzip = zlib.createGunzip();
+				res.pipe(gunzip);
+				const buffer: string[] = [];
+				gunzip
+					.on("data", (data) => {
+						buffer.push(data.toString());
 					})
-						.on("end", () => {
-							const data = JSON.parse(body);
-							HTTP.returnPromise(
-								{
-									status: res.statusCode,
-									headers: res.headers,
-									data,
-								},
-								resolve,
-								reject
-							);
-						})
-						.on("error", reject);
-				}
+					.on("end", () => {
+						const data = JSON.parse(buffer.join("").toString());
+						HTTP.returnPromise(
+							{
+								status: res.statusCode,
+								headers: res.headers,
+								data,
+							},
+							resolve,
+							reject
+						);
+					})
+					.on("error", reject);
 			});
 
 			request.on("error", reject);
