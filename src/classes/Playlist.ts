@@ -1,4 +1,4 @@
-import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base, Client } from ".";
+import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base } from ".";
 import { getContinuationFromContents, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
@@ -58,13 +58,10 @@ export default class Playlist extends Base implements PlaylistAttributes {
 			this.lastUpdatedAt = Playlist.parseSideBarInfo(stats[1], false);
 		}
 
-		// Videos
 		const playlistContents =
 			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer.contents;
-
-		this.videos = Playlist.parseVideos(playlistContents, this.client);
 
 		// Video Continuation Token
 		this._continuation = getContinuationFromContents(playlistContents);
@@ -80,6 +77,9 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				client: this.client,
 			});
 		}
+
+		// Videos
+		this.videos = Playlist.parseVideos(playlistContents, this);
 
 		return this;
 	}
@@ -112,7 +112,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 			const playlistContents =
 				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
-			newVideos.push(...Playlist.parseVideos(playlistContents, this.client));
+			newVideos.push(...Playlist.parseVideos(playlistContents, this));
 
 			this._continuation = getContinuationFromContents(playlistContents);
 		}
@@ -126,12 +126,17 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	 *
 	 * @param playlistContents raw object from youtubei
 	 */
-	private static parseVideos(playlistContents: YoutubeRawData, client: Client): VideoCompact[] {
+	private static parseVideos(
+		playlistContents: YoutubeRawData,
+		playlist: Playlist
+	): VideoCompact[] {
 		const videosRenderer = playlistContents.map((c: YoutubeRawData) => c.playlistVideoRenderer);
 		const videos = [];
 		for (const videoRenderer of videosRenderer) {
 			if (!videoRenderer) continue;
-			videos.push(new VideoCompact({ client }).load(videoRenderer));
+			const video = new VideoCompact({ client: playlist.client }).load(videoRenderer);
+			video.channel = playlist.channel;
+			videos.push(video);
 		}
 		return videos;
 	}
