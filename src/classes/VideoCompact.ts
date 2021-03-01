@@ -67,7 +67,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 		this.duration =
 			getDuration(
 				lengthText?.simpleText ||
-					thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer?.text.simpleText ||
+					thumbnailOverlays?.[0].thumbnailOverlayTimeStatusRenderer?.text.simpleText ||
 					""
 			) || null;
 
