@@ -7,7 +7,7 @@ import {
 	Thumbnails,
 	Client,
 } from ".";
-import { getContinuationFromContents, YoutubeRawData } from "../common";
+import { getContinuationFromContents, stripToInt, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
@@ -88,23 +88,20 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 
 		// Like Count and Dislike Count
 		const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
-		this.likeCount =
-			+topLevelButtons[0].toggleButtonRenderer.defaultText.accessibility?.accessibilityData.label.replace(
-				/[^0-9]/g,
-				""
-			) || null;
-		this.dislikeCount =
-			+topLevelButtons[1].toggleButtonRenderer.defaultText.accessibility?.accessibilityData.label.replace(
-				/[^0-9]/g,
-				""
-			) || null;
+		this.likeCount = stripToInt(
+			topLevelButtons[0].toggleButtonRenderer.defaultText.accessibility?.accessibilityData
+				.label
+		);
+		this.dislikeCount = stripToInt(
+			topLevelButtons[1].toggleButtonRenderer.defaultText.accessibility?.accessibilityData
+				.label
+		);
 
 		// Tags and description
 		this.tags =
-			videoInfo.superTitleLink?.runs?.reduce((tags: string[], t: Record<string, string>) => {
-				if (t.text.trim()) tags.push(t.text.trim());
-				return tags;
-			}, []) || [];
+			videoInfo.superTitleLink?.runs
+				?.map((r: YoutubeRawData) => r.text.trim())
+				.filter((t: string) => t) || [];
 		this.description =
 			videoInfo.description?.runs.map((d: Record<string, string>) => d.text).join("") || "";
 
