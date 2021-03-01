@@ -60,12 +60,11 @@ export default class Reply extends Base implements ReplyAttributes {
 		this.isAuthorChannelOwner = authorIsChannelOwner;
 
 		// Author
-		const { browseId, canonicalBaseUrl } = authorEndpoint.browseEndpoint;
+		const { browseId } = authorEndpoint.browseEndpoint;
 		this.author = new Channel({
 			id: browseId,
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
-			customUrlName: canonicalBaseUrl || null,
 			client: this.client,
 		});
 

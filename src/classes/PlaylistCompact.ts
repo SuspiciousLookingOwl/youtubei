@@ -57,8 +57,6 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 			this.channel = new Channel({
 				id: shortByLine.navigationEndpoint.browseEndpoint.browseId,
 				name: shortByLine.text,
-				customUrlName:
-					shortByLine.navigationEndpoint.browseEndpoint.canonicalBaseUrl || null,
 				client: this.client,
 			});
 		}

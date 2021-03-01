@@ -77,14 +77,13 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 
 		// Channel
 		if (ownerText || shortBylineText) {
-			const { browseId, canonicalBaseUrl } = (
+			const { browseId } = (
 				ownerText || shortBylineText
 			).runs[0].navigationEndpoint.browseEndpoint;
 
 			this.channel = new Channel({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
-				customUrlName: canonicalBaseUrl || null,
 				client: this.client,
 			});
 		}

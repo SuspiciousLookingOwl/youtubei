@@ -88,12 +88,11 @@ export default class Comment extends Base implements CommentAttributes {
 		}
 
 		// Author
-		const { browseId, canonicalBaseUrl } = authorEndpoint.browseEndpoint;
+		const { browseId } = authorEndpoint.browseEndpoint;
 		this.author = new Channel({
 			id: browseId,
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
-			customUrlName: canonicalBaseUrl || null,
 			client: this.client,
 		});
 
