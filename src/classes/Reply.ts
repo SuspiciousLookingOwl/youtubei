@@ -70,9 +70,4 @@ export default class Reply extends Base implements ReplyAttributes {
 
 		return this;
 	}
-
-	/** URL to the video with this comment being highlighted (appears on top of the comment section) */
-	get url(): string {
-		return `https://www.youtube.com?watch=${this.video.id}&lc=${this.id}`;
-	}
 }
