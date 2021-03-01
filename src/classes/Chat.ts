@@ -50,7 +50,7 @@ export default class Chat extends Base implements ChatAttributes {
 			thumbnails: authorPhoto.thumbnails,
 			client: this.client,
 		});
-		this.timestamp = timestampUsec;
+		this.timestamp = +timestampUsec;
 		return this;
 	}
 }
