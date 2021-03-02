@@ -22,7 +22,7 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	dislikeCount: number | null;
 	isLiveContent: boolean;
 	tags: string[];
-	upNext: VideoCompact | PlaylistCompact;
+	upNext: VideoCompact | PlaylistCompact | null;
 	related: (VideoCompact | PlaylistCompact)[];
 }
 
@@ -49,7 +49,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	/** The tags of this video */
 	tags!: string[];
 	/** Next video / playlist recommended by Youtube */
-	upNext!: VideoCompact | PlaylistCompact;
+	upNext!: VideoCompact | PlaylistCompact | null;
 	/** Videos / playlists related to this video  */
 	related!: (VideoCompact | PlaylistCompact)[];
 
@@ -111,11 +111,11 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
 				.results;
 
-		const upNext = secondaryContents.find(
-			(s: YoutubeRawData) => "compactAutoplayRenderer" in s
-		) as YoutubeRawData;
-		const content = upNext.compactAutoplayRenderer.contents[0];
-		this.upNext = BaseVideo.parseCompactRenderer(content, this.client)!;
+		const upNext =
+			secondaryContents.find((s: YoutubeRawData) => "compactAutoplayRenderer" in s)
+				?.compactAutoplayRenderer.contents[0] || null;
+
+		this.upNext = upNext ? BaseVideo.parseCompactRenderer(upNext, this.client)! : upNext;
 		this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
 
 		// Related continuation
