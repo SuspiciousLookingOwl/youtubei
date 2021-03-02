@@ -7,9 +7,7 @@ describe("PlaylistCompact", () => {
 	let playlists: SearchResult<{ type: "playlist" }>;
 
 	beforeAll(async () => {
-		playlists = await youtube.search("WAN show", {
-			type: "playlist",
-		});
+		playlists = await youtube.search("100 seconds of code fireship", { type: "playlist" });
 	});
 
 	it("match 1st playlist from search result", () => {

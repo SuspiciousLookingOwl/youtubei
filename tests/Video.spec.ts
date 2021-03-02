@@ -1,40 +1,35 @@
 import { Client, Video, LiveVideo } from "../src";
 import "jest-extended";
+import { commonChannelTest } from "./CommonChannel.spec";
 
-const youtube = new Client();
+const youtube = new Client({ hl: "en" });
 
 describe("Video", () => {
 	let video: Video;
 	let liveVideo: LiveVideo;
 	let endedLiveVideo: Video;
-	let incorrectVideo: undefined;
 
 	beforeAll(async () => {
-		video = (await youtube.getVideo("dQw4w9WgXcQ")) as Video;
-		liveVideo = (await youtube.getVideo(
-			"https://www.youtube.com/watch?v=5qap5aO4i9A"
-		)) as LiveVideo;
-		endedLiveVideo = (await youtube.getVideo(
-			"https://www.youtube.com/watch?v=iXn9O-Rzb_M"
-		)) as Video;
-		incorrectVideo = (await youtube.getVideo("foo")) as undefined;
+		video = (await youtube.getVideo("OX31kZbAXsA")) as Video;
+		liveVideo = (await youtube.getVideo("5qap5aO4i9A")) as LiveVideo;
+		endedLiveVideo = (await youtube.getVideo("iXn9O-Rzb_M")) as Video;
 	});
 
 	it("match getVideo result", () => {
-		expect(video.id).toBe("dQw4w9WgXcQ");
-		expect(video.title).toBe("Rick Astley - Never Gonna Give You Up (Video)");
-		expect(video.duration).toBe(212);
+		expect(video.id).toBe("OX31kZbAXsA");
+		expect(video.title).toBe(
+			"Does High FPS make you a better gamer? Ft. Shroud - FINAL ANSWER"
+		);
+		expect(video.duration).toBe(2172);
 		expect(typeof video.description).toBe("string");
-		expect(video.channel?.id).toBe("UCuAXFkgsw1L7xaCfnd5JJOw");
-		expect(video.channel?.name).toBe("Official Rick Astley");
-		expect(video.channel?.url).toBe("https://www.youtube.com/channel/UCuAXFkgsw1L7xaCfnd5JJOw");
-		expect(video.channel?.thumbnails.best).toStartWith("https://yt3.ggpht.com");
+		commonChannelTest(video.channel!, { ignoreVideoCount: true });
 		expect(typeof video.uploadDate).toBe("string");
-		expect(video.viewCount).toBeGreaterThan(680000000);
-		expect(video.likeCount).toBeGreaterThan(5200000);
-		expect(video.dislikeCount).toBeGreaterThan(190000);
+		expect(video.viewCount).toBeGreaterThan(8000000);
+		expect(video.likeCount).toBeGreaterThan(245000);
+		expect(video.dislikeCount).toBeGreaterThan(3500);
 		expect(video.isLiveContent).toBeFalse();
-		expect(video.tags.length).toBe(3);
+		expect(video.tags.length).toBe(1);
+		expect(video.tags[0]).toBe("#FramesWinGames");
 		expect(typeof video.upNext.id).toBe("string");
 		expect(video.related.length).toBeGreaterThan(0);
 	});
@@ -63,9 +58,5 @@ describe("Video", () => {
 	it("match ended live getVideo result", () => {
 		expect(endedLiveVideo.isLiveContent).toBeTrue();
 		expect(endedLiveVideo.duration).toBe(4842);
-	});
-
-	it("match undefined getVideo result", () => {
-		expect(incorrectVideo).toBeUndefined();
 	});
 });
