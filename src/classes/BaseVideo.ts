@@ -53,7 +53,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	/** Videos / playlists related to this video  */
 	related!: (VideoCompact | PlaylistCompact)[];
 
-	_relatedContinuation!: string | undefined;
+	private _relatedContinuation!: string | undefined;
 
 	/** @hidden */
 	constructor(video: Partial<BaseVideoAttributes> = {}) {
