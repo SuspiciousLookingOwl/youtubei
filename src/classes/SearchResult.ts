@@ -35,6 +35,9 @@ export type SearchResultType<T> = T extends { type: "video" }
  */
 @extendsBuiltIn()
 export default class SearchResult<T> extends Array<SearchResultType<T>> {
+	/** The estimated search result count */
+	estimatedResults!: number;
+
 	private client!: Client;
 	private _continuation!: string;
 
@@ -60,10 +63,15 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
 		});
 
-		this.loadSearchResult(
-			response.data.contents.twoColumnSearchResultsRenderer.primaryContents
-				.sectionListRenderer.contents
-		);
+		this.estimatedResults = +response.data.estimatedResults;
+
+		if (this.estimatedResults > 0) {
+			this.loadSearchResult(
+				response.data.contents.twoColumnSearchResultsRenderer.primaryContents
+					.sectionListRenderer.contents
+			);
+		}
+
 		return this;
 	}
 
