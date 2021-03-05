@@ -91,15 +91,15 @@ export default class Video extends BaseVideo implements VideoAttributes {
 
 			// Send request
 			const response = await this.client.http.post(COMMENT_END_POINT, {
-				data: { session_token: this._commentContinuation.xsrfToken },
-				headers: { "content-type": "application/x-www-form-urlencoded" },
-				params: {
+				data: {
+					session_token: this._commentContinuation.xsrfToken,
 					action_get_comments: "1",
 					pbj: "1",
 					ctoken: this._commentContinuation.token,
 					continuation: this._commentContinuation.token,
 					itct: this._commentContinuation.itct,
 				},
+				headers: { "content-type": "application/x-www-form-urlencoded" },
 			});
 
 			const {
