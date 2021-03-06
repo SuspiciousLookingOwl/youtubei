@@ -112,9 +112,8 @@ export default class Comment extends Base implements CommentAttributes {
 
 			// Send request
 			const response = await this.client.http.post(COMMENT_END_POINT, {
-				data: { session_token: this._replyContinuation.xsrfToken },
-				headers: { "content-type": "application/x-www-form-urlencoded" },
-				params: {
+				data: {
+					session_token: this._replyContinuation.xsrfToken,
 					action_get_comment_replies: "1",
 					pbj: "1",
 					ctoken: this._replyContinuation.token,
@@ -122,6 +121,7 @@ export default class Comment extends Base implements CommentAttributes {
 					itct: this._replyContinuation?.itct,
 					type: "next",
 				},
+				headers: { "content-type": "application/x-www-form-urlencoded" },
 			});
 
 			const {
