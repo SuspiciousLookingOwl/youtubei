@@ -65,6 +65,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 
 	/**
 	 * Load next 20 comments of the video, and push the loaded comments to {@link Video.comments}
+	 * You can only load up to 2000 comments from a video, this is due to the limitation from Youtube
 	 *
 	 * @example
 	 * ```js
