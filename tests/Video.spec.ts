@@ -30,7 +30,6 @@ describe("Video", () => {
 		expect(video.isLiveContent).toBeFalse();
 		expect(video.tags.length).toBe(1);
 		expect(video.tags[0]).toBe("#FramesWinGames");
-		expect(typeof video.upNext!.id).toBe("string");
 		expect(video.related.length).toBeGreaterThan(0);
 	});
 
