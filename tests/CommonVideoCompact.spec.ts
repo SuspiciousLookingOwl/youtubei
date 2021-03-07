@@ -16,7 +16,7 @@ export const commonVideoCompactTest = (
 	expect(video.title).toBe("Kubernetes Explained in 100 Seconds");
 	expect(video.thumbnails.best).toStartWith("https://i.ytimg.com/");
 	expect(video.duration).toBeGreaterThan(126);
-	expect(video.isLiveContent).toBe(false);
+	expect(video.isLive).toBe(false);
 	expect(video.isPrivateOrDeleted).toBe(false);
 	commonChannelTest(video.channel!, { ignoreVideoCount: ignoreChannelVideoCount });
 	if (!ignoreUploadDate) expect(typeof video.uploadDate).toBe("string");
