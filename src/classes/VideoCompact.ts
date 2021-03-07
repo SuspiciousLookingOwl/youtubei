@@ -6,7 +6,7 @@ interface VideoCompactAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
 	duration: number | null;
-	isLiveContent: boolean;
+	isLive: boolean;
 	channel?: Channel;
 	uploadDate?: string;
 	viewCount?: number | null;
@@ -20,8 +20,8 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	thumbnails!: Thumbnails;
 	/** The duration of this video in second, null if the video is live */
 	duration!: number | null;
-	/** Whether this video is a live content or not */
-	isLiveContent!: boolean;
+	/** Whether this video is a live now or not */
+	isLive!: boolean;
 	/** The channel who uploads this video */
 	channel?: Channel;
 	/** The date this video is uploaded at */
@@ -71,9 +71,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 					""
 			) || null;
 
-		this.isLiveContent = !!(
-			badges?.[0].metadataBadgeRenderer.style === "BADGE_STYLE_TYPE_LIVE_NOW"
-		);
+		this.isLive = !!(badges?.[0].metadataBadgeRenderer.style === "BADGE_STYLE_TYPE_LIVE_NOW");
 
 		// Channel
 		if (ownerText || shortBylineText) {
@@ -102,6 +100,6 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	 * ```
 	 */
 	async getVideo(): Promise<Video | LiveVideo> {
-		return (await this.client.getVideo(this.id)) as Video | LiveVideo;
+		return await this.client.getVideo(this.id);
 	}
 }
