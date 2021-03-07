@@ -85,16 +85,16 @@ export default class Client {
 	}
 
 	/** Get video information by video id or URL */
-	async getVideo(videoIdOrUrl: string): Promise<Video | LiveVideo | undefined> {
+	async getVideo<T extends Video | LiveVideo | undefined>(videoIdOrUrl: string): Promise<T> {
 		const videoId = getQueryParameter(videoIdOrUrl, "v");
 
 		const response = await this.http.get(`${WATCH_END_POINT}`, {
 			params: { v: videoId, pbj: "1" },
 		});
 
-		if (!response.data[3].response.contents) return undefined;
-		return !response.data[2].playerResponse.playabilityStatus.liveStreamability
+		if (!response.data[3].response.contents) return undefined as T;
+		return (!response.data[2].playerResponse.playabilityStatus.liveStreamability
 			? new Video({ client: this }).load(response.data)
-			: new LiveVideo({ client: this }).load(response.data);
+			: new LiveVideo({ client: this }).load(response.data)) as T;
 	}
 }
