@@ -13,6 +13,6 @@ describe("Chat", () => {
 		expect(reply.isAuthorChannelOwner).toBeFalse();
 		expect(reply.author.id).toBe("UC6JbD_MR9t0-riw1j4ZuE9Q");
 		expect(reply.author.name).toBe("LongJourneys");
-		expect(reply.author.thumbnails.length).toBe(3);
+		expect(reply.author.thumbnails?.length).toBe(3);
 	});
 });
