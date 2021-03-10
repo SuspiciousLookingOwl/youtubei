@@ -5,7 +5,7 @@ import { I_END_POINT } from "../constants";
 /** @hidden */
 interface ChannelAttributes extends BaseAttributes {
 	name: string;
-	thumbnails: Thumbnails;
+	thumbnails?: Thumbnails;
 	videoCount?: number;
 }
 
@@ -14,7 +14,7 @@ export default class Channel extends Base implements ChannelAttributes {
 	/** The channel's name */
 	name!: string;
 	/** Thumbnails of the Channel with different sizes */
-	thumbnails!: Thumbnails;
+	thumbnails?: Thumbnails;
 	/** How many video does this channel have */
 	videoCount?: number;
 	/** Loaded videos on the channel, fetched from `channel.nextVideos()` */
