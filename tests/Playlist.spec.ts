@@ -20,7 +20,7 @@ describe("Playlist", () => {
 		expect(playlist.videoCount).toBeGreaterThan(5000);
 		expect(typeof playlist.viewCount).toBe("number");
 		expect(typeof playlist.lastUpdatedAt).toBe("string");
-		commonChannelTest(playlist.channel!, { ignoreVideoCount: true });
+		commonChannelTest(playlist.channel!, { ignoreVideoCount: true, ignoreThumbnails: true });
 		expect(playlist.videos.length).toBe(100);
 	});
 
@@ -35,6 +35,9 @@ describe("Playlist", () => {
 		newVideos = await playlist.next(2);
 		expect(newVideos.length).toBe(200);
 		expect(playlist.videos.length).toBe(400);
-		commonChannelTest(playlist.videos[0].channel!, { ignoreVideoCount: true });
+		commonChannelTest(playlist.videos[0].channel!, {
+			ignoreVideoCount: true,
+			ignoreThumbnails: true,
+		});
 	});
 });
