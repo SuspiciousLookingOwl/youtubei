@@ -135,7 +135,6 @@ export default class Playlist extends Base implements PlaylistAttributes {
 		for (const videoRenderer of videosRenderer) {
 			if (!videoRenderer) continue;
 			const video = new VideoCompact({ client: playlist.client }).load(videoRenderer);
-			video.channel = playlist.channel;
 			videos.push(video);
 		}
 		return videos;
