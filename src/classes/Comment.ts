@@ -101,7 +101,7 @@ export default class Comment extends Base implements CommentAttributes {
 
 	/** URL to the video with this comment being highlighted (appears on top of the comment section) */
 	get url(): string {
-		return `https://www.youtube.com?watch=${this.video.id}&lc=${this.id}`;
+		return `https://www.youtube.com/watch?v=${this.video.id}&lc=${this.id}`;
 	}
 
 	/** Load next replies of the comment */
