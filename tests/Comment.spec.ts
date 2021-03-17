@@ -8,6 +8,6 @@ describe("Comment", () => {
 			video: new Video({ id: "videoId" }),
 		});
 
-		expect(comment.url).toBe("https://www.youtube.com?watch=videoId&lc=commentId");
+		expect(comment.url).toBe("https://www.youtube.com/watch?v=videoId&lc=commentId");
 	});
 });
