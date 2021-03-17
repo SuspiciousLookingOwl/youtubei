@@ -1,4 +1,4 @@
-import { YoutubeRawData } from "../common";
+import { stripToInt, YoutubeRawData } from "../common";
 import { Base, PlaylistCompact, Thumbnails, VideoCompact, BaseAttributes } from ".";
 import { I_END_POINT } from "../constants";
 
@@ -49,7 +49,7 @@ export default class Channel extends Base implements ChannelAttributes {
 		this.id = channelId;
 		this.name = title.simpleText;
 		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
-		this.videoCount = +videoCountText?.runs[0].text.replace(/[^0-9]/g, "") ?? 0;
+		this.videoCount = stripToInt(videoCountText?.runs[0].text) || 0;
 		this.videos = [];
 		this.playlists = [];
 
