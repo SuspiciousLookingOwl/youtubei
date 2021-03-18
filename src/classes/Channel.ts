@@ -7,6 +7,7 @@ interface ChannelAttributes extends BaseAttributes {
 	name: string;
 	thumbnails?: Thumbnails;
 	videoCount?: number;
+	subscriberCount?: string;
 }
 
 /**  Represents a Youtube Channel */
@@ -17,6 +18,12 @@ export default class Channel extends Base implements ChannelAttributes {
 	thumbnails?: Thumbnails;
 	/** How many video does this channel have */
 	videoCount?: number;
+	/**
+	 * How many subscriber does this channel have,
+	 *
+	 * This is not the exact amount, but a literal string like `"1.95M subscribers"`
+	 */
+	subscriberCount?: string;
 	/** Loaded videos on the channel, fetched from `channel.nextVideos()` */
 	videos!: VideoCompact[];
 	/** Loaded playlists on the channel, fetched from `channel.nextPlaylists()` */
@@ -44,12 +51,13 @@ export default class Channel extends Base implements ChannelAttributes {
 	 * @hidden
 	 */
 	load(data: YoutubeRawData): Channel {
-		const { channelId, title, thumbnail, videoCountText } = data;
+		const { channelId, title, thumbnail, videoCountText, subscriberCountText } = data;
 
 		this.id = channelId;
 		this.name = title.simpleText;
 		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
 		this.videoCount = stripToInt(videoCountText?.runs[0].text) || 0;
+		this.subscriberCount = subscriberCountText?.simpleText;
 		this.videos = [];
 		this.playlists = [];
 
