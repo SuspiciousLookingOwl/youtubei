@@ -47,7 +47,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 		// Comment Continuation Token
 		this.comments = [];
 		const continuation =
-			contents[contents.length - 1]?.itemSectionRenderer.continuations?.[0]
+			contents[contents.length - 1]?.itemSectionRenderer?.continuations?.[0]
 				.nextContinuationData;
 		if (continuation) {
 			this._commentContinuation = {

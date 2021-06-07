@@ -88,14 +88,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 
 		// Like Count and Dislike Count
 		const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
-		this.likeCount = stripToInt(
-			topLevelButtons[0].toggleButtonRenderer.defaultText.accessibility?.accessibilityData
-				.label
-		);
-		this.dislikeCount = stripToInt(
-			topLevelButtons[1].toggleButtonRenderer.defaultText.accessibility?.accessibilityData
-				.label
-		);
+		this.likeCount = stripToInt(BaseVideo.parseButtonRenderer(topLevelButtons[0]));
+		this.dislikeCount = stripToInt(BaseVideo.parseButtonRenderer(topLevelButtons[1]));
 
 		// Tags and description
 		this.tags =
@@ -180,5 +174,13 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		} else if ("compactRadioRenderer" in data) {
 			return new PlaylistCompact({ client }).load(data.compactRadioRenderer);
 		}
+	}
+
+	private static parseButtonRenderer(data: YoutubeRawData) {
+		const buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+		const accessibilityData = (
+			buttonRenderer.defaultText?.accessibility || buttonRenderer.accessibilityData
+		).accessibilityData;
+		return accessibilityData.label;
 	}
 }
