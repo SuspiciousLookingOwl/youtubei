@@ -111,15 +111,20 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
 				.results;
 
-		const upNext =
-			secondaryContents.find((s: YoutubeRawData) => "compactAutoplayRenderer" in s)
-				?.compactAutoplayRenderer.contents[0] || null;
+		if (secondaryContents) {
+			const upNext =
+				secondaryContents.find((s: YoutubeRawData) => "compactAutoplayRenderer" in s)
+					?.compactAutoplayRenderer.contents[0] || null;
 
-		this.upNext = upNext ? BaseVideo.parseCompactRenderer(upNext, this.client)! : upNext;
-		this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
+			this.upNext = upNext ? BaseVideo.parseCompactRenderer(upNext, this.client)! : upNext;
+			this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
 
-		// Related continuation
-		this._relatedContinuation = getContinuationFromContents(secondaryContents);
+			// Related continuation
+			this._relatedContinuation = getContinuationFromContents(secondaryContents);
+		} else {
+			this.upNext = null;
+			this.related = [];
+		}
 
 		return this;
 	}
