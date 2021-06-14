@@ -24,6 +24,7 @@ export default class HTTP {
 	private _cookie: string;
 	private _hl: string;
 	private _gl: string;
+	private _localAddress: string;
 
 	constructor(client: Client) {
 		const { hl, cookie, gl, localAddress } = client.options;
