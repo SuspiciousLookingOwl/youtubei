@@ -36,7 +36,6 @@ export default class Client {
 			hl: "en",
 			gl: "US",
 			cookie: "",
-			localAddress: null,
 			...options,
 		};
 		this.http = new HTTP(this);
