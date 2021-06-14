@@ -20,7 +20,7 @@ export namespace Client {
 		/** 2-chars country code  */
 		gl: string;
 		/** Local address for sending the request  */
-		localAddress: string;
+		localAddress?: string;
 	};
 }
 
