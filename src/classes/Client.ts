@@ -19,6 +19,8 @@ export namespace Client {
 		hl: string;
 		/** 2-chars country code  */
 		gl: string;
+		/** Local address for sending the request  */
+		localAddress: string;
 	};
 }
 
@@ -34,6 +36,7 @@ export default class Client {
 			hl: "en",
 			gl: "US",
 			cookie: "",
+			localAddress: null,
 			...options,
 		};
 		this.http = new HTTP(this);
