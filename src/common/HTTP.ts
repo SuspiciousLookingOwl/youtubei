@@ -26,10 +26,11 @@ export default class HTTP {
 	private _gl: string;
 
 	constructor(client: Client) {
-		const { hl, cookie, gl } = client.options;
+		const { hl, cookie, gl, localAddress } = client.options;
 		this._cookie = cookie;
 		this._hl = hl;
 		this._gl = gl;
+		this._localAddress = localAddress;
 	}
 
 	/** Send GET request to Youtube */
@@ -74,6 +75,7 @@ export default class HTTP {
 			const options = {
 				hostname: BASE_URL,
 				port: 443,
+				localAddress: this._localAddress,
 				...partialOptions,
 				path: `${partialOptions.path}?${qs.stringify(partialOptions.params)}`,
 				headers: {
