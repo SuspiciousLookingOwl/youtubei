@@ -3,6 +3,7 @@ import { getQueryParameter, HTTP } from "../common";
 
 import { Playlist, Video, SearchResult, LiveVideo } from ".";
 import { SearchResultType } from "./SearchResult";
+import { RequestOptions } from "https";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Client {
@@ -19,6 +20,8 @@ export namespace Client {
 		hl: string;
 		/** 2-chars country code  */
 		gl: string;
+		/** Optional options for http client */
+		httpOptions: Partial<RequestOptions>;
 	};
 }
 
@@ -34,9 +37,10 @@ export default class Client {
 			hl: "en",
 			gl: "US",
 			cookie: "",
+			httpOptions: {},
 			...options,
 		};
-		this.http = new HTTP(this);
+		this.http = new HTTP(this, options.httpOptions);
 	}
 
 	/**
