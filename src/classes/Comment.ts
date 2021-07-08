@@ -60,7 +60,7 @@ export default class Comment extends Base implements CommentAttributes {
 			contentText,
 			publishedTimeText,
 			commentId,
-			likeCount,
+			voteCount,
 			authorIsChannelOwner,
 			pinnedCommentBadge,
 			replyCount,
@@ -70,7 +70,7 @@ export default class Comment extends Base implements CommentAttributes {
 		this.id = commentId;
 		this.content = contentText.runs.map((r: YoutubeRawData) => r.text).join("");
 		this.publishDate = publishedTimeText.runs.shift().text;
-		this.likeCount = likeCount;
+		this.likeCount = +(voteCount?.simpleText || 0);
 		this.isAuthorChannelOwner = authorIsChannelOwner;
 		this.isPinnedComment = !!pinnedCommentBadge;
 		this.replyCount = replyCount;
