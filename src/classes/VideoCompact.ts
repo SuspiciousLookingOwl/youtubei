@@ -59,6 +59,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 			viewCountText,
 			badges,
 			thumbnailOverlays,
+			channelThumbnailSupportedRenderers,
 			detailedMetadataSnippets,
 		} = data;
 
@@ -86,9 +87,14 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 				ownerText || shortBylineText
 			).runs[0].navigationEndpoint.browseEndpoint;
 
+			const thumbnails =
+				channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
+					.thumbnails;
+
 			this.channel = new Channel({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
+				thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
 				client: this.client,
 			});
 		}
