@@ -66,9 +66,10 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 		this.title = title.simpleText || title.runs[0]?.text;
 		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
 		this.uploadDate = publishedTimeText?.simpleText;
-		this.description = detailedMetadataSnippets[0].snippetText.runs
-			.map((r: YoutubeRawData) => r.text)
-			.join("");
+		this.description =
+			detailedMetadataSnippets?.[0].snippetText.runs
+				.map((r: YoutubeRawData) => r.text)
+				.join("") || "";
 
 		this.duration =
 			getDuration(
