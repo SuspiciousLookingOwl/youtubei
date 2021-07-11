@@ -18,6 +18,8 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	title!: string;
 	/** Thumbnails of the video with different sizes */
 	thumbnails!: Thumbnails;
+	/** Description of the video (not a full description, rather a preview / snippet) */
+	description!: string;
 	/** The duration of this video in second, null if the video is live */
 	duration!: number | null;
 	/** Whether this video is a live now or not */
@@ -57,12 +59,16 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 			viewCountText,
 			badges,
 			thumbnailOverlays,
+			detailedMetadataSnippets,
 		} = data;
 
 		this.id = videoId;
 		this.title = title.simpleText || title.runs[0]?.text;
 		this.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
 		this.uploadDate = publishedTimeText?.simpleText;
+		this.description = detailedMetadataSnippets[0].snippetText.runs
+			.map((r: YoutubeRawData) => r.text)
+			.join("");
 
 		this.duration =
 			getDuration(
