@@ -22,6 +22,8 @@ export namespace Client {
 		gl: string;
 		/** Optional options for http client */
 		httpOptions: Partial<RequestOptions>;
+		/** Use Node `https` module, set false to use `http` */
+		https: boolean;
 	};
 }
 
@@ -37,6 +39,7 @@ export default class Client {
 			hl: "en",
 			gl: "US",
 			cookie: "",
+			https: true,
 			httpOptions: {},
 			...options,
 		};

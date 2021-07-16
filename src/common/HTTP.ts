@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import https from "https";
+import http from "http";
 import { IncomingHttpHeaders } from "http";
 import zlib from "zlib";
 import qs from "querystring";
@@ -21,13 +22,15 @@ interface Response<T = any> {
 }
 
 export default class HTTP {
+	private _httpClient: typeof https | typeof http;
 	private _cookie: string;
 	private _hl: string;
 	private _gl: string;
 	private _defaultOptions: Partial<https.RequestOptions>;
 
 	constructor(client: Client, defaultOptions: Partial<https.RequestOptions> = {}) {
-		const { hl, cookie, gl } = client.options;
+		const { hl, cookie, gl, https: useHttps } = client.options;
+		this._httpClient = useHttps ? https : http;
 		this._cookie = cookie;
 		this._hl = hl;
 		this._gl = gl;
@@ -98,7 +101,7 @@ export default class HTTP {
 				}
 			}
 
-			const request = https.request(options, (res) => {
+			const request = this._httpClient.request(options, (res) => {
 				if (res.headers["set-cookie"]?.length)
 					this._cookie = `${this._cookie} ${res.headers["set-cookie"]
 						?.map((c) => c.split(";").shift())
