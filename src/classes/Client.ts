@@ -87,7 +87,9 @@ export default class Client {
 			data: { browseId: `VL${playlistId}` },
 		});
 
-		if (response.data.error || response.data.alerts) return undefined;
+		if (response.data.error || response.data.alerts?.shift()?.alertRenderer?.type === "ERROR") {
+			return undefined;
+		}
 		return new Playlist({ client: this }).load(response.data);
 	}
 
