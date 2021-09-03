@@ -1,10 +1,10 @@
-import { Base, Channel, Video, BaseAttributes } from ".";
+import { Base, ChannelCompact, Video, BaseAttributes } from ".";
 import { YoutubeRawData } from "../common";
 
 /** @hidden */
 interface ChatAttributes extends BaseAttributes {
 	video: Video;
-	author: Channel;
+	author: ChannelCompact;
 	message: string;
 	timestamp: number;
 }
@@ -14,7 +14,7 @@ export default class Chat extends Base implements ChatAttributes {
 	/** The video this chat belongs to */
 	video!: Video;
 	/** The chat's author */
-	author!: Channel;
+	author!: ChannelCompact;
 	/** The message of this chat */
 	message!: string;
 	/** Timestamp in usec / microsecond */
@@ -44,7 +44,7 @@ export default class Chat extends Base implements ChatAttributes {
 		// Basic information
 		this.id = id;
 		this.message = message.runs.map((r: YoutubeRawData) => r.text).join("");
-		this.author = new Channel({
+		this.author = new ChannelCompact({
 			id: authorExternalChannelId,
 			name: authorName.simpleText,
 			thumbnails: authorPhoto.thumbnails,

@@ -1,18 +1,18 @@
-import { Channel, Client } from "../src";
+import { ChannelCompact, Client } from "../src";
 import "jest-extended";
-import { commonChannelTest } from "./CommonChannel.spec";
+import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
 
 const youtube = new Client();
 
-describe("Channel", () => {
-	let channel: Channel;
+describe("ChannelCompact", () => {
+	let channel: ChannelCompact;
 
 	beforeAll(async () => {
-		channel = (await youtube.findOne("Linus Tech Tips", { type: "channel" })) as Channel;
+		channel = (await youtube.findOne("Linus Tech Tips", { type: "channel" })) as ChannelCompact;
 	});
 
 	it("match channel from search result", () => {
-		commonChannelTest(channel);
+		commonChannelCompactTest(channel);
 	});
 
 	it("load videos", async () => {

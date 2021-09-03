@@ -4,6 +4,7 @@ export { default as BaseVideo, BaseVideoAttributes } from "./BaseVideo";
 export { default as VideoCompact } from "./VideoCompact";
 export { default as Thumbnails } from "./Thumbnails";
 export { default as Channel } from "./Channel";
+export { default as ChannelCompact } from "./ChannelCompact";
 export { default as Comment } from "./Comment";
 export { default as Reply } from "./Reply";
 export { default as Chat } from "./Chat";

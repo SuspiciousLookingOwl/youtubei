@@ -1,15 +1,15 @@
 import { I_END_POINT } from "../constants";
 import { extendsBuiltIn, YoutubeRawData } from "../common";
-import { Channel, PlaylistCompact, VideoCompact, ClientTypes, Client } from ".";
+import { ChannelCompact, PlaylistCompact, VideoCompact, ClientTypes, Client } from ".";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export type SearchResultType<T> = T extends { type: "video" }
 	? VideoCompact
 	: T extends { type: "channel" }
-	? Channel
+	? ChannelCompact
 	: T extends { type: "playlist" }
 	? PlaylistCompact
-	: VideoCompact | Channel | PlaylistCompact;
+	: VideoCompact | ChannelCompact | PlaylistCompact;
 /**
  * Represents search result, usually returned from `client.search();`.
  *
@@ -130,7 +130,9 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 					new VideoCompact({ client: this.client }).load(content.videoRenderer)
 				);
 			else if ("channelRenderer" in content)
-				newContent.push(new Channel({ client: this.client }).load(content.channelRenderer));
+				newContent.push(
+					new ChannelCompact({ client: this.client }).load(content.channelRenderer)
+				);
 		}
 
 		this.push(...(newContent as Array<SearchResultType<T>>));

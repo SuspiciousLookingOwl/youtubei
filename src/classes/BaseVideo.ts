@@ -1,7 +1,7 @@
 import {
 	PlaylistCompact,
 	VideoCompact,
-	Channel,
+	ChannelCompact,
 	Base,
 	BaseAttributes,
 	Thumbnails,
@@ -15,7 +15,7 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
 	description: string;
-	channel: Channel;
+	channel: ChannelCompact;
 	uploadDate: string;
 	viewCount: number | null;
 	likeCount: number | null;
@@ -35,7 +35,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	/** The description of this video */
 	description!: string;
 	/** The channel that uploaded this video */
-	channel!: Channel;
+	channel!: ChannelCompact;
 	/** The date this video is uploaded at */
 	uploadDate!: string;
 	/** How many view does this video have, null if the view count is hidden */
@@ -79,7 +79,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 
 		// Channel
 		const { title, thumbnail } = videoInfo.owner.videoOwnerRenderer;
-		this.channel = new Channel({
+		this.channel = new ChannelCompact({
 			client: this.client,
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,

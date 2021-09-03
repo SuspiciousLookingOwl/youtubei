@@ -1,4 +1,4 @@
-import { Thumbnails, BaseAttributes, VideoCompact, Channel, Base } from ".";
+import { Thumbnails, BaseAttributes, VideoCompact, ChannelCompact, Base } from ".";
 import { getContinuationFromContents, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
@@ -8,7 +8,7 @@ interface PlaylistAttributes extends BaseAttributes {
 	videoCount: number;
 	viewCount: number;
 	lastUpdatedAt: string;
-	channel?: Channel;
+	channel?: ChannelCompact;
 	videos: VideoCompact[];
 }
 
@@ -23,7 +23,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	/** Last time this playlist is updated */
 	lastUpdatedAt!: string;
 	/** The channel that made this playlist */
-	channel?: Channel;
+	channel?: ChannelCompact;
 	/** Videos in the playlist */
 	videos!: VideoCompact[];
 
@@ -70,7 +70,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
 		if (videoOwner) {
 			const { title, thumbnail } = videoOwner.videoOwnerRenderer;
-			this.channel = new Channel({
+			this.channel = new ChannelCompact({
 				id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 				name: title.runs[0].text,
 				thumbnails: new Thumbnails().load(thumbnail.thumbnails),

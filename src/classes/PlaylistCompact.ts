@@ -1,12 +1,11 @@
-import { Thumbnails, BaseAttributes, Base, Playlist } from ".";
+import { Thumbnails, BaseAttributes, Base, Playlist, ChannelCompact } from ".";
 import { stripToInt, YoutubeRawData } from "../common";
-import Channel from "./Channel";
 
 /** @hidden */
 interface PlaylistCompactAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
-	channel?: Channel;
+	channel?: ChannelCompact;
 	videoCount: number;
 }
 
@@ -17,7 +16,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 	/** Thumbnails of the playlist with different sizes */
 	thumbnails!: Thumbnails;
 	/** The channel that made this playlist */
-	channel?: Channel;
+	channel?: ChannelCompact;
 	/** How many videos in this playlist */
 	videoCount!: number;
 
@@ -54,7 +53,7 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 		// Channel
 		if (shortBylineText && shortBylineText.simpleText !== "YouTube") {
 			const shortByLine = shortBylineText.runs[0];
-			this.channel = new Channel({
+			this.channel = new ChannelCompact({
 				id: shortByLine.navigationEndpoint.browseEndpoint.browseId,
 				name: shortByLine.text,
 				client: this.client,

@@ -1,11 +1,11 @@
-import { Base, Channel, Thumbnails, Video, BaseAttributes, Reply } from ".";
+import { Base, ChannelCompact, Thumbnails, Video, BaseAttributes, Reply } from ".";
 import { YoutubeRawData } from "../common";
 import { COMMENT_END_POINT } from "../constants";
 
 /** @hidden */
 interface CommentAttributes extends BaseAttributes {
 	video: Video;
-	author: Channel;
+	author: ChannelCompact;
 	content: string;
 	publishDate: string;
 	likeCount: number;
@@ -19,7 +19,7 @@ export default class Comment extends Base implements CommentAttributes {
 	/** The video this comment belongs to */
 	video!: Video;
 	/** The comment's author */
-	author!: Channel;
+	author!: ChannelCompact;
 	/** The content of this comment */
 	content!: string;
 	/** The publish date of the comment */
@@ -89,7 +89,7 @@ export default class Comment extends Base implements CommentAttributes {
 
 		// Author
 		const { browseId } = authorEndpoint.browseEndpoint;
-		this.author = new Channel({
+		this.author = new ChannelCompact({
 			id: browseId,
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),

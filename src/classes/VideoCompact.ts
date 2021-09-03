@@ -1,5 +1,5 @@
 import { getDuration, stripToInt, YoutubeRawData } from "../common";
-import { Base, Channel, Thumbnails, BaseAttributes, Video, LiveVideo } from ".";
+import { Base, ChannelCompact, Thumbnails, BaseAttributes, Video, LiveVideo } from ".";
 
 /** @hidden */
 interface VideoCompactAttributes extends BaseAttributes {
@@ -7,7 +7,7 @@ interface VideoCompactAttributes extends BaseAttributes {
 	thumbnails: Thumbnails;
 	duration: number | null;
 	isLive: boolean;
-	channel?: Channel;
+	channel?: ChannelCompact;
 	uploadDate?: string;
 	viewCount?: number | null;
 }
@@ -25,7 +25,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 	/** Whether this video is a live now or not */
 	isLive!: boolean;
 	/** The channel who uploads this video */
-	channel?: Channel;
+	channel?: ChannelCompact;
 	/** The date this video is uploaded at */
 	uploadDate?: string;
 	/** How many view does this video have, null if the view count is hidden */
@@ -91,7 +91,7 @@ export default class VideoCompact extends Base implements VideoCompactAttributes
 				channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
 					.thumbnails;
 
-			this.channel = new Channel({
+			this.channel = new ChannelCompact({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
 				thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
