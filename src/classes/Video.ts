@@ -1,6 +1,6 @@
 import { BaseVideo, BaseVideoAttributes, Comment } from ".";
-import { YoutubeRawData } from "../common";
-import { COMMENT_END_POINT } from "../constants";
+import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../common";
+import { I_END_POINT } from "../constants";
 
 /** @hidden */
 interface VideoAttributes extends BaseVideoAttributes {
@@ -20,11 +20,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	comments!: Comment[];
 
 	/** @hidden */
-	_commentContinuation?: {
-		token?: string;
-		itct?: string;
-		xsrfToken?: string;
-	};
+	_commentContinuation?: string;
 
 	/** @hidden */
 	constructor(video: Partial<VideoAttributes> = {}) {
@@ -40,25 +36,16 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	load(data: YoutubeRawData): Video {
 		super.load(data);
 
-		const contents =
-			data[3].response.contents.twoColumnWatchNextResults.results.results.contents;
-		const videoInfo = BaseVideo.parseRawData(data);
-
-		// Comment Continuation Token
 		this.comments = [];
-		const continuation =
-			contents[contents.length - 1]?.itemSectionRenderer?.continuations?.[0]
-				.nextContinuationData;
-		if (continuation) {
-			this._commentContinuation = {
-				token: continuation.continuation,
-				itct: continuation.clickTrackingParams,
-				xsrfToken: data[3].xsrf_token,
-			};
-		}
 
 		// Duration
+		const videoInfo = BaseVideo.parseRawData(data);
 		this.duration = +videoInfo.videoDetails.lengthSeconds;
+
+		this._commentContinuation = getContinuationFromItems(
+			data[3].response.contents.twoColumnWatchNextResults.results.results.contents[2]
+				.itemSectionRenderer.contents
+		);
 
 		return this;
 	}
@@ -90,36 +77,24 @@ export default class Video extends BaseVideo implements VideoAttributes {
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this._commentContinuation) break;
 
-			// Send request
-			const response = await this.client.http.post(COMMENT_END_POINT, {
-				data: {
-					session_token: this._commentContinuation.xsrfToken,
-					action_get_comments: "1",
-					pbj: "1",
-					ctoken: this._commentContinuation.token,
-					continuation: this._commentContinuation.token,
-					itct: this._commentContinuation.itct,
-				},
-				headers: { "content-type": "application/x-www-form-urlencoded" },
+			const response = await this.client.http.post(`${I_END_POINT}/next`, {
+				data: { continuation: this._commentContinuation },
 			});
 
-			const {
-				contents: comments,
-				continuations,
-			} = response.data.response.continuationContents.itemSectionContinuation;
+			const endpoints = response.data.onResponseReceivedEndpoints.pop();
 
-			const continuation = continuations?.pop().nextContinuationData;
-			this._commentContinuation = continuation
-				? {
-						token: continuation.continuation,
-						itct: continuation.clickTrackingParams,
-						xsrfToken: response.data.xsrf_token,
-				  }
-				: undefined;
+			const continuationItems = (
+				endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction
+			).continuationItems;
 
-			for (const comment of comments.map((c: YoutubeRawData) => c.commentThreadRenderer)) {
-				newComments.push(new Comment({ video: this, client: this.client }).load(comment));
-			}
+			this._commentContinuation = getContinuationFromItems(continuationItems);
+
+			const comments = mapFilter(continuationItems, "commentThreadRenderer");
+			newComments.push(
+				...comments.map((c: YoutubeRawData) =>
+					new Comment({ video: this, client: this.client }).load(c)
+				)
+			);
 		}
 		this.comments.push(...newComments);
 		return newComments;

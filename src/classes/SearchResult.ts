@@ -1,5 +1,5 @@
 import { I_END_POINT } from "../constants";
-import { extendsBuiltIn, YoutubeRawData } from "../common";
+import { extendsBuiltIn, getContinuationFromItems, YoutubeRawData } from "../common";
 import { ChannelCompact, PlaylistCompact, VideoCompact, ClientTypes, Client } from ".";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -39,7 +39,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	estimatedResults!: number;
 
 	private client!: Client;
-	private _continuation!: string;
+	private _continuation?: string;
 
 	/** @hidden */
 	constructor() {
@@ -113,11 +113,8 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 		const contents = sectionListContents
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
 			.pop().itemSectionRenderer.contents;
-		const continuationToken = sectionListContents
-			.filter((c: Record<string, unknown>) => "continuationItemRenderer" in c)
-			.pop().continuationItemRenderer?.continuationEndpoint?.continuationCommand.token;
 
-		this._continuation = continuationToken;
+		this._continuation = getContinuationFromItems(sectionListContents);
 		const newContent = [];
 
 		for (const content of contents) {

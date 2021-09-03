@@ -1,5 +1,5 @@
 import { Thumbnails, BaseAttributes, VideoCompact, ChannelCompact, Base } from ".";
-import { getContinuationFromContents, YoutubeRawData } from "../common";
+import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
@@ -64,7 +64,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				.playlistVideoListRenderer.contents;
 
 		// Video Continuation Token
-		this._continuation = getContinuationFromContents(playlistContents);
+		this._continuation = getContinuationFromItems(playlistContents);
 
 		// Channel
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
@@ -112,9 +112,15 @@ export default class Playlist extends Base implements PlaylistAttributes {
 			const playlistContents =
 				response.data.onResponseReceivedActions[0].appendContinuationItemsAction
 					.continuationItems;
-			newVideos.push(...Playlist.parseVideos(playlistContents, this));
 
-			this._continuation = getContinuationFromContents(playlistContents);
+			const videos = mapFilter(playlistContents, "playlistVideoRenderer");
+			newVideos.push(
+				...videos.map((video: YoutubeRawData) =>
+					new VideoCompact({ client: this.client }).load(video)
+				)
+			);
+
+			this._continuation = getContinuationFromItems(playlistContents);
 		}
 
 		this.videos.push(...newVideos);

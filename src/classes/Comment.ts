@@ -1,6 +1,6 @@
 import { Base, ChannelCompact, Thumbnails, Video, BaseAttributes, Reply } from ".";
-import { YoutubeRawData } from "../common";
-import { COMMENT_END_POINT } from "../constants";
+import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../common";
+import { I_END_POINT } from "../constants";
 
 /** @hidden */
 interface CommentAttributes extends BaseAttributes {
@@ -35,11 +35,7 @@ export default class Comment extends Base implements CommentAttributes {
 	/** Comment's loaded replies */
 	replies!: Reply[];
 
-	private _replyContinuation?: {
-		token?: string;
-		itct?: string;
-		xsrfToken?: string;
-	};
+	private _replyContinuation?: string;
 
 	/** @hidden */
 	constructor(comment: Partial<CommentAttributes> = {}) {
@@ -77,15 +73,10 @@ export default class Comment extends Base implements CommentAttributes {
 
 		// Reply Continuation
 		this.replies = [];
-		const continuation =
-			data.replies?.commentRepliesRenderer.continuations[0].nextContinuationData;
-		if (continuation) {
-			this._replyContinuation = {
-				token: continuation.continuation,
-				itct: continuation.clickTrackingParams,
-				xsrfToken: this.video._commentContinuation?.xsrfToken,
-			};
-		}
+
+		this._replyContinuation = data.replies
+			? getContinuationFromItems(data.replies.commentRepliesRenderer.contents)
+			: undefined;
 
 		// Author
 		const { browseId } = authorEndpoint.browseEndpoint;
@@ -111,40 +102,24 @@ export default class Comment extends Base implements CommentAttributes {
 			if (!this._replyContinuation) break;
 
 			// Send request
-			const response = await this.client.http.post(COMMENT_END_POINT, {
-				data: {
-					session_token: this._replyContinuation.xsrfToken,
-					action_get_comment_replies: "1",
-					pbj: "1",
-					ctoken: this._replyContinuation.token,
-					continuation: this._replyContinuation.token,
-					itct: this._replyContinuation?.itct,
-					type: "next",
-				},
-				headers: { "content-type": "application/x-www-form-urlencoded" },
+			const response = await this.client.http.post(`${I_END_POINT}/next`, {
+				data: { continuation: this._replyContinuation },
 			});
 
-			const {
-				contents: items,
-				continuations,
-			} = response.data[1].response.continuationContents.commentRepliesContinuation;
+			const continuationItems =
+				response.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
+					.continuationItems;
 
-			if (continuations?.length) {
-				const continuation = continuations.shift().nextContinuationData;
-				this._replyContinuation = {
-					token: continuation.continuation,
-					itct: continuation.clickTrackingParams,
-					xsrfToken: response.data[1].xsrf_token,
-				};
-			} else {
-				this._replyContinuation = undefined;
-			}
+			this._replyContinuation = getContinuationFromItems(continuationItems, [
+				"button",
+				"buttonRenderer",
+				"command",
+			]);
 
+			const replies = mapFilter(continuationItems, "commentRenderer");
 			newReplies.push(
-				...items.map((i: YoutubeRawData) =>
-					new Reply({ video: this.video, comment: this, client: this.client }).load(
-						i.commentRenderer
-					)
+				...replies.map((i: YoutubeRawData) =>
+					new Reply({ video: this.video, comment: this, client: this.client }).load(i)
 				)
 			);
 		}

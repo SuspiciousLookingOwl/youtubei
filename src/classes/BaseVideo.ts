@@ -7,7 +7,7 @@ import {
 	Thumbnails,
 	Client,
 } from ".";
-import { getContinuationFromContents, stripToInt, YoutubeRawData } from "../common";
+import { getContinuationFromItems, stripToInt, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 /** @hidden */
@@ -114,7 +114,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
 
 			// Related continuation
-			this._relatedContinuation = getContinuationFromContents(secondaryContents);
+			this._relatedContinuation = getContinuationFromItems(secondaryContents);
 		} else {
 			this.upNext = null;
 			this.related = [];
@@ -137,8 +137,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 				response.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
 					.continuationItems;
 
-			this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
-			this._relatedContinuation = getContinuationFromContents(secondaryContents);
+			newRelated.push(...BaseVideo.parseRelated(secondaryContents, this.client));
+			this._relatedContinuation = getContinuationFromItems(secondaryContents);
 		}
 
 		this.related.push(...newRelated);

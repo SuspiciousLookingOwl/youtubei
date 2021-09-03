@@ -1,4 +1,4 @@
-import { stripToInt, YoutubeRawData } from "../common";
+import { getContinuationFromItems, mapFilter, stripToInt, YoutubeRawData } from "../common";
 import { Base, PlaylistCompact, Thumbnails, VideoCompact, BaseAttributes } from ".";
 import { I_END_POINT } from "../constants";
 
@@ -91,14 +91,13 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 
 			const items = await this.getTabData("videos");
 
-			this._videoContinuation = ChannelCompact.getContinuationFromItems(items);
+			this._videoContinuation = getContinuationFromItems(items);
 
+			const videos = mapFilter(items, "gridVideoRenderer");
 			newVideos.push(
-				...items
-					.filter((i: YoutubeRawData) => i.gridVideoRenderer)
-					.map((i: YoutubeRawData) =>
-						new VideoCompact({ client: this.client }).load(i.gridVideoRenderer)
-					)
+				...videos.map((i: YoutubeRawData) =>
+					new VideoCompact({ client: this.client }).load(i)
+				)
 			);
 		}
 
@@ -132,14 +131,14 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 			if (this._playlistContinuation === undefined) break;
 
 			const items = await this.getTabData("playlists");
-			this._playlistContinuation = ChannelCompact.getContinuationFromItems(items);
+			this._playlistContinuation = getContinuationFromItems(items);
+
+			const playlists = mapFilter(items, "gridPlaylistRenderer");
 
 			newPlaylists.push(
-				...items
-					.filter((i: YoutubeRawData) => i.gridPlaylistRenderer)
-					.map((i: YoutubeRawData) =>
-						new PlaylistCompact({ client: this.client }).load(i.gridPlaylistRenderer)
-					)
+				...playlists.map((i: YoutubeRawData) =>
+					new PlaylistCompact({ client: this.client }).load(i)
+				)
 			);
 		}
 
@@ -172,11 +171,5 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 				.items ||
 			data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems
 		);
-	}
-
-	/** Get continuation token from items (if exists) */
-	private static getContinuationFromItems(items: YoutubeRawData): string | undefined {
-		return items[items.length - 1].continuationItemRenderer?.continuationEndpoint
-			.continuationCommand.token;
 	}
 }

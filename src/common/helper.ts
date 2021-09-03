@@ -31,10 +31,24 @@ export const stripToInt = (string: string): number | null => {
 	return +string.replace(/[^0-9]/g, "");
 };
 
-export const getContinuationFromContents = (data: YoutubeRawData[]): string | undefined => {
-	const lastSecondaryContent = data[data.length - 1];
-	return "continuationItemRenderer" in lastSecondaryContent
-		? lastSecondaryContent.continuationItemRenderer.continuationEndpoint.continuationCommand
-				.token
-		: undefined;
+export const getContinuationFromItems = (
+	items: YoutubeRawData,
+	accessors: string[] = ["continuationEndpoint"]
+): string | undefined => {
+	const continuation = items.pop();
+	const renderer = continuation?.continuationItemRenderer;
+	if (!renderer) return;
+
+	let current = renderer;
+	for (const accessor of accessors) {
+		current = current[accessor];
+	}
+
+	return current.continuationCommand.token;
+};
+
+export const mapFilter = (items: YoutubeRawData, key: string): YoutubeRawData => {
+	return items
+		.filter((item: YoutubeRawData) => item[key])
+		.map((item: YoutubeRawData) => item[key]);
 };
