@@ -42,10 +42,14 @@ export default class Video extends BaseVideo implements VideoAttributes {
 		const videoInfo = BaseVideo.parseRawData(data);
 		this.duration = +videoInfo.videoDetails.lengthSeconds;
 
-		this.commentContinuation = getContinuationFromItems(
-			data[3].response.contents.twoColumnWatchNextResults.results.results.contents[2]
-				.itemSectionRenderer.contents
-		);
+		if (data[3].response.contents.twoColumnWatchNextResults.results.results.contents[2]
+			.itemSectionRenderer
+		) {
+			this.commentContinuation = getContinuationFromItems(
+				data[3].response.contents.twoColumnWatchNextResults.results.results.contents[2]
+					.itemSectionRenderer.contents
+			);
+		}
 
 		return this;
 	}
