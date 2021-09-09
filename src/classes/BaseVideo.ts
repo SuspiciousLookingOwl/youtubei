@@ -24,6 +24,7 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	tags: string[];
 	upNext: VideoCompact | PlaylistCompact | null;
 	related: (VideoCompact | PlaylistCompact)[];
+	relatedContinuation?: string;
 }
 
 /** Represents a Video  */
@@ -51,9 +52,9 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	/** Next video / playlist recommended by Youtube */
 	upNext!: VideoCompact | PlaylistCompact | null;
 	/** Videos / playlists related to this video  */
-	related!: (VideoCompact | PlaylistCompact)[];
-
-	private _relatedContinuation!: string | undefined;
+	related: (VideoCompact | PlaylistCompact)[] = [];
+	/** Current continuation token to load next related content  */
+	relatedContinuation?: string;
 
 	/** @hidden */
 	constructor(video: Partial<BaseVideoAttributes> = {}) {
@@ -114,7 +115,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 			this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
 
 			// Related continuation
-			this._relatedContinuation = getContinuationFromItems(secondaryContents);
+			this.relatedContinuation = getContinuationFromItems(secondaryContents);
 		} else {
 			this.upNext = null;
 			this.related = [];
@@ -127,10 +128,10 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	async nextRelated(count = 1): Promise<(VideoCompact | PlaylistCompact)[]> {
 		const newRelated: (VideoCompact | PlaylistCompact)[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
-			if (this._relatedContinuation === undefined) break;
+			if (this.relatedContinuation === undefined) break;
 
 			const response = await this.client.http.post(`${I_END_POINT}/next`, {
-				data: { continuation: this._relatedContinuation },
+				data: { continuation: this.relatedContinuation },
 			});
 
 			const secondaryContents =
@@ -138,7 +139,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 					.continuationItems;
 
 			newRelated.push(...BaseVideo.parseRelated(secondaryContents, this.client));
-			this._relatedContinuation = getContinuationFromItems(secondaryContents);
+			this.relatedContinuation = getContinuationFromItems(secondaryContents);
 		}
 
 		this.related.push(...newRelated);

@@ -10,6 +10,7 @@ interface PlaylistAttributes extends BaseAttributes {
 	lastUpdatedAt: string;
 	channel?: ChannelCompact;
 	videos: VideoCompact[];
+	continuation?: string;
 }
 
 /** Represents a Playlist, usually returned from `client.getPlaylist()` */
@@ -25,9 +26,9 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	/** The channel that made this playlist */
 	channel?: ChannelCompact;
 	/** Videos in the playlist */
-	videos!: VideoCompact[];
-
-	private _continuation!: string | undefined;
+	videos: VideoCompact[] = [];
+	/** Current continuation token to load next videos  */
+	continuation!: string | undefined;
 
 	/** @hidden */
 	constructor(playlist: Partial<Playlist> = {}) {
@@ -64,7 +65,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				.playlistVideoListRenderer.contents;
 
 		// Video Continuation Token
-		this._continuation = getContinuationFromItems(playlistContents);
+		this.continuation = getContinuationFromItems(playlistContents);
 
 		// Channel
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
@@ -104,9 +105,9 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	async next(count = 1): Promise<VideoCompact[]> {
 		const newVideos: VideoCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
-			if (!this._continuation) break;
+			if (!this.continuation) break;
 			const response = await this.client.http.post(`${I_END_POINT}/browse`, {
-				data: { continuation: this._continuation },
+				data: { continuation: this.continuation },
 			});
 
 			const playlistContents =
@@ -120,7 +121,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 				)
 			);
 
-			this._continuation = getContinuationFromItems(playlistContents);
+			this.continuation = getContinuationFromItems(playlistContents);
 		}
 
 		this.videos.push(...newVideos);

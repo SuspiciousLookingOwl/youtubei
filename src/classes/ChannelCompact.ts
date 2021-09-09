@@ -8,6 +8,8 @@ export interface ChannelCompactAttributes extends BaseAttributes {
 	thumbnails?: Thumbnails;
 	videoCount?: number;
 	subscriberCount?: string;
+	videoContinuation?: string | null;
+	playlistContinuation?: string | null;
 }
 
 /**  Represents a Youtube Channel */
@@ -25,19 +27,18 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 	 */
 	subscriberCount?: string;
 	/** Loaded videos on the channel, fetched from `channel.nextVideos()` */
-	videos!: VideoCompact[];
+	videos: VideoCompact[] = [];
 	/** Loaded playlists on the channel, fetched from `channel.nextPlaylists()` */
-	playlists!: PlaylistCompact[];
-
-	private _videoContinuation?: string | null = null;
-	private _playlistContinuation?: string | null = null;
+	playlists: PlaylistCompact[] = [];
+	/** Current continuation token to load next videos */
+	videoContinuation?: string | null = null;
+	/** Current continuation token to load next playlists */
+	playlistContinuation?: string | null = null;
 
 	/** @hidden */
 	constructor(channel: Partial<ChannelCompactAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
-		this.videos = [];
-		this.playlists = [];
 	}
 
 	/** The URL of the channel page */
@@ -87,11 +88,11 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 	async nextVideos(count = 1): Promise<VideoCompact[]> {
 		const newVideos: VideoCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
-			if (this._videoContinuation === undefined) break;
+			if (this.videoContinuation === undefined) break;
 
 			const items = await this.getTabData("videos");
 
-			this._videoContinuation = getContinuationFromItems(items);
+			this.videoContinuation = getContinuationFromItems(items);
 
 			const videos = mapFilter(items, "gridVideoRenderer");
 			newVideos.push(
@@ -128,10 +129,10 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 	async nextPlaylists(count = 1): Promise<PlaylistCompact[]> {
 		const newPlaylists: PlaylistCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
-			if (this._playlistContinuation === undefined) break;
+			if (this.playlistContinuation === undefined) break;
 
 			const items = await this.getTabData("playlists");
-			this._playlistContinuation = getContinuationFromItems(items);
+			this.playlistContinuation = getContinuationFromItems(items);
 
 			const playlists = mapFilter(items, "gridPlaylistRenderer");
 
@@ -149,8 +150,7 @@ export default class ChannelCompact extends Base implements ChannelCompactAttrib
 	/** Get tab data from youtube */
 	private async getTabData(name: "videos" | "playlists") {
 		const params = name === "videos" ? "EgZ2aWRlb3M%3D" : "EglwbGF5bGlzdHMgAQ%3D%3D";
-		const continuation =
-			name === "videos" ? this._videoContinuation : this._playlistContinuation;
+		const continuation = name === "videos" ? this.videoContinuation : this.playlistContinuation;
 
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: this.id, params, continuation },

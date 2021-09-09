@@ -94,11 +94,7 @@ export default class HTTP {
 
 			let body = options.data || "";
 			if (options.data) {
-				if (options.headers["content-type"] === "application/x-www-form-urlencoded") {
-					body = qs.stringify(body);
-				} else if (options.headers["content-type"] === "application/json") {
-					body = JSON.stringify(body);
-				}
+				body = JSON.stringify(body);
 			}
 
 			const request = this._httpClient.request(options, (res) => {

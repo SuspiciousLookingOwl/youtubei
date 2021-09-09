@@ -3,11 +3,11 @@ import { extendsBuiltIn, getContinuationFromItems, YoutubeRawData } from "../com
 import { ChannelCompact, PlaylistCompact, VideoCompact, ClientTypes, Client } from ".";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export type SearchResultType<T> = T extends { type: "video" }
+export type SearchResultType<T> = T extends "video" | VideoCompact
 	? VideoCompact
-	: T extends { type: "channel" }
+	: T extends "channel" | ChannelCompact
 	? ChannelCompact
-	: T extends { type: "playlist" }
+	: T extends "playlist" | PlaylistCompact
 	? PlaylistCompact
 	: VideoCompact | ChannelCompact | PlaylistCompact;
 /**
@@ -37,13 +37,23 @@ export type SearchResultType<T> = T extends { type: "video" }
 export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	/** The estimated search result count */
 	estimatedResults!: number;
+	continuation?: string;
 
 	private client!: Client;
-	private _continuation?: string;
 
 	/** @hidden */
 	constructor() {
 		super();
+	}
+
+	/**
+	 * Load this instance
+	 *
+	 * @hidden
+	 */
+	load(client: Client): SearchResult<T> {
+		this.client = client;
+		return this;
 	}
 
 	/**
@@ -53,12 +63,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param options Search Options
 	 * @hidden
 	 */
-	async init(
-		client: Client,
-		query: string,
-		options: ClientTypes.SearchOptions
-	): Promise<SearchResult<T>> {
-		this.client = client;
+	async init(query: string, options: ClientTypes.SearchOptions): Promise<SearchResult<T>> {
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
 		});
@@ -93,9 +98,9 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	async next(count = 1): Promise<Array<SearchResultType<T>>> {
 		const newSearchResults = [];
 		for (let i = 0; i < count; i++) {
-			if (!this._continuation) break;
+			if (!this.continuation) break;
 			const response = await this.client.http.post(`${I_END_POINT}/search`, {
-				data: { continuation: this._continuation },
+				data: { continuation: this.continuation },
 			});
 			newSearchResults.push(
 				...this.loadSearchResult(
@@ -114,7 +119,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
 			.pop().itemSectionRenderer.contents;
 
-		this._continuation = getContinuationFromItems(sectionListContents);
+		this.continuation = getContinuationFromItems(sectionListContents);
 		const newContent = [];
 
 		for (const content of contents) {

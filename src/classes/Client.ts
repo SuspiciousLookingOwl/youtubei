@@ -56,14 +56,14 @@ export default class Client {
 	async search<T extends Client.SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
-	): Promise<SearchResult<T>> {
+	): Promise<SearchResult<T["type"]>> {
 		const options: Client.SearchOptions = {
 			type: "all",
 			...searchOptions,
 		};
 
-		const result = new SearchResult();
-		await result.init(this, query, options);
+		const result = new SearchResult().load(this);
+		await result.init(query, options);
 		return result;
 	}
 
@@ -75,7 +75,7 @@ export default class Client {
 	async findOne<T extends Client.SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
-	): Promise<SearchResultType<T> | undefined> {
+	): Promise<SearchResultType<T["type"]> | undefined> {
 		return (await this.search(query, searchOptions)).shift();
 	}
 

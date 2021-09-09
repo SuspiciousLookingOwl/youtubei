@@ -12,6 +12,7 @@ interface CommentAttributes extends BaseAttributes {
 	isAuthorChannelOwner: boolean;
 	isPinnedComment: boolean;
 	replyCount: number;
+	replyContinuation?: string;
 }
 
 /** Represents a Comment / Reply */
@@ -33,9 +34,9 @@ export default class Comment extends Base implements CommentAttributes {
 	/** Comment's reply count */
 	replyCount!: number;
 	/** Comment's loaded replies */
-	replies!: Reply[];
-
-	private _replyContinuation?: string;
+	replies: Reply[] = [];
+	/** Current continuation token to load next replies  */
+	replyContinuation?: string;
 
 	/** @hidden */
 	constructor(comment: Partial<CommentAttributes> = {}) {
@@ -74,7 +75,7 @@ export default class Comment extends Base implements CommentAttributes {
 		// Reply Continuation
 		this.replies = [];
 
-		this._replyContinuation = data.replies
+		this.replyContinuation = data.replies
 			? getContinuationFromItems(data.replies.commentRepliesRenderer.contents)
 			: undefined;
 
@@ -99,18 +100,18 @@ export default class Comment extends Base implements CommentAttributes {
 	async nextReplies(count = 1): Promise<Reply[]> {
 		const newReplies: Reply[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
-			if (!this._replyContinuation) break;
+			if (!this.replyContinuation) break;
 
 			// Send request
 			const response = await this.client.http.post(`${I_END_POINT}/next`, {
-				data: { continuation: this._replyContinuation },
+				data: { continuation: this.replyContinuation },
 			});
 
 			const continuationItems =
 				response.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
 					.continuationItems;
 
-			this._replyContinuation = getContinuationFromItems(continuationItems, [
+			this.replyContinuation = getContinuationFromItems(continuationItems, [
 				"button",
 				"buttonRenderer",
 				"command",

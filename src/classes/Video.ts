@@ -6,6 +6,7 @@ import { I_END_POINT } from "../constants";
 interface VideoAttributes extends BaseVideoAttributes {
 	duration: number;
 	comments: Comment[];
+	commentContinuation?: string;
 }
 
 /** Represents a Video, usually returned from `client.getVideo()`  */
@@ -17,10 +18,9 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	 *
 	 * You need to load the comment first by calling `video.nextComments()` as youtube doesn't send any comments data when loading the video (from `client.getVideo()`)
 	 */
-	comments!: Comment[];
-
-	/** @hidden */
-	_commentContinuation?: string;
+	comments: Comment[] = [];
+	/** Current continuation token to load next comments  */
+	commentContinuation?: string;
 
 	/** @hidden */
 	constructor(video: Partial<VideoAttributes> = {}) {
@@ -42,7 +42,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 		const videoInfo = BaseVideo.parseRawData(data);
 		this.duration = +videoInfo.videoDetails.lengthSeconds;
 
-		this._commentContinuation = getContinuationFromItems(
+		this.commentContinuation = getContinuationFromItems(
 			data[3].response.contents.twoColumnWatchNextResults.results.results.contents[2]
 				.itemSectionRenderer.contents
 		);
@@ -75,10 +75,10 @@ export default class Video extends BaseVideo implements VideoAttributes {
 		const newComments: Comment[] = [];
 
 		for (let i = 0; i < count || count == 0; i++) {
-			if (!this._commentContinuation) break;
+			if (!this.commentContinuation) break;
 
 			const response = await this.client.http.post(`${I_END_POINT}/next`, {
-				data: { continuation: this._commentContinuation },
+				data: { continuation: this.commentContinuation },
 			});
 
 			const endpoints = response.data.onResponseReceivedEndpoints.pop();
@@ -87,7 +87,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 				endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction
 			).continuationItems;
 
-			this._commentContinuation = getContinuationFromItems(continuationItems);
+			this.commentContinuation = getContinuationFromItems(continuationItems);
 
 			const comments = mapFilter(continuationItems, "commentThreadRenderer");
 			newComments.push(

@@ -6,6 +6,7 @@ import { LIVE_CHAT_END_POINT } from "../constants";
 /** @hidden */
 interface LiveVideoAttributes extends BaseVideoAttributes {
 	watchingCount: number;
+	chatContinuation?: string;
 }
 
 interface LiveVideoEvents {
@@ -28,10 +29,11 @@ declare interface LiveVideo {
 class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	/** Number of people who's watching the live stream right now */
 	watchingCount!: number;
+	/** Current continuation token to load next chat  */
+	chatContinuation!: string;
 
 	private _delay = 0;
 	private _chatRequestPoolingTimeout!: NodeJS.Timeout;
-	private _chatContinuation!: string;
 	private _timeoutMs = 0;
 	private _isChatPlaying = false;
 	private _chatQueue: Chat[] = [];
@@ -57,7 +59,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 			.join(" ")
 			.replace(/[^0-9]/g, "");
 
-		this._chatContinuation =
+		this.chatContinuation =
 			data[3].response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer.continuations[0].reloadContinuationData.continuation;
 
 		return this;
@@ -85,7 +87,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	/** Start request polling */
 	private async pollChatContinuation() {
 		const response = await this.client.http.post(LIVE_CHAT_END_POINT, {
-			data: { continuation: this._chatContinuation },
+			data: { continuation: this.chatContinuation },
 		});
 
 		this.parseChat(response.data);
@@ -95,7 +97,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 				.timedContinuationData;
 
 		this._timeoutMs = timedContinuation.timeoutMs;
-		this._chatContinuation = timedContinuation.continuation;
+		this.chatContinuation = timedContinuation.continuation;
 		this._chatRequestPoolingTimeout = setTimeout(
 			() => this.pollChatContinuation(),
 			this._timeoutMs
