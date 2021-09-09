@@ -4,7 +4,7 @@ import "jest-extended";
 const youtube = new Client();
 
 describe("SearchResult", () => {
-	let searchResult: SearchResult<{ type: "all" }>;
+	let searchResult: SearchResult<"all">;
 
 	beforeAll(async () => {
 		searchResult = await youtube.search("foo");

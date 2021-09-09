@@ -4,7 +4,7 @@ import "jest-extended";
 const youtube = new Client();
 
 describe("PlaylistCompact", () => {
-	let playlists: SearchResult<{ type: "playlist" }>;
+	let playlists: SearchResult<"playlist">;
 
 	beforeAll(async () => {
 		playlists = await youtube.search("100 seconds of code fireship", { type: "playlist" });
