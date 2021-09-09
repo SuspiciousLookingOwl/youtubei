@@ -1,6 +1,6 @@
 {
 	"name": "youtubei",
-	"version": "0.0.1-rc.21",
+	"version": "0.0.1-rc.22",
 	"description": "Simple package to get information from youtube such as videos, playlists, channels, video information & comments, related videos, up next video, and more!",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
