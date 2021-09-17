@@ -72,6 +72,6 @@ export default class PlaylistCompact extends Base implements PlaylistCompactAttr
 	 * ```
 	 */
 	async getPlaylist(): Promise<Playlist | undefined> {
-		return await this.client.getPlaylist(this.id);
+		return await this.client.getPlaylist(this.id) as Playlist;
 	}
 }
