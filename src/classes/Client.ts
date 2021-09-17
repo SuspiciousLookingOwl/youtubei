@@ -1,7 +1,7 @@
 import { I_END_POINT, WATCH_END_POINT } from "../constants";
 import { getQueryParameter, HTTP } from "../common";
 
-import { Playlist, Video, SearchResult, LiveVideo, Channel } from ".";
+import { Playlist, Video, SearchResult, LiveVideo, Channel, MixPlaylist } from ".";
 import { SearchResultType } from "./SearchResult";
 import { RequestOptions } from "https";
 
@@ -80,17 +80,29 @@ export default class Client {
 	}
 
 	/** Get playlist information and its videos by playlist id or URL */
-	async getPlaylist(playlistIdOrUrl: string): Promise<Playlist | undefined> {
+	async getPlaylist<T extends Playlist | MixPlaylist | undefined>(
+		playlistIdOrUrl: string
+	): Promise<T> {
 		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
+		if (playlistId.startsWith("RD")) {
+			const response = await this.http.post(`${I_END_POINT}/next`, {
+				data: { playlistId },
+			});
+
+			if (response.data.error) {
+				return undefined as T;
+			}
+			return new MixPlaylist({ client: this }).load(response.data) as T;
+		}
 
 		const response = await this.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: `VL${playlistId}` },
 		});
 
 		if (response.data.error || response.data.alerts?.shift()?.alertRenderer?.type === "ERROR") {
-			return undefined;
+			return undefined as T;
 		}
-		return new Playlist({ client: this }).load(response.data);
+		return new Playlist({ client: this }).load(response.data) as T;
 	}
 
 	/** Get video information by video id or URL */

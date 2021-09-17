@@ -13,3 +13,4 @@ export { default as Playlist } from "./Playlist";
 export { default as Video } from "./Video";
 export { default as LiveVideo } from "./LiveVideo";
 export { default as SearchResult } from "./SearchResult";
+export { default as MixPlaylist } from "./MixPlaylist";
