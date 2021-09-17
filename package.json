@@ -25,8 +25,8 @@
 		"test": "jest",
 		"dev": "tsc --watch",
 		"build": "tsc",
-		"lint:check": "eslint src && prettier -c src",
-		"lint:fix": "eslint --fix && prettier --write src"
+		"lint:check": "eslint src && prettier -c src tests",
+		"lint:fix": "eslint --fix && prettier --write src tests"
 	},
 	"repository": {
 		"type": "git",
