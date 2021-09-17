@@ -80,9 +80,11 @@ export default class Client {
 	}
 
 	/** Get playlist information and its videos by playlist id or URL */
-	async getPlaylist<T extends Playlist | MixPlaylist | undefined>(playlistIdOrUrl: string): Promise<T> {
+	async getPlaylist<T extends Playlist | MixPlaylist | undefined>(
+		playlistIdOrUrl: string
+	): Promise<T> {
 		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
-		if (playlistId.startsWith('RD')) {
+		if (playlistId.startsWith("RD")) {
 			const response = await this.http.post(`${I_END_POINT}/next`, {
 				data: { playlistId },
 			});
