@@ -7,7 +7,7 @@ import zlib from "zlib";
 import qs from "querystring";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { YoutubeRawData } from "./types";
-import { Client } from "../classes";
+import { Client } from "../classes/Client";
 
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
@@ -24,17 +24,19 @@ interface Response<T = any> {
 export default class HTTP {
 	private _httpClient: typeof https | typeof http;
 	private _cookie: string;
-	private _hl: string;
-	private _gl: string;
-	private _defaultOptions: Partial<https.RequestOptions>;
+	private _defaultRequestOptions: Partial<https.RequestOptions>;
+	private _defaultClientOptions: Record<string, unknown>;
 
-	constructor(client: Client, defaultOptions: Partial<https.RequestOptions> = {}) {
-		const { hl, cookie, gl, https: useHttps } = client.options;
-		this._httpClient = useHttps ? https : http;
+	constructor({
+		cookie,
+		requestOptions,
+		youtubeClientOptions,
+		https: useHttps,
+	}: Client.ClientOptions) {
 		this._cookie = cookie;
-		this._hl = hl;
-		this._gl = gl;
-		this._defaultOptions = defaultOptions;
+		this._defaultRequestOptions = requestOptions;
+		this._defaultClientOptions = youtubeClientOptions;
+		this._httpClient = useHttps ? https : http;
 	}
 
 	/** Send GET request to Youtube */
@@ -60,8 +62,7 @@ export default class HTTP {
 					client: {
 						clientName: "WEB",
 						clientVersion: INNERTUBE_CLIENT_VERSION,
-						hl: this._hl,
-						gl: this._gl,
+						...this._defaultClientOptions,
 					},
 				},
 				...options.data,
@@ -80,22 +81,19 @@ export default class HTTP {
 				hostname: BASE_URL,
 				port: 443,
 				...partialOptions,
-				...this._defaultOptions,
+				...this._defaultRequestOptions,
 				path: `${partialOptions.path}?${qs.stringify(partialOptions.params)}`,
 				headers: {
 					"x-youtube-client-version": INNERTUBE_CLIENT_VERSION,
 					"x-youtube-client-name": "1",
 					"content-type": "application/json",
 					"accept-encoding": "gzip",
-					cookie: this._cookie,
 					...partialOptions.headers,
 				},
 			};
 
 			let body = options.data || "";
-			if (options.data) {
-				body = JSON.stringify(body);
-			}
+			if (options.data) body = JSON.stringify(body);
 
 			const request = this._httpClient.request(options, (res) => {
 				if (res.headers["set-cookie"]?.length)
