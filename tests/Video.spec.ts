@@ -2,7 +2,7 @@ import { Client, Video, LiveVideo } from "../src";
 import "jest-extended";
 import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
 
-const youtube = new Client({ hl: "en" });
+const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
 
 describe("Video", () => {
 	let video: Video;
