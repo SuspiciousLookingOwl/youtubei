@@ -1,4 +1,4 @@
-import { Base, BaseAttributes, ChannelCompact, VideoCompact } from ".";
+import { Base, BaseAttributes, VideoCompact } from ".";
 import { YoutubeRawData } from "../common";
 
 /** @hidden */
