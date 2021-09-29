@@ -44,10 +44,13 @@ export default class Playlist extends Base implements PlaylistAttributes {
 	load(data: YoutubeRawData): Playlist {
 		const sidebarRenderer = data.sidebar.playlistSidebarRenderer.items;
 		const primaryRenderer = sidebarRenderer[0].playlistSidebarPrimaryInfoRenderer;
+		const metadata = data.metadata.playlistMetadataRenderer;
 
 		// Basic information
-		this.id = primaryRenderer.title.runs[0].navigationEndpoint.watchEndpoint.playlistId;
-		this.title = primaryRenderer.title.runs[0].text;
+		this.id = Object.values<string>(metadata)
+			.find((v) => v.includes("playlist?list="))
+			?.split("=")[0] as string;
+		this.title = metadata.title;
 
 		const { stats } = primaryRenderer;
 		if (primaryRenderer.stats.length === 3) {
@@ -62,7 +65,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 		const playlistContents =
 			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
-				.playlistVideoListRenderer.contents;
+				.playlistVideoListRenderer?.contents || [];
 
 		// Video Continuation Token
 		this.continuation = getContinuationFromItems(playlistContents);
