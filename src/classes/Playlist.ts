@@ -49,7 +49,7 @@ export default class Playlist extends Base implements PlaylistAttributes {
 		// Basic information
 		this.id = Object.values<string>(metadata)
 			.find((v) => v.includes("playlist?list="))
-			?.split("=")[0] as string;
+			?.split("=")[1] as string;
 		this.title = metadata.title;
 
 		const { stats } = primaryRenderer;
