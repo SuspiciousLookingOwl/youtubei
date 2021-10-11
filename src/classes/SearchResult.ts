@@ -65,7 +65,12 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	 */
 	async init(query: string, options: ClientTypes.SearchOptions): Promise<SearchResult<T>> {
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
-			data: { query, params: SearchResult.getSearchTypeParam(options.type) },
+			data: {
+				query,
+				params: !options.params
+					? SearchResult.getSearchTypeParam(options.type)
+					: options.params,
+			},
 		});
 
 		this.estimatedResults = +response.data.estimatedResults;
