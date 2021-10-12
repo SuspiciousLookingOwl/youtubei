@@ -88,6 +88,7 @@ export default class HTTP {
 					"x-youtube-client-name": "1",
 					"content-type": "application/json",
 					"accept-encoding": "gzip",
+					cookie: this._cookie,
 					...partialOptions.headers,
 				},
 			};
