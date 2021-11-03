@@ -71,6 +71,8 @@ export default class Channel extends ChannelCompact implements ChannelAttributes
 			if (!shelfRenderer) continue;
 
 			const { title, content, subtitle } = shelfRenderer;
+			if (!content.horizontalListRenderer) continue;
+
 			const items:
 				| ChannelCompact[]
 				| VideoCompact[]
