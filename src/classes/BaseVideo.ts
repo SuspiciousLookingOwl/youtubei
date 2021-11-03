@@ -79,11 +79,13 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		this.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
 
 		// Channel
-		const { title, thumbnail } = videoInfo.owner.videoOwnerRenderer;
+		const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
+
 		this.channel = new ChannelCompact({
 			client: this.client,
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,
+			subscriberCount: subscriberCountText?.simpleText,
 			thumbnails: new Thumbnails().load(thumbnail.thumbnails),
 		});
 
