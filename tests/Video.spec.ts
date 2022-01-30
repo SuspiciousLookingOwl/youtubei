@@ -26,7 +26,6 @@ describe("Video", () => {
 		expect(typeof video.uploadDate).toBe("string");
 		expect(video.viewCount).toBeGreaterThan(8000000);
 		expect(video.likeCount).toBeGreaterThan(245000);
-		expect(video.dislikeCount).toBeGreaterThan(3500);
 		expect(video.isLiveContent).toBeFalse();
 		expect(video.tags.length).toBe(1);
 		expect(video.tags[0]).toBe("#FramesWinGames");

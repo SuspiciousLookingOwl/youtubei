@@ -19,7 +19,6 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	uploadDate: string;
 	viewCount: number | null;
 	likeCount: number | null;
-	dislikeCount: number | null;
 	isLiveContent: boolean;
 	tags: string[];
 	upNext: VideoCompact | PlaylistCompact | null;
@@ -43,8 +42,6 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	viewCount!: number | null;
 	/** How many like does this video have, null if the like count hidden */
 	likeCount!: number | null;
-	/** How many dislike does this video have, null if the dislike count is hidden */
-	dislikeCount!: number | null;
 	/** Whether this video is a live content or not */
 	isLiveContent!: boolean;
 	/** The tags of this video */
@@ -92,7 +89,6 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		// Like Count and Dislike Count
 		const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
 		this.likeCount = stripToInt(BaseVideo.parseButtonRenderer(topLevelButtons[0]));
-		this.dislikeCount = stripToInt(BaseVideo.parseButtonRenderer(topLevelButtons[1]));
 
 		// Tags and description
 		this.tags =
