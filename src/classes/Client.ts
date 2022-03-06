@@ -11,9 +11,9 @@ export namespace Client {
 
 	export type SearchOptions = {
 		/** Search type, can be `"video"`, `"channel"`, `"playlist"`, or `"all"` */
-		type: SearchType;
+		type?: SearchType;
 		/** Raw search params to be passed on the request, ignores `type` value if this is provided */
-		params: string;
+		params?: string;
 	};
 
 	export type ClientOptions = {
@@ -57,7 +57,7 @@ export default class Client {
 	 */
 	async search<T extends Client.SearchOptions>(
 		query: string,
-		searchOptions?: Partial<T>
+		searchOptions?: T
 	): Promise<SearchResult<T["type"]>> {
 		const options: Client.SearchOptions = {
 			type: "all",

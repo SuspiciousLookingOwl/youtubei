@@ -67,7 +67,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: {
 				query,
-				params: options.params || SearchResult.getSearchTypeParam(options.type),
+				params: options.params || SearchResult.getSearchTypeParam(options.type || "all"),
 			},
 		});
 
