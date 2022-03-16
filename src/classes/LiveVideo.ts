@@ -90,7 +90,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 			data: { continuation: this.chatContinuation },
 		});
 
-		if (!response.continuationContents) return;
+		if (!response.data.continuationContents) return;
 		this.parseChat(response.data);
 
 		const timedContinuation =
@@ -107,9 +107,10 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 
 	/** Parse chat data from Youtube and add to chatQueue */
 	private parseChat(data: YoutubeRawData): void {
-		const chats = data.continuationContents.liveChatContinuation.actions.flatMap(
-			(a: YoutubeRawData) => a.addChatItemAction?.item.liveChatTextMessageRenderer || []
-		);
+		const chats =
+			data.continuationContents.liveChatContinuation.actions?.flatMap(
+				(a: YoutubeRawData) => a.addChatItemAction?.item.liveChatTextMessageRenderer || []
+			) || [];
 
 		for (const rawChatData of chats) {
 			const chat = new Chat({ client: this.client }).load(rawChatData);
