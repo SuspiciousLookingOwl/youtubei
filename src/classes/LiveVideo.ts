@@ -93,12 +93,13 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 		if (!response.data.continuationContents) return;
 		this.parseChat(response.data);
 
-		const timedContinuation =
-			response.data.continuationContents.liveChatContinuation.continuations[0]
-				.timedContinuationData;
+		const continuation =
+			response.data.continuationContents.liveChatContinuation.continuations[0];
+		const continuationData =
+			continuation.timedContinuation || continuation.invalidationContinuationData;
 
-		this._timeoutMs = timedContinuation.timeoutMs;
-		this.chatContinuation = timedContinuation.continuation;
+		this._timeoutMs = continuationData.timeoutMs;
+		this.chatContinuation = continuationData.continuation;
 		this._chatRequestPoolingTimeout = setTimeout(
 			() => this.pollChatContinuation(),
 			this._timeoutMs
