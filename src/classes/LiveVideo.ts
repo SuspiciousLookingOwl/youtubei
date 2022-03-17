@@ -96,7 +96,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 		const continuation =
 			response.data.continuationContents.liveChatContinuation.continuations[0];
 		const continuationData =
-			continuation.timedContinuation || continuation.invalidationContinuationData;
+			continuation.timedContinuationData || continuation.invalidationContinuationData;
 
 		this._timeoutMs = continuationData.timeoutMs;
 		this.chatContinuation = continuationData.continuation;
