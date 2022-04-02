@@ -21,7 +21,6 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	likeCount: number | null;
 	isLiveContent: boolean;
 	tags: string[];
-	upNext: VideoCompact | PlaylistCompact | null;
 	related: (VideoCompact | PlaylistCompact)[];
 	relatedContinuation?: string;
 }
@@ -46,8 +45,6 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	isLiveContent!: boolean;
 	/** The tags of this video */
 	tags!: string[];
-	/** Next video / playlist recommended by Youtube */
-	upNext!: VideoCompact | PlaylistCompact | null;
 	/** Videos / playlists related to this video  */
 	related: (VideoCompact | PlaylistCompact)[] = [];
 	/** Current continuation token to load next related content  */
@@ -105,17 +102,10 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 				.results;
 
 		if (secondaryContents) {
-			const upNext =
-				secondaryContents.find((s: YoutubeRawData) => "compactAutoplayRenderer" in s)
-					?.compactAutoplayRenderer.contents[0] || null;
-
-			this.upNext = upNext ? BaseVideo.parseCompactRenderer(upNext, this.client)! : upNext;
 			this.related.push(...BaseVideo.parseRelated(secondaryContents, this.client));
-
 			// Related continuation
 			this.relatedContinuation = getContinuationFromItems(secondaryContents);
 		} else {
-			this.upNext = null;
 			this.related = [];
 		}
 
