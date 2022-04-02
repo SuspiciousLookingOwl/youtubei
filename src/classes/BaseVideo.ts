@@ -112,6 +112,16 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		return this;
 	}
 
+	/**
+	 * Video / playlist to play next after this video, alias to
+	 * ```js
+	 * video.related[0]
+	 * ```
+	 */
+	get upNext(): VideoCompact | PlaylistCompact {
+		return this.related[0];
+	}
+
 	/** Load next related videos / playlists */
 	async nextRelated(count = 1): Promise<(VideoCompact | PlaylistCompact)[]> {
 		const newRelated: (VideoCompact | PlaylistCompact)[] = [];
