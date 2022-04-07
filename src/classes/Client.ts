@@ -116,8 +116,8 @@ export default class Client {
 			params: { v: videoId, pbj: "1" },
 		});
 
-		if (!response.data[3].response.contents) return undefined as T;
-		return (!response.data[2].playerResponse.playabilityStatus.liveStreamability
+		if (!response.data.response.contents) return undefined as T;
+		return (!response.data.playerResponse.playabilityStatus.liveStreamability
 			? new Video({ client: this }).load(response.data)
 			: new LiveVideo({ client: this }).load(response.data)) as T;
 	}

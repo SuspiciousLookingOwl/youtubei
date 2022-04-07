@@ -60,7 +60,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 			.replace(/[^0-9]/g, "");
 
 		this.chatContinuation =
-			data[3].response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer?.continuations[0].reloadContinuationData.continuation;
+			data.response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer?.continuations[0].reloadContinuationData.continuation;
 
 		return this;
 	}

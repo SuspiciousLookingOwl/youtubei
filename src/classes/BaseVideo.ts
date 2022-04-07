@@ -98,7 +98,7 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		// Up Next and related videos
 		this.related = [];
 		const secondaryContents =
-			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
+			data.response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
 				.results;
 
 		if (secondaryContents) {
@@ -146,15 +146,14 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 
 	/** @hidden */
 	static parseRawData(data: YoutubeRawData): YoutubeRawData {
-		const contents =
-			data[3].response.contents.twoColumnWatchNextResults.results.results.contents;
+		const contents = data.response.contents.twoColumnWatchNextResults.results.results.contents;
 
 		const primaryInfo = contents.find((c: YoutubeRawData) => "videoPrimaryInfoRenderer" in c)
 			.videoPrimaryInfoRenderer;
 		const secondaryInfo = contents.find(
 			(c: YoutubeRawData) => "videoSecondaryInfoRenderer" in c
 		).videoSecondaryInfoRenderer;
-		const videoDetails = data[2].playerResponse.videoDetails;
+		const videoDetails = data.playerResponse.videoDetails;
 		return { ...secondaryInfo, ...primaryInfo, videoDetails };
 	}
 
