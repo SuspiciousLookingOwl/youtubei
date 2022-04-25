@@ -23,6 +23,7 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	tags: string[];
 	related: (VideoCompact | PlaylistCompact)[];
 	relatedContinuation?: string;
+	lengthSeconds: number;
 }
 
 /** Represents a Video  */
@@ -49,6 +50,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 	related: (VideoCompact | PlaylistCompact)[] = [];
 	/** Current continuation token to load next related content  */
 	relatedContinuation?: string;
+	/** Length of the video in seconds */
+	lengthSeconds!: number;
 
 	/** @hidden */
 	constructor(video: Partial<BaseVideoAttributes> = {}) {
@@ -71,7 +74,8 @@ export default class BaseVideo extends Base implements BaseVideoAttributes {
 		this.viewCount = +videoInfo.videoDetails.viewCount || null;
 		this.isLiveContent = videoInfo.videoDetails.isLiveContent;
 		this.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
-
+		this.lengthSeconds = parseInt(videoInfo.videoDetails.lengthSeconds);
+	
 		// Channel
 		const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
 
