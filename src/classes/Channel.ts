@@ -57,9 +57,9 @@ export default class Channel extends ChannelCompact implements ChannelAttributes
 
 		const { tvBanner, mobileBanner, banner } = data.header.c4TabbedHeaderRenderer;
 
-		this.banner = new Thumbnails().load(banner.thumbnails);
-		this.tvBanner = new Thumbnails().load(tvBanner.thumbnails);
-		this.mobileBanner = new Thumbnails().load(mobileBanner.thumbnails);
+		this.banner = new Thumbnails().load(banner?.thumbnails || []);
+		this.tvBanner = new Thumbnails().load(tvBanner?.thumbnails || []);
+		this.mobileBanner = new Thumbnails().load(mobileBanner?.thumbnails || []);
 
 		// shelves
 		const rawShelves =
