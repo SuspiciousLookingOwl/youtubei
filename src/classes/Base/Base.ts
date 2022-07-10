@@ -1,4 +1,4 @@
-import { Client } from ".";
+import { Client } from "..";
 
 /** @hidden */
 export interface BaseAttributes {
@@ -6,7 +6,7 @@ export interface BaseAttributes {
 	client: Client;
 }
 
-export default class Base implements BaseAttributes {
+export class Base implements BaseAttributes {
 	id!: string;
 	client!: Client;
 }

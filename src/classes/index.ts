@@ -1,4 +1,4 @@
-export { BaseAttributes, default as Base } from "./Base";
+export * from "./Base";
 export * from "./BaseVideo";
 export { default as Channel } from "./Channel";
 export { default as ChannelCompact } from "./ChannelCompact";
