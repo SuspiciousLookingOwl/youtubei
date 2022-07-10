@@ -72,13 +72,8 @@ export class Comment extends Base implements CommentAttributes {
 			});
 
 			this.replyContinuation = CommentParser.parseContinuation(response.data);
-			const replies = CommentParser.parseReplies(response.data);
-
-			newReplies.push(
-				...replies.map((i: YoutubeRawData) =>
-					new Reply({ video: this.video, comment: this, client: this.client }).load(i)
-				)
-			);
+			const replies = CommentParser.parseReplies(response.data, this);
+			newReplies.push(...replies);
 		}
 
 		this.replies.push(...newReplies);

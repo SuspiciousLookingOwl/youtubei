@@ -1,4 +1,4 @@
-import { ChannelCompact, Comment, Thumbnails } from "..";
+import { ChannelCompact, Comment, Reply, Thumbnails } from "..";
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
 
 export class CommentParser {
@@ -49,10 +49,14 @@ export class CommentParser {
 		return getContinuationFromItems(continuationItems, ["button", "buttonRenderer", "command"]);
 	}
 
-	static parseReplies(data: YoutubeRawData): YoutubeRawData {
+	static parseReplies(data: YoutubeRawData, comment: Comment): Reply[] {
 		const continuationItems =
 			data.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems;
 
-		return mapFilter(continuationItems, "commentRenderer");
+		const rawReplies = mapFilter(continuationItems, "commentRenderer");
+
+		return rawReplies.map((i: YoutubeRawData) =>
+			new Reply({ video: comment.video, comment, client: comment.client }).load(i)
+		);
 	}
 }
