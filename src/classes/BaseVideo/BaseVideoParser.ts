@@ -1,10 +1,5 @@
+import { BaseVideo, ChannelCompact, Client, PlaylistCompact, Thumbnails, VideoCompact } from "..";
 import { getContinuationFromItems, stripToInt, YoutubeRawData } from "../../common";
-import ChannelCompact from "../ChannelCompact";
-import Client from "../Client";
-import PlaylistCompact from "../PlaylistCompact";
-import Thumbnails from "../Thumbnails";
-import VideoCompact from "../VideoCompact";
-import { BaseVideo } from "./BaseVideo";
 
 export class BaseVideoParser {
 	static loadBaseVideo(target: BaseVideo, data: YoutubeRawData): BaseVideo {

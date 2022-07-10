@@ -1,8 +1,11 @@
+import {
+	ChannelCompact,
+	ChannelCompactAttributes,
+	PlaylistCompact,
+	Thumbnails,
+	VideoCompact,
+} from "..";
 import { YoutubeRawData } from "../../common";
-import ChannelCompact, { ChannelCompactAttributes } from "../ChannelCompact";
-import PlaylistCompact from "../PlaylistCompact";
-import Thumbnails from "../Thumbnails";
-import VideoCompact from "../VideoCompact";
 import { ChannelParser } from "./ChannelParser";
 
 export interface Shelf {
