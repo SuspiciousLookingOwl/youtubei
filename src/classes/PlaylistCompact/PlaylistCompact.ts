@@ -1,5 +1,8 @@
-import { Base, BaseAttributes, ChannelCompact, Playlist, Thumbnails } from "../..";
 import { YoutubeRawData } from "../../common";
+import { Base, BaseAttributes } from "../Base";
+import { ChannelCompact } from "../ChannelCompact";
+import { Playlist } from "../Playlist/Playlist";
+import { Thumbnails } from "../Thumbnails";
 import { PlaylistCompactParser } from "./PlaylistCompactParser";
 
 /** @hidden */

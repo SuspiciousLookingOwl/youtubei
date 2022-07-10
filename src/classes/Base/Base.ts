@@ -1,4 +1,4 @@
-import { Client } from "..";
+import Client from "../Client";
 
 /** @hidden */
 export interface BaseAttributes {

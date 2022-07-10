@@ -1,5 +1,6 @@
-import { ChannelCompact, Thumbnails } from "..";
 import { stripToInt, YoutubeRawData } from "../../common";
+import { Thumbnails } from "../Thumbnails";
+import { ChannelCompact } from "./ChannelCompact";
 
 export class ChannelCompactParser {
 	static loadChannelCompact(target: ChannelCompact, data: YoutubeRawData): ChannelCompact {

@@ -1,6 +1,7 @@
-import { BaseVideo, BaseVideoAttributes, Comment } from "..";
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
+import { BaseVideo, BaseVideoAttributes } from "../BaseVideo";
+import { Comment } from "../Comment";
 import { VideoParser } from "./VideoParser";
 
 /** @hidden */

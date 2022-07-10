@@ -1,5 +1,7 @@
-import { Base, BaseAttributes, MixPlaylistParser, VideoCompact } from "..";
 import { YoutubeRawData } from "../../common";
+import { Base, BaseAttributes } from "../Base";
+import { VideoCompact } from "../VideoCompact";
+import { MixPlaylistParser } from "./MixPlaylistParser";
 
 /** @hidden */
 interface PlaylistAttributes extends BaseAttributes {

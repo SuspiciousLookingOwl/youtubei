@@ -1,5 +1,7 @@
-import { ChannelCompact, PlaylistCompact, Thumbnails } from "..";
 import { stripToInt, YoutubeRawData } from "../../common";
+import { ChannelCompact } from "../ChannelCompact";
+import { Thumbnails } from "../Thumbnails";
+import { PlaylistCompact } from "./PlaylistCompact";
 
 export class PlaylistCompactParser {
 	static loadPlaylistCompact(target: PlaylistCompact, data: YoutubeRawData): PlaylistCompact {

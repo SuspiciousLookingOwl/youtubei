@@ -1,6 +1,9 @@
-import { Base, BaseAttributes, ChannelCompact, Reply, Video } from "..";
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
+import { Base, BaseAttributes } from "../Base";
+import { ChannelCompact } from "../ChannelCompact";
+import { Reply } from "../Reply";
+import { Video } from "../Video";
 import { CommentParser } from "./CommentParser";
 
 /** @hidden */

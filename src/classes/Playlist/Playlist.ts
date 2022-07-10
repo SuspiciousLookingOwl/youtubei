@@ -1,6 +1,9 @@
-import { Base, BaseAttributes, ChannelCompact, PlaylistParser, VideoCompact } from "../..";
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
+import { Base, BaseAttributes } from "../Base";
+import { ChannelCompact, ChannelCompactAttributes } from "../ChannelCompact";
+import { VideoCompact } from "../VideoCompact";
+import { PlaylistParser } from "./PlaylistParser";
 
 /** @hidden */
 interface PlaylistAttributes extends BaseAttributes {
@@ -8,7 +11,7 @@ interface PlaylistAttributes extends BaseAttributes {
 	videoCount: number;
 	viewCount: number;
 	lastUpdatedAt: string;
-	channel?: ChannelCompact;
+	channel?: ChannelCompactAttributes;
 	videos: VideoCompact[];
 	continuation?: string;
 }

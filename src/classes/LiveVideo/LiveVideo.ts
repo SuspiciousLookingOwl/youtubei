@@ -1,7 +1,9 @@
 import { EventEmitter } from "events";
-import { BaseVideo, BaseVideoAttributes, Chat, LiveVideoParser } from "..";
 import { applyMixins, YoutubeRawData } from "../../common";
 import { LIVE_CHAT_END_POINT } from "../../constants";
+import { BaseVideo, BaseVideoAttributes } from "../BaseVideo";
+import { Chat } from "../Chat";
+import { LiveVideoParser } from "./LiveVideoParser";
 
 /** @hidden */
 interface LiveVideoAttributes extends BaseVideoAttributes {

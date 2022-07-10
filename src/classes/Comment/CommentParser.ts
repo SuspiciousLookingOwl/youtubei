@@ -1,5 +1,8 @@
-import { ChannelCompact, Comment, Reply, Thumbnails } from "..";
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
+import { ChannelCompact } from "../ChannelCompact";
+import { Reply } from "../Reply";
+import { Thumbnails } from "../Thumbnails";
+import { Comment } from "./Comment";
 
 export class CommentParser {
 	static loadComment(target: Comment, data: YoutubeRawData): Comment {

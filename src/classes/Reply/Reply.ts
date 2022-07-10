@@ -1,5 +1,9 @@
-import { Base, BaseAttributes, ChannelCompact, Comment, ReplyParser, Video } from "..";
 import { YoutubeRawData } from "../../common";
+import { Base, BaseAttributes } from "../Base";
+import { ChannelCompact } from "../ChannelCompact";
+import { Comment } from "../Comment";
+import { Video } from "../Video";
+import { ReplyParser } from "./ReplyParser";
 
 /** @hidden */
 interface ReplyAttributes extends BaseAttributes {

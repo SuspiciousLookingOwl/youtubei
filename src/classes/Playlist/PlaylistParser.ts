@@ -1,5 +1,9 @@
-import { ChannelCompact, Client, Playlist, Thumbnails, VideoCompact } from "..";
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
+import { ChannelCompact } from "../ChannelCompact";
+import Client from "../Client";
+import { Thumbnails } from "../Thumbnails";
+import { VideoCompact } from "../VideoCompact";
+import { Playlist } from "./Playlist";
 
 export class PlaylistParser {
 	static loadPlaylist(target: Playlist, data: YoutubeRawData): Playlist {

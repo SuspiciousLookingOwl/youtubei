@@ -1,5 +1,7 @@
-import { Base, BaseAttributes, ChannelCompact, Video } from "..";
 import { YoutubeRawData } from "../../common";
+import { Base, BaseAttributes } from "../Base";
+import { ChannelCompact } from "../ChannelCompact";
+import { Video } from "../Video";
 import { ChatParser } from "./ChatParser";
 
 /** @hidden */

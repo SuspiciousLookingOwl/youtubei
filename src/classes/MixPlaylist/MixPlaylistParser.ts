@@ -1,5 +1,7 @@
-import { Client, MixPlaylist, VideoCompact } from "..";
 import { YoutubeRawData } from "../../common";
+import Client from "../Client";
+import { VideoCompact } from "../VideoCompact";
+import { MixPlaylist } from "./MixPlaylist";
 
 export class MixPlaylistParser {
 	static loadMixPlaylist(target: MixPlaylist, data: YoutubeRawData): MixPlaylist {

@@ -1,5 +1,6 @@
-import { ChannelCompact, Chat } from "..";
 import { YoutubeRawData } from "../../common";
+import { ChannelCompact } from "../ChannelCompact";
+import { Chat } from "./Chat";
 
 export class ChatParser {
 	static loadChat(target: Chat, data: YoutubeRawData): Chat {

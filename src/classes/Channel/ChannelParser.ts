@@ -1,5 +1,9 @@
-import { Channel, ChannelCompact, PlaylistCompact, Shelf, Thumbnails, VideoCompact } from "..";
 import { YoutubeRawData } from "../../common";
+import { ChannelCompact } from "../ChannelCompact";
+import { PlaylistCompact } from "../PlaylistCompact";
+import { Thumbnails } from "../Thumbnails";
+import { VideoCompact } from "../VideoCompact";
+import { Channel, Shelf } from "./Channel";
 
 export class ChannelParser {
 	static loadChannel(target: Channel, data: YoutubeRawData): Channel {

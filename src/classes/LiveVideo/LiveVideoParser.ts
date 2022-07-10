@@ -1,5 +1,6 @@
-import { BaseVideoParser, LiveVideo } from "..";
 import { YoutubeRawData } from "../../common";
+import { BaseVideoParser } from "../BaseVideo";
+import { LiveVideo } from "./LiveVideo";
 
 export class LiveVideoParser {
 	static loadLiveVideo(target: LiveVideo, data: YoutubeRawData): LiveVideo {

@@ -1,6 +1,9 @@
-import { Base, BaseAttributes, PlaylistCompact, Thumbnails, VideoCompact } from "..";
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
+import { Base, BaseAttributes } from "../Base";
+import { PlaylistCompact } from "../PlaylistCompact";
+import { Thumbnails } from "../Thumbnails";
+import { VideoCompact } from "../VideoCompact";
 import { ChannelCompactParser } from "./ChannelCompactParser";
 
 /** @hidden */

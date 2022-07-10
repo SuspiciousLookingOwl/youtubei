@@ -1,5 +1,7 @@
-import { ChannelCompact, Reply, Thumbnails } from "..";
 import { YoutubeRawData } from "../../common";
+import { ChannelCompact } from "../ChannelCompact";
+import { Thumbnails } from "../Thumbnails";
+import { Reply } from "./Reply";
 
 export class ReplyParser {
 	static loadReply(target: Reply, data: YoutubeRawData): Reply {

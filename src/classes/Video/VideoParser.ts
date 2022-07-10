@@ -1,5 +1,7 @@
-import { BaseVideoParser, Comment, Video } from "..";
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
+import { BaseVideoParser } from "../BaseVideo";
+import { Comment } from "../Comment";
+import { Video } from "./Video";
 
 export class VideoParser {
 	static loadVideo(target: Video, data: YoutubeRawData): Video {

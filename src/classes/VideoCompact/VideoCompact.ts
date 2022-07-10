@@ -1,5 +1,9 @@
-import { Base, BaseAttributes, ChannelCompact, LiveVideo, Thumbnails, Video } from "..";
 import { YoutubeRawData } from "../../common";
+import { Base, BaseAttributes } from "../Base";
+import { ChannelCompact } from "../ChannelCompact";
+import { LiveVideo } from "../LiveVideo";
+import { Thumbnails } from "../Thumbnails";
+import { Video } from "../Video";
 import { VideoCompactParser } from "./VideoCompactParser";
 
 /** @hidden */
