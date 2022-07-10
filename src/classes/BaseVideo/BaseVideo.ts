@@ -26,7 +26,7 @@ export interface BaseVideoAttributes extends BaseAttributes {
 }
 
 /** Represents a Video  */
-export default class BaseVideo extends Base implements BaseVideoAttributes {
+export class BaseVideo extends Base implements BaseVideoAttributes {
 	/** The title of this video */
 	title!: string;
 	/** Thumbnails of the video with different sizes */

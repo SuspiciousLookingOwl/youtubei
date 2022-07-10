@@ -4,7 +4,7 @@ import Client from "../Client";
 import PlaylistCompact from "../PlaylistCompact";
 import Thumbnails from "../Thumbnails";
 import VideoCompact from "../VideoCompact";
-import BaseVideo from "./BaseVideo";
+import { BaseVideo } from "./BaseVideo";
 
 export class BaseVideoParser {
 	static loadBaseVideo(target: BaseVideo, data: YoutubeRawData): BaseVideo {
