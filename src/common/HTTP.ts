@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import http, { IncomingHttpHeaders } from "http";
 import https from "https";
-import http from "http";
-import { IncomingHttpHeaders } from "http";
-import zlib from "zlib";
 import qs from "querystring";
+import zlib from "zlib";
+import { Client } from "../classes/Client";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { YoutubeRawData } from "./types";
-import { Client } from "../classes/Client";
 
 interface Options extends https.RequestOptions {
 	params: Record<string, any>;
@@ -21,7 +20,7 @@ interface Response<T = any> {
 	status: number | undefined;
 }
 
-export default class HTTP {
+export class HTTP {
 	private _httpClient: typeof https | typeof http;
 	private _cookie: string;
 	private _defaultRequestOptions: Partial<https.RequestOptions>;
