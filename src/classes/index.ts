@@ -13,4 +13,4 @@ export * from "./Reply";
 export { default as SearchResult } from "./SearchResult";
 export * from "./Thumbnails";
 export * from "./Video";
-export { default as VideoCompact } from "./VideoCompact";
+export * from "./VideoCompact";
