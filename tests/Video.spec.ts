@@ -1,17 +1,15 @@
-import { Client, Video, LiveVideo } from "../src";
 import "jest-extended";
+import { Client, Video } from "../src";
 import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
 
 const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
 
 describe("Video", () => {
 	let video: Video;
-	let liveVideo: LiveVideo;
 	let endedLiveVideo: Video;
 
 	beforeAll(async () => {
 		video = (await youtube.getVideo("OX31kZbAXsA")) as Video;
-		liveVideo = (await youtube.getVideo("5qap5aO4i9A")) as LiveVideo;
 		endedLiveVideo = (await youtube.getVideo("iXn9O-Rzb_M")) as Video;
 	});
 
@@ -45,12 +43,6 @@ describe("Video", () => {
 	it("load next related", async () => {
 		await video.nextRelated(2);
 		expect(video.related.length).toBeGreaterThan(40);
-	});
-
-	it("match live getVideo result", () => {
-		expect(liveVideo instanceof LiveVideo).toBeTrue();
-		expect(typeof liveVideo.watchingCount).toBe("number");
-		expect(liveVideo.isLiveContent).toBeTrue();
 	});
 
 	it("match ended live getVideo result", () => {
