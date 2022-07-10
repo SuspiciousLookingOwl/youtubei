@@ -1,5 +1,6 @@
-import { Base, ChannelCompact, Video, BaseAttributes } from ".";
-import { YoutubeRawData } from "../common";
+import { Base, BaseAttributes, ChannelCompact, Video } from "..";
+import { YoutubeRawData } from "../../common";
+import { ChatParser } from "./ChatParser";
 
 /** @hidden */
 interface ChatAttributes extends BaseAttributes {
@@ -10,7 +11,7 @@ interface ChatAttributes extends BaseAttributes {
 }
 
 /** Represents a chat in a live stream */
-export default class Chat extends Base implements ChatAttributes {
+export class Chat extends Base implements ChatAttributes {
 	/** The video this chat belongs to */
 	video!: Video;
 	/** The chat's author */
@@ -32,25 +33,7 @@ export default class Chat extends Base implements ChatAttributes {
 	 * @hidden
 	 */
 	load(data: YoutubeRawData): Chat {
-		const {
-			id,
-			message,
-			authorName,
-			authorPhoto,
-			timestampUsec,
-			authorExternalChannelId,
-		} = data;
-
-		// Basic information
-		this.id = id;
-		this.message = message.runs.map((r: YoutubeRawData) => r.text).join("");
-		this.author = new ChannelCompact({
-			id: authorExternalChannelId,
-			name: authorName.simpleText,
-			thumbnails: authorPhoto.thumbnails,
-			client: this.client,
-		});
-		this.timestamp = +timestampUsec;
+		ChatParser.loadChat(this, data);
 		return this;
 	}
 }
