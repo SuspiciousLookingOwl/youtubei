@@ -1,6 +1,7 @@
-import { BaseVideo, BaseVideoAttributes, Comment } from ".";
-import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../common";
-import { I_END_POINT } from "../constants";
+import { BaseVideo, BaseVideoAttributes, Comment } from "..";
+import { YoutubeRawData } from "../../common";
+import { I_END_POINT } from "../../constants";
+import { VideoParser } from "./VideoParser";
 
 /** @hidden */
 interface VideoAttributes extends BaseVideoAttributes {
@@ -10,7 +11,7 @@ interface VideoAttributes extends BaseVideoAttributes {
 }
 
 /** Represents a Video, usually returned from `client.getVideo()`  */
-export default class Video extends BaseVideo implements VideoAttributes {
+export class Video extends BaseVideo implements VideoAttributes {
 	/** The duration of this video in second */
 	duration!: number;
 	/**
@@ -35,19 +36,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	 */
 	load(data: YoutubeRawData): Video {
 		super.load(data);
-
-		this.comments = [];
-
-		// Duration
-		const videoInfo = BaseVideo.parseRawData(data);
-		this.duration = +videoInfo.videoDetails.lengthSeconds;
-
-		const itemSectionRenderer = data[3].response.contents.twoColumnWatchNextResults.results.results.contents
-			.reverse()
-			.find((c: YoutubeRawData) => c.itemSectionRenderer).itemSectionRenderer;
-
-		this.commentContinuation = getContinuationFromItems(itemSectionRenderer.contents);
-
+		VideoParser.loadVideo(this, data);
 		return this;
 	}
 
@@ -73,7 +62,7 @@ export default class Video extends BaseVideo implements VideoAttributes {
 	 * @returns Loaded comments
 	 */
 	async nextComments(count = 1): Promise<Comment[]> {
-		const newComments: Comment[] = [];
+		let newComments: Comment[] = [];
 
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this.commentContinuation) break;
@@ -82,21 +71,10 @@ export default class Video extends BaseVideo implements VideoAttributes {
 				data: { continuation: this.commentContinuation },
 			});
 
-			const endpoints = response.data.onResponseReceivedEndpoints.pop();
-
-			const continuationItems = (
-				endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction
-			).continuationItems;
-
-			this.commentContinuation = getContinuationFromItems(continuationItems);
-
-			const comments = mapFilter(continuationItems, "commentThreadRenderer");
-			newComments.push(
-				...comments.map((c: YoutubeRawData) =>
-					new Comment({ video: this, client: this.client }).load(c)
-				)
-			);
+			newComments = VideoParser.parseComments(response.data, this);
+			this.commentContinuation = VideoParser.parseCommentContinuation(response.data);
 		}
+
 		this.comments.push(...newComments);
 		return newComments;
 	}
