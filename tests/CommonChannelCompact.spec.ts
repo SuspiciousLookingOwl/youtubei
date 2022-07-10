@@ -1,5 +1,6 @@
-import { ChannelCompact } from "../src";
 import "jest-extended";
+
+import { ChannelCompact } from "../src";
 
 type Ignore = {
 	ignoreVideoCount?: boolean;

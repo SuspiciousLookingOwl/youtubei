@@ -9,6 +9,7 @@
 		"test": "test"
 	},
 	"devDependencies": {
+		"@trivago/prettier-plugin-sort-imports": "3.2.0",
 		"@types/node": "14.14.12",
 		"@typescript-eslint/eslint-plugin": "4.9.1",
 		"@typescript-eslint/parser": "4.9.1",

@@ -1,5 +1,6 @@
-import { ChannelCompact, Client } from "../src";
 import "jest-extended";
+
+import { ChannelCompact, Client } from "../src";
 import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
 
 const youtube = new Client();

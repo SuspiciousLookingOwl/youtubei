@@ -1,5 +1,6 @@
-import { VideoCompact } from "../src";
 import "jest-extended";
+
+import { VideoCompact } from "../src";
 import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
 
 type Ignore = {

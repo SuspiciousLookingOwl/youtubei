@@ -1,4 +1,5 @@
 import "jest-extended";
+
 import { Client, LiveVideo } from "../src";
 
 const youtube = new Client({ youtubeClientOptions: { hl: "en" } });

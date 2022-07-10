@@ -1,5 +1,6 @@
-import { Comment, Video } from "../src";
 import "jest-extended";
+
+import { Comment, Video } from "../src";
 
 describe("Comment", () => {
 	it("url should match", () => {

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import http, { IncomingHttpHeaders } from "http";
 import https from "https";
 import qs from "querystring";
 import zlib from "zlib";
+
 import { ClientTypes } from "../classes";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { YoutubeRawData } from "./types";

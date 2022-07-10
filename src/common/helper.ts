@@ -1,4 +1,5 @@
 import { URL } from "url";
+
 import { YoutubeRawData } from "./types";
 
 export const getDuration = (s: string): number => {

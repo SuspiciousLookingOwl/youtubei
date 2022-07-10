@@ -1,4 +1,5 @@
 import "jest-extended";
+
 import { Client, Video } from "../src";
 import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
 
