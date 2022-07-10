@@ -69,7 +69,7 @@ export class BaseVideoParser {
 		return getContinuationFromItems(secondaryContents);
 	}
 
-	private static parseRawData(data: YoutubeRawData): YoutubeRawData {
+	static parseRawData(data: YoutubeRawData): YoutubeRawData {
 		const contents =
 			data[3].response.contents.twoColumnWatchNextResults.results.results.contents;
 

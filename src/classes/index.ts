@@ -5,7 +5,7 @@ export * from "./ChannelCompact";
 export * from "./Chat";
 export { Client as ClientTypes, default as Client } from "./Client";
 export * from "./Comment";
-export { default as LiveVideo } from "./LiveVideo";
+export * from "./LiveVideo";
 export { default as MixPlaylist } from "./MixPlaylist";
 export { default as Playlist } from "./Playlist";
 export { default as PlaylistCompact } from "./PlaylistCompact";

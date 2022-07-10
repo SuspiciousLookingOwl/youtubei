@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
-import { applyMixins, YoutubeRawData } from "../common";
-import { Chat, BaseVideo, BaseVideoAttributes } from ".";
-import { LIVE_CHAT_END_POINT } from "../constants";
+import { BaseVideo, BaseVideoAttributes, Chat, LiveVideoParser } from "..";
+import { applyMixins, YoutubeRawData } from "../../common";
+import { LIVE_CHAT_END_POINT } from "../../constants";
 
 /** @hidden */
 interface LiveVideoAttributes extends BaseVideoAttributes {
@@ -51,17 +51,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	 */
 	load(data: YoutubeRawData): LiveVideo {
 		super.load(data);
-
-		const videoInfo = BaseVideo.parseRawData(data);
-
-		this.watchingCount = +videoInfo.viewCount.videoViewCountRenderer.viewCount.runs
-			.map((r: YoutubeRawData) => r.text)
-			.join(" ")
-			.replace(/[^0-9]/g, "");
-
-		this.chatContinuation =
-			data[3].response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer?.continuations[0].reloadContinuationData.continuation;
-
+		LiveVideoParser.loadLiveVideo(this, data);
 		return this;
 	}
 
@@ -91,15 +81,21 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 		});
 
 		if (!response.data.continuationContents) return;
-		this.parseChat(response.data);
+		const chats = LiveVideoParser.parseChats(response.data);
 
-		const continuation =
-			response.data.continuationContents.liveChatContinuation.continuations[0];
-		const continuationData =
-			continuation.timedContinuationData || continuation.invalidationContinuationData;
+		for (const c of chats) {
+			const chat = new Chat({ client: this.client }).load(c);
+			if (this._chatQueue.find((c) => c.id === chat.id)) continue;
+			this._chatQueue.push(chat);
 
-		this._timeoutMs = continuationData.timeoutMs;
-		this.chatContinuation = continuationData.continuation;
+			const timeout = chat.timestamp / 1000 - (new Date().getTime() - this._delay);
+			setTimeout(() => this.emit("chat", chat), timeout);
+		}
+
+		const { timeout, continuation } = LiveVideoParser.parseContinuation(response.data);
+
+		this._timeoutMs = timeout;
+		this.chatContinuation = continuation;
 		this._chatRequestPoolingTimeout = setTimeout(
 			() => this.pollChatContinuation(),
 			this._timeoutMs
@@ -107,22 +103,7 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	}
 
 	/** Parse chat data from Youtube and add to chatQueue */
-	private parseChat(data: YoutubeRawData): void {
-		const chats =
-			data.continuationContents.liveChatContinuation.actions?.flatMap(
-				(a: YoutubeRawData) => a.addChatItemAction?.item.liveChatTextMessageRenderer || []
-			) || [];
-
-		for (const rawChatData of chats) {
-			const chat = new Chat({ client: this.client }).load(rawChatData);
-			if (this._chatQueue.find((c) => c.id === chat.id)) continue;
-			this._chatQueue.push(chat);
-			setTimeout(() => {
-				this.emit("chat", chat);
-			}, chat.timestamp / 1000 - (new Date().getTime() - this._delay));
-		}
-	}
 }
 
 applyMixins(LiveVideo, [EventEmitter]);
-export default LiveVideo;
+export { LiveVideo };
