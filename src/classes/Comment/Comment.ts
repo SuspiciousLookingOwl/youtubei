@@ -1,6 +1,7 @@
-import { Base, ChannelCompact, Thumbnails, Video, BaseAttributes, Reply } from ".";
-import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../common";
-import { I_END_POINT } from "../constants";
+import { Base, BaseAttributes, ChannelCompact, Reply, Video } from "..";
+import { YoutubeRawData } from "../../common";
+import { I_END_POINT } from "../../constants";
+import { CommentParser } from "./CommentParser";
 
 /** @hidden */
 interface CommentAttributes extends BaseAttributes {
@@ -16,7 +17,7 @@ interface CommentAttributes extends BaseAttributes {
 }
 
 /** Represents a Comment / Reply */
-export default class Comment extends Base implements CommentAttributes {
+export class Comment extends Base implements CommentAttributes {
 	/** The video this comment belongs to */
 	video!: Video;
 	/** The comment's author */
@@ -50,44 +51,7 @@ export default class Comment extends Base implements CommentAttributes {
 	 * @hidden
 	 */
 	load(data: YoutubeRawData): Comment {
-		const {
-			authorText,
-			authorThumbnail,
-			authorEndpoint,
-			contentText,
-			publishedTimeText,
-			commentId,
-			voteCount,
-			authorIsChannelOwner,
-			pinnedCommentBadge,
-			replyCount,
-		} = data.comment.commentRenderer;
-
-		// Basic information
-		this.id = commentId;
-		this.content = contentText.runs.map((r: YoutubeRawData) => r.text).join("");
-		this.publishDate = publishedTimeText.runs.shift().text;
-		this.likeCount = +(voteCount?.simpleText || 0);
-		this.isAuthorChannelOwner = authorIsChannelOwner;
-		this.isPinnedComment = !!pinnedCommentBadge;
-		this.replyCount = replyCount;
-
-		// Reply Continuation
-		this.replies = [];
-
-		this.replyContinuation = data.replies
-			? getContinuationFromItems(data.replies.commentRepliesRenderer.contents)
-			: undefined;
-
-		// Author
-		const { browseId } = authorEndpoint.browseEndpoint;
-		this.author = new ChannelCompact({
-			id: browseId,
-			name: authorText.simpleText,
-			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
-			client: this.client,
-		});
-
+		CommentParser.loadComment(this, data);
 		return this;
 	}
 
@@ -107,17 +71,9 @@ export default class Comment extends Base implements CommentAttributes {
 				data: { continuation: this.replyContinuation },
 			});
 
-			const continuationItems =
-				response.data.onResponseReceivedEndpoints[0].appendContinuationItemsAction
-					.continuationItems;
+			this.replyContinuation = CommentParser.parseContinuation(response.data);
+			const replies = CommentParser.parseReplies(response.data);
 
-			this.replyContinuation = getContinuationFromItems(continuationItems, [
-				"button",
-				"buttonRenderer",
-				"command",
-			]);
-
-			const replies = mapFilter(continuationItems, "commentRenderer");
 			newReplies.push(
 				...replies.map((i: YoutubeRawData) =>
 					new Reply({ video: this.video, comment: this, client: this.client }).load(i)
