@@ -9,7 +9,7 @@ export * from "./LiveVideo";
 export { default as MixPlaylist } from "./MixPlaylist";
 export { default as Playlist } from "./Playlist";
 export { default as PlaylistCompact } from "./PlaylistCompact";
-export { default as Reply } from "./Reply";
+export * from "./Reply";
 export { default as SearchResult } from "./SearchResult";
 export { default as Thumbnails } from "./Thumbnails";
 export { default as Video } from "./Video";

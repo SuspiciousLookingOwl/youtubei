@@ -1,5 +1,5 @@
-import { Base, ChannelCompact, Thumbnails, Video, BaseAttributes, Comment } from ".";
-import { YoutubeRawData } from "../common";
+import { Base, BaseAttributes, ChannelCompact, Comment, ReplyParser, Video } from "..";
+import { YoutubeRawData } from "../../common";
 
 /** @hidden */
 interface ReplyAttributes extends BaseAttributes {
@@ -13,7 +13,7 @@ interface ReplyAttributes extends BaseAttributes {
 }
 
 /** Represents a Reply */
-export default class Reply extends Base implements ReplyAttributes {
+export class Reply extends Base implements ReplyAttributes {
 	/** The comment this reply belongs to */
 	comment!: Comment;
 	/** The video this reply belongs to */
@@ -41,33 +41,7 @@ export default class Reply extends Base implements ReplyAttributes {
 	 * @hidden
 	 */
 	load(data: YoutubeRawData): Reply {
-		const {
-			authorText,
-			authorThumbnail,
-			authorEndpoint,
-			contentText,
-			publishedTimeText,
-			commentId,
-			likeCount,
-			authorIsChannelOwner,
-		} = data;
-
-		// Basic information
-		this.id = commentId;
-		this.content = contentText.runs.map((r: YoutubeRawData) => r.text).join("");
-		this.publishDate = publishedTimeText.runs.shift().text;
-		this.likeCount = likeCount;
-		this.isAuthorChannelOwner = authorIsChannelOwner;
-
-		// Author
-		const { browseId } = authorEndpoint.browseEndpoint;
-		this.author = new ChannelCompact({
-			id: browseId,
-			name: authorText.simpleText,
-			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
-			client: this.client,
-		});
-
+		ReplyParser.loadReply(this, data);
 		return this;
 	}
 }
