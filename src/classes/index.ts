@@ -1,6 +1,6 @@
 export * from "./Base";
 export * from "./BaseVideo";
-export { default as Channel } from "./Channel";
+export * from "./Channel";
 export { default as ChannelCompact } from "./ChannelCompact";
 export { default as Chat } from "./Chat";
 export { Client as ClientTypes, default as Client } from "./Client";
