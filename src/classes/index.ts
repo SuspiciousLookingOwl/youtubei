@@ -8,7 +8,7 @@ export * from "./Comment";
 export * from "./LiveVideo";
 export * from "./MixPlaylist";
 export * from "./Playlist";
-export { default as PlaylistCompact } from "./PlaylistCompact";
+export * from "./PlaylistCompact";
 export * from "./Reply";
 export { default as SearchResult } from "./SearchResult";
 export * from "./Thumbnails";
