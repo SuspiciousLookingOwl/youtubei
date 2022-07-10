@@ -1,6 +1,6 @@
 import { getContinuationFromItems, stripToInt, YoutubeRawData } from "../../common";
 import { ChannelCompact } from "../ChannelCompact";
-import Client from "../Client";
+import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";

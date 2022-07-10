@@ -1,12 +1,15 @@
-import { I_END_POINT, WATCH_END_POINT } from "../constants";
-import { getQueryParameter, HTTP } from "../common";
-
-import { Playlist, Video, SearchResult, LiveVideo, Channel, MixPlaylist } from ".";
-import { SearchResultType } from "./SearchResult";
 import { RequestOptions } from "https";
+import { getQueryParameter, HTTP } from "../../common";
+import { I_END_POINT, WATCH_END_POINT } from "../../constants";
+import { Channel } from "../Channel";
+import { LiveVideo } from "../LiveVideo";
+import { MixPlaylist } from "../MixPlaylist";
+import { Playlist } from "../Playlist";
+import { SearchResult, SearchResultType } from "../SearchResult";
+import { Video } from "../Video";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace Client {
+export namespace ClientTypes {
 	export type SearchType = "video" | "channel" | "playlist" | "all";
 
 	export type SearchOptions = {
@@ -28,12 +31,12 @@ export namespace Client {
 }
 
 /** Youtube Client */
-export default class Client {
+export class Client {
 	/** @hidden */
 	http: HTTP;
 
-	constructor(options: Partial<Client.ClientOptions> = {}) {
-		const fullOptions: Client.ClientOptions = {
+	constructor(options: Partial<ClientTypes.ClientOptions> = {}) {
+		const fullOptions: ClientTypes.ClientOptions = {
 			cookie: "",
 			https: true,
 			requestOptions: {},
@@ -55,11 +58,11 @@ export default class Client {
 	 * @param searchOptions Search options
 	 *
 	 */
-	async search<T extends Client.SearchOptions>(
+	async search<T extends ClientTypes.SearchOptions>(
 		query: string,
 		searchOptions?: T
 	): Promise<SearchResult<T["type"]>> {
-		const options: Client.SearchOptions = {
+		const options: ClientTypes.SearchOptions = {
 			type: "all",
 			params: "",
 			...searchOptions,
@@ -75,7 +78,7 @@ export default class Client {
 	 *
 	 * @return Can be {@link VideoCompact} | {@link PlaylistCompact} | {@link Channel} | `undefined`
 	 */
-	async findOne<T extends Client.SearchOptions>(
+	async findOne<T extends ClientTypes.SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
 	): Promise<SearchResultType<T["type"]> | undefined> {

@@ -34,7 +34,7 @@ export type SearchResultType<T> = T extends "video" | VideoCompact
  * @noInheritDoc
  */
 @extendsBuiltIn()
-export default class SearchResult<T> extends Array<SearchResultType<T>> {
+export class SearchResult<T> extends Array<SearchResultType<T>> {
 	/** The estimated search result count */
 	estimatedResults!: number;
 	continuation?: string;

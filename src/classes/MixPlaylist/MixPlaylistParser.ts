@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import Client from "../Client";
+import { Client } from "../Client";
 import { VideoCompact } from "../VideoCompact";
 import { MixPlaylist } from "./MixPlaylist";
 
