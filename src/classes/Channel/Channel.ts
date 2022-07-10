@@ -27,12 +27,11 @@ export class Channel extends ChannelCompact implements ChannelAttributes {
 	banner!: Thumbnails;
 	mobileBanner!: Thumbnails;
 	tvBanner!: Thumbnails;
-	shelves!: Shelf[];
+	shelves: Shelf[] = [];
 
 	/** @hidden */
 	constructor(channel: Partial<ChannelAttributes> = {}) {
 		super();
-		this.shelves = [];
 		this.videos = [];
 		this.playlists = [];
 		Object.assign(this, channel);
