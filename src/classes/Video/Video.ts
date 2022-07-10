@@ -63,7 +63,7 @@ export class Video extends BaseVideo implements VideoAttributes {
 	 * @returns Loaded comments
 	 */
 	async nextComments(count = 1): Promise<Comment[]> {
-		let newComments: Comment[] = [];
+		const newComments: Comment[] = [];
 
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this.commentContinuation) break;
@@ -72,7 +72,7 @@ export class Video extends BaseVideo implements VideoAttributes {
 				data: { continuation: this.commentContinuation },
 			});
 
-			newComments = VideoParser.parseComments(response.data, this);
+			newComments.push(...VideoParser.parseComments(response.data, this));
 			this.commentContinuation = VideoParser.parseCommentContinuation(response.data);
 		}
 

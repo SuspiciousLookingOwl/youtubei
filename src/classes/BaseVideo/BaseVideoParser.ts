@@ -41,18 +41,18 @@ export class BaseVideoParser {
 		target.description =
 			videoInfo.description?.runs.map((d: Record<string, string>) => d.text).join("") || "";
 
-		// Up Next and related videos
-		target.related = [];
+		// related videos
 		const secondaryContents =
 			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
 				.results;
 
 		if (secondaryContents) {
-			target.related.push(...BaseVideoParser.parseRelated(secondaryContents, target.client));
+			target.related = BaseVideoParser.parseRelatedFromSecondaryContent(
+				secondaryContents,
+				target.client
+			);
 			// Related continuation
 			target.relatedContinuation = getContinuationFromItems(secondaryContents);
-		} else {
-			target.related = [];
 		}
 
 		return target;
@@ -62,9 +62,7 @@ export class BaseVideoParser {
 		const secondaryContents: YoutubeRawData[] =
 			data.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems;
 
-		return secondaryContents
-			.map((c: YoutubeRawData) => BaseVideoParser.parseCompactRenderer(c, client))
-			.filter((c): c is VideoCompact | PlaylistCompact => c !== undefined);
+		return BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, client);
 	}
 
 	static parseContinuation(data: YoutubeRawData): string | undefined {
@@ -96,6 +94,15 @@ export class BaseVideoParser {
 		} else if ("compactRadioRenderer" in data) {
 			return new PlaylistCompact({ client }).load(data.compactRadioRenderer);
 		}
+	}
+
+	private static parseRelatedFromSecondaryContent(
+		secondaryContents: YoutubeRawData[],
+		client: Client
+	): (VideoCompact | PlaylistCompact)[] {
+		return secondaryContents
+			.map((c: YoutubeRawData) => BaseVideoParser.parseCompactRenderer(c, client))
+			.filter((c): c is VideoCompact | PlaylistCompact => c !== undefined);
 	}
 
 	private static parseButtonRenderer(data: YoutubeRawData): string {

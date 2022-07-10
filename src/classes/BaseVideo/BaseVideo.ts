@@ -1,4 +1,4 @@
-import { getContinuationFromItems, YoutubeRawData } from "../../common";
+import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
 import { Base, BaseAttributes } from "../Base";
 import { ChannelCompact } from "../ChannelCompact";
@@ -75,7 +75,7 @@ export class BaseVideo extends Base implements BaseVideoAttributes {
 
 	/** Load next related videos / playlists */
 	async nextRelated(count = 1): Promise<(VideoCompact | PlaylistCompact)[]> {
-		let newRelated: (VideoCompact | PlaylistCompact)[] = [];
+		const newRelated: (VideoCompact | PlaylistCompact)[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
 			if (this.relatedContinuation === undefined) break;
 
@@ -83,8 +83,8 @@ export class BaseVideo extends Base implements BaseVideoAttributes {
 				data: { continuation: this.relatedContinuation },
 			});
 
-			newRelated = BaseVideoParser.parseRelated(response.data, this.client);
-			this.relatedContinuation = getContinuationFromItems(response.data);
+			newRelated.push(...BaseVideoParser.parseRelated(response.data, this.client));
+			this.relatedContinuation = BaseVideoParser.parseContinuation(response.data);
 		}
 
 		this.related.push(...newRelated);

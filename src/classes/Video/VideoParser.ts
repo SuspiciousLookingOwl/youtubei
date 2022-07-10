@@ -18,7 +18,7 @@ export class VideoParser {
 	}
 
 	static parseComments(data: YoutubeRawData, video: Video): Comment[] {
-		const endpoints = data.onResponseReceivedEndpoints.pop();
+		const endpoints = data.onResponseReceivedEndpoints.at(-1);
 
 		const continuationItems = (
 			endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction
@@ -31,7 +31,7 @@ export class VideoParser {
 	}
 
 	static parseCommentContinuation(data: YoutubeRawData): string | undefined {
-		const endpoints = data.onResponseReceivedEndpoints.pop();
+		const endpoints = data.onResponseReceivedEndpoints.at(-1);
 
 		const continuationItems = (
 			endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction

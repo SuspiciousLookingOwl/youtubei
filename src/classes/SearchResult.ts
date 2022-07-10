@@ -1,6 +1,6 @@
-import { I_END_POINT } from "../constants";
+import { ChannelCompact, Client, ClientTypes, PlaylistCompact, VideoCompact } from ".";
 import { extendsBuiltIn, getContinuationFromItems, YoutubeRawData } from "../common";
-import { ChannelCompact, PlaylistCompact, VideoCompact, ClientTypes, Client } from ".";
+import { I_END_POINT } from "../constants";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export type SearchResultType<T> = T extends "video" | VideoCompact
@@ -120,7 +120,7 @@ export default class SearchResult<T> extends Array<SearchResultType<T>> {
 	private loadSearchResult(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
 		const contents = sectionListContents
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
-			.pop().itemSectionRenderer.contents;
+			.at(-1).itemSectionRenderer.contents;
 
 		this.continuation = getContinuationFromItems(sectionListContents);
 		const newContent = [];

@@ -65,7 +65,7 @@ export class Comment extends Base implements CommentAttributes {
 
 	/** Load next replies of the comment */
 	async nextReplies(count = 1): Promise<Reply[]> {
-		let newReplies: Reply[] = [];
+		const newReplies: Reply[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this.replyContinuation) break;
 
@@ -75,7 +75,7 @@ export class Comment extends Base implements CommentAttributes {
 			});
 
 			this.replyContinuation = CommentParser.parseContinuation(response.data);
-			newReplies = CommentParser.parseReplies(response.data, this);
+			newReplies.push(...CommentParser.parseReplies(response.data, this));
 		}
 
 		this.replies.push(...newReplies);

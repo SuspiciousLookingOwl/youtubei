@@ -67,14 +67,14 @@ export class Playlist extends Base implements PlaylistAttributes {
 	 * @param count How many times to load the next videos. Set 0 to load all videos (might take a while on a large playlist!)
 	 */
 	async next(count = 1): Promise<VideoCompact[]> {
-		let newVideos: VideoCompact[] = [];
+		const newVideos: VideoCompact[] = [];
 		for (let i = 0; i < count || count == 0; i++) {
 			if (!this.continuation) break;
 			const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 				data: { continuation: this.continuation },
 			});
 
-			newVideos = PlaylistParser.parseContinuationVideos(response.data, this.client);
+			newVideos.push(...PlaylistParser.parseContinuationVideos(response.data, this.client));
 			this.continuation = PlaylistParser.parseVideoContinuation(response.data);
 		}
 
