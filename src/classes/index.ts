@@ -11,6 +11,6 @@ export { default as Playlist } from "./Playlist";
 export { default as PlaylistCompact } from "./PlaylistCompact";
 export * from "./Reply";
 export { default as SearchResult } from "./SearchResult";
-export { default as Thumbnails } from "./Thumbnails";
+export * from "./Thumbnails";
 export { default as Video } from "./Video";
 export { default as VideoCompact } from "./VideoCompact";

@@ -1,4 +1,4 @@
-import { extendsBuiltIn } from "../common";
+import { extendsBuiltIn } from "../../common";
 
 interface Thumbnail {
 	url: string;
@@ -14,7 +14,7 @@ interface Thumbnail {
  * @noInheritDoc
  */
 @extendsBuiltIn()
-export default class Thumbnails extends Array<Thumbnail> {
+export class Thumbnails extends Array<Thumbnail> {
 	/** @hidden */
 	constructor() {
 		super();
