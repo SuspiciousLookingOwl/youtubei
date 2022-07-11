@@ -8,4 +8,5 @@ module.exports = {
 	endOfLine: "lf",
 	importOrder: ["^[./]"],
 	importOrderSeparation: true,
+	importOrderParserPlugins: ["typescript", "decorators-legacy"],
 };
