@@ -79,9 +79,9 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 		this.estimatedResults = +response.data.estimatedResults;
 
 		if (this.estimatedResults > 0) {
-			const items = SearchResultParser.parseInitialSearchResult(response.data, this.client) as SearchResultType<T>[];
-			this.push(...items);
-			this.continuation = SearchResultParser.parseInitialContinuation(response.data);
+			const {data, continuation} = SearchResultParser.parseInitialSearchResult(response.data, this.client);
+			this.push(...data  as SearchResultType<T>[]);
+			this.continuation = continuation;
 		}
 
 		return this;
@@ -110,9 +110,9 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 				data: { continuation: this.continuation },
 			});
 
-			const items = SearchResultParser.parseContinuationSearchResult(response.data, this.client) as SearchResultType<T>[];
-			newSearchResults.push(...items);
-			this.continuation = SearchResultParser.parseContinuation(response.data);
+			const {data, continuation} = SearchResultParser.parseContinuationSearchResult(response.data, this.client) ;
+			newSearchResults.push(...data as SearchResultType<T>[]);
+			this.continuation = continuation;
 		}
 		this.push(...newSearchResults);
 		return newSearchResults;

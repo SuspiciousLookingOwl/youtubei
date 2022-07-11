@@ -5,35 +5,31 @@ import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { SearchResultType } from "./SearchResult";
 
+type ParseReturnType = {
+	data: SearchResultType[];
+	continuation: string | undefined;
+};
+
 export class SearchResultParser {
-	static parseInitialSearchResult(data: YoutubeRawData, client: Client): SearchResultType[] {
+	static parseInitialSearchResult(data: YoutubeRawData, client: Client): ParseReturnType {
 		const sectionListContents =
 			data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer
 				.contents;
 
-		return SearchResultParser.parseSearchResult(sectionListContents, client);
+		return {
+			data: SearchResultParser.parseSearchResult(sectionListContents, client),
+			continuation: getContinuationFromItems(sectionListContents),
+		};
 	}
 
-	static parseContinuationSearchResult(data: YoutubeRawData, client: Client): SearchResultType[] {
+	static parseContinuationSearchResult(data: YoutubeRawData, client: Client): ParseReturnType {
 		const sectionListContents =
 			data.onResponseReceivedCommands[0].appendContinuationItemsAction.continuationItems;
 
-		return SearchResultParser.parseSearchResult(sectionListContents, client);
-	}
-
-	static parseInitialContinuation(data: YoutubeRawData): string | undefined {
-		const sectionListContents =
-			data.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer
-				.contents;
-
-		return getContinuationFromItems(sectionListContents);
-	}
-
-	static parseContinuation(data: YoutubeRawData): string | undefined {
-		const sectionListContents =
-			data.onResponseReceivedCommands[0].appendContinuationItemsAction.continuationItems;
-
-		return getContinuationFromItems(sectionListContents);
+		return {
+			data: SearchResultParser.parseSearchResult(sectionListContents, client),
+			continuation: getContinuationFromItems(sectionListContents),
+		};
 	}
 
 	private static parseSearchResult(
