@@ -10,7 +10,7 @@ export * from "./MixPlaylist";
 export * from "./Playlist";
 export * from "./PlaylistCompact";
 export * from "./Reply";
-export * from "./SearchResult";
+export * from "./SearchManager";
 export * from "./Thumbnails";
 export * from "./Video";
 export * from "./VideoCompact";

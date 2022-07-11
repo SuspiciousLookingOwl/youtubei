@@ -1,14 +1,16 @@
 import "jest-extended";
 
-import { Client, PlaylistCompact, SearchResult } from "../src";
+import { Client, PlaylistCompact, SearchManager, SearchType } from "../src";
 
 const youtube = new Client();
 
 describe("PlaylistCompact", () => {
-	let playlists: SearchResult<"playlist">;
+	let playlists: SearchManager<SearchType.PLAYLIST>;
 
 	beforeAll(async () => {
-		playlists = await youtube.search("100 seconds of code fireship", { type: "playlist" });
+		playlists = await youtube.search("100 seconds of code fireship", {
+			type: SearchType.PLAYLIST,
+		});
 	});
 
 	it("match 1st playlist from search result", () => {

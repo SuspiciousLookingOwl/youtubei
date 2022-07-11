@@ -4,7 +4,7 @@ import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
-import { SearchResultParser } from "./SearchResultParser";
+import { SearchResultParser } from "./SearchManagerParser";
 import { SearchProto } from "./proto";
 
 export type SearchOptions = {
@@ -47,41 +47,39 @@ export enum SearchSort {
 	VIEW_COUNT,
 }
 
-export type SearchResultContent<T extends SearchOptions> = T["type"] extends
-	| SearchType.VIDEO
-	| VideoCompact
+export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | VideoCompact
 	? VideoCompact
-	: T["type"] extends SearchType.CHANNEL | BaseChannel
+	: T extends SearchType.CHANNEL | BaseChannel
 	? BaseChannel
-	: T["type"] extends SearchType.PLAYLIST | PlaylistCompact
+	: T extends SearchType.PLAYLIST | PlaylistCompact
 	? PlaylistCompact
 	: VideoCompact | BaseChannel | PlaylistCompact;
 
 /**
  * Represents search result, usually returned from `client.search();`.
  *
- * {@link SearchResult} is a subclass of [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
- * with {@link SearchResult.next} method to navigate through pagination
+ * {@link SearchManager} is a subclass of [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+ * with {@link SearchManager.next} method to navigate through pagination
  *
  * @example
  * ```ts
- * const searchResult = await youtube.search("Keyword");
+ * const SearchManager = await youtube.search("Keyword");
  *
- * console.log(searchResult); // search result from first page
+ * console.log(SearchManager); // search result from first page
  *
- * let nextSearchResult = await searchResult.next();
+ * let nextSearchResult = await SearchManager.next();
  * console.log(nextSearchResult); // search result from second page
  *
- * nextSearchResult = await searchResult.next();
+ * nextSearchResult = await SearchManager.next();
  * console.log(nextSearchResult); // search result from third page
  *
- * console.log(searchResult); // search result from first, second, and third page.
+ * console.log(SearchManager); // search result from first, second, and third page.
  * ```
  *
  * @noInheritDoc
  */
 @extendsBuiltIn()
-export class SearchResult<T> extends Array<SearchResultContent<T>> {
+export class SearchManager<T = SearchType.ALL> extends Array<SearchResult<T>> {
 	/** The estimated search result count */
 	estimatedResults!: number;
 	continuation?: string;
@@ -98,7 +96,7 @@ export class SearchResult<T> extends Array<SearchResultContent<T>> {
 	 *
 	 * @hidden
 	 */
-	load(client: Client): SearchResult<T> {
+	load(client: Client): SearchManager<T> {
 		this.client = client;
 		return this;
 	}
@@ -110,7 +108,7 @@ export class SearchResult<T> extends Array<SearchResultContent<T>> {
 	 * @param options Search Options
 	 * @hidden
 	 */
-	async init(query: string, options: SearchOptions): Promise<SearchResult<T>> {
+	async init(query: string, options: SearchOptions): Promise<SearchManager<T>> {
 		const { sortBy, ...videoFilters } = options;
 		const bufferParams = SearchProto.SearchOptions.encode({
 			videoFilters,
@@ -131,7 +129,7 @@ export class SearchResult<T> extends Array<SearchResultContent<T>> {
 				response.data,
 				this.client
 			);
-			this.push(...(data as SearchResultContent<T>[]));
+			this.push(...(data as SearchResult<T>[]));
 			this.continuation = continuation;
 		}
 
@@ -153,7 +151,7 @@ export class SearchResult<T> extends Array<SearchResultContent<T>> {
 	 *
 	 * @param count How many times to load the next data
 	 */
-	async next(count = 1): Promise<Array<SearchResultContent<T>>> {
+	async next(count = 1): Promise<Array<SearchResult<T>>> {
 		const newSearchResults = [];
 		for (let i = 0; i < count; i++) {
 			if (!this.continuation) break;
@@ -165,7 +163,7 @@ export class SearchResult<T> extends Array<SearchResultContent<T>> {
 				response.data,
 				this.client
 			);
-			newSearchResults.push(...(data as SearchResultContent<T>[]));
+			newSearchResults.push(...(data as SearchResult<T>[]));
 			this.continuation = continuation;
 		}
 		this.push(...newSearchResults);

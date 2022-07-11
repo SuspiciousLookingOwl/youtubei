@@ -1,23 +1,23 @@
 import "jest-extended";
 
-import { Client, SearchResult } from "../src";
+import { Client, SearchManager, SearchType } from "../src";
 
 const youtube = new Client();
 
-describe("SearchResult", () => {
-	let searchResult: SearchResult<"all">;
+describe("SearchManager", () => {
+	let result: SearchManager<SearchType.ALL>;
 
 	beforeAll(async () => {
-		searchResult = await youtube.search("foo");
+		result = await youtube.search("foo");
 	});
 
 	it("search result should be more than 15", async () => {
-		expect(searchResult.length).toBeGreaterThan(15);
+		expect(result.length).toBeGreaterThan(15);
 	});
 
 	it("load continuation", async () => {
-		const nextVideos = await searchResult.next();
+		const nextVideos = await result.next();
 		expect(nextVideos.length).toBeGreaterThan(15);
-		expect(searchResult.length).toBeGreaterThan(35);
+		expect(result.length).toBeGreaterThan(35);
 	});
 });

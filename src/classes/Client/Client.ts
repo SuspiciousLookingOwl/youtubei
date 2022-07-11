@@ -5,7 +5,7 @@ import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
-import { SearchOptions, SearchResult, SearchResultContent } from "../SearchResult";
+import { SearchOptions, SearchManager, SearchResult } from "../SearchManager";
 import { Video } from "../Video";
 import { HTTP } from "./HTTP";
 
@@ -46,8 +46,11 @@ export class Client {
 	 * @param options Search options
 	 *
 	 */
-	async search<T extends SearchOptions>(query: string, options?: T): Promise<SearchResult<T>> {
-		const result = new SearchResult().load(this);
+	async search<T extends SearchOptions>(
+		query: string,
+		options?: T
+	): Promise<SearchManager<T["type"]>> {
+		const result = new SearchManager().load(this);
 		await result.init(query, options || {});
 		return result;
 	}
@@ -60,7 +63,7 @@ export class Client {
 	async findOne<T extends SearchOptions>(
 		query: string,
 		options?: T
-	): Promise<SearchResultContent<T> | undefined> {
+	): Promise<SearchResult<T["type"]> | undefined> {
 		return (await this.search(query, options)).shift();
 	}
 

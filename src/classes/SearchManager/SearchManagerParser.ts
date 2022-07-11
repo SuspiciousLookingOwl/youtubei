@@ -3,10 +3,10 @@ import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
-import { SearchResultType } from "./SearchResult";
+import { SearchResult } from "./SearchManager";
 
 type ParseReturnType = {
-	data: SearchResultType[];
+	data: SearchResult[];
 	continuation: string | undefined;
 };
 
@@ -35,12 +35,12 @@ export class SearchResultParser {
 	private static parseSearchResult(
 		sectionListContents: YoutubeRawData,
 		client: Client
-	): SearchResultType[] {
+	): SearchResult[] {
 		const rawContents = sectionListContents
 			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
 			.at(-1).itemSectionRenderer.contents;
 
-		const contents: SearchResultType[] = [];
+		const contents: SearchResult[] = [];
 
 		for (const c of rawContents) {
 			if ("playlistRenderer" in c)
