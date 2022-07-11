@@ -1,7 +1,7 @@
 import "jest-extended";
 
 import { Client, Playlist } from "../src";
-import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
+import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 const youtube = new Client();
 
@@ -20,7 +20,7 @@ describe("Playlist", () => {
 		expect(playlist.videoCount).toBeGreaterThan(5000);
 		expect(typeof playlist.viewCount).toBe("number");
 		expect(typeof playlist.lastUpdatedAt).toBe("string");
-		commonChannelCompactTest(playlist.channel!, {
+		commonBaseChannelTest(playlist.channel!, {
 			ignoreVideoCount: true,
 			ignoreThumbnails: true,
 		});
@@ -38,7 +38,7 @@ describe("Playlist", () => {
 		newVideos = await playlist.next(2);
 		expect(newVideos.length).toBe(200);
 		expect(playlist.videos.length).toBe(400);
-		commonChannelCompactTest(playlist.videos[0].channel!, {
+		commonBaseChannelTest(playlist.videos[0].channel!, {
 			ignoreVideoCount: true,
 			ignoreThumbnails: true,
 		});

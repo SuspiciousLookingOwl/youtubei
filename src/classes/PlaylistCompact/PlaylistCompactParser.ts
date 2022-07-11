@@ -1,5 +1,5 @@
 import { stripToInt, YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Thumbnails } from "../Thumbnails";
 import { PlaylistCompact } from "./PlaylistCompact";
 
@@ -26,7 +26,7 @@ export class PlaylistCompactParser {
 		// Channel
 		if (shortBylineText && shortBylineText.simpleText !== "YouTube") {
 			const shortByLine = shortBylineText.runs[0];
-			target.channel = new ChannelCompact({
+			target.channel = new BaseChannel({
 				id: shortByLine.navigationEndpoint.browseEndpoint.browseId,
 				name: shortByLine.text,
 				client: target.client,

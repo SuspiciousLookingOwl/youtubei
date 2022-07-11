@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
@@ -47,7 +47,7 @@ export class ChannelParser {
 			if (!content.horizontalListRenderer) continue;
 
 			const items:
-				| ChannelCompact[]
+				| BaseChannel[]
 				| VideoCompact[]
 				| PlaylistCompact[] = content.horizontalListRenderer.items
 				.map((i: YoutubeRawData) => {
@@ -60,7 +60,7 @@ export class ChannelParser {
 							i.gridPlaylistRenderer
 						);
 					if (i.gridChannelRenderer)
-						return new ChannelCompact({ client: target.client }).load(
+						return new BaseChannel({ client: target.client }).load(
 							i.gridChannelRenderer
 						);
 					return undefined;

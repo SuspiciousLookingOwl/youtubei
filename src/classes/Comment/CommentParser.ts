@@ -1,5 +1,5 @@
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
 import { Thumbnails } from "../Thumbnails";
 import { Comment } from "./Comment";
@@ -35,7 +35,7 @@ export class CommentParser {
 
 		// Author
 		const { browseId } = authorEndpoint.browseEndpoint;
-		target.author = new ChannelCompact({
+		target.author = new BaseChannel({
 			id: browseId,
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),

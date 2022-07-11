@@ -4,10 +4,10 @@ import { Base, BaseAttributes } from "../Base";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
-import { ChannelCompactParser } from "./ChannelCompactParser";
+import { BaseChannelParser } from "./BaseChannelParser";
 
 /** @hidden */
-export interface ChannelCompactAttributes extends BaseAttributes {
+export interface BaseChannelAttributes extends BaseAttributes {
 	name: string;
 	thumbnails?: Thumbnails;
 	videoCount?: number;
@@ -17,7 +17,7 @@ export interface ChannelCompactAttributes extends BaseAttributes {
 }
 
 /**  Represents a Youtube Channel */
-export class ChannelCompact extends Base implements ChannelCompactAttributes {
+export class BaseChannel extends Base implements BaseChannelAttributes {
 	/** The channel's name */
 	name!: string;
 	/** Thumbnails of the Channel with different sizes */
@@ -40,7 +40,7 @@ export class ChannelCompact extends Base implements ChannelCompactAttributes {
 	playlistContinuation?: string | null = null;
 
 	/** @hidden */
-	constructor(channel: Partial<ChannelCompactAttributes> = {}) {
+	constructor(channel: Partial<BaseChannelAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
 	}
@@ -55,8 +55,8 @@ export class ChannelCompact extends Base implements ChannelCompactAttributes {
 	 *
 	 * @hidden
 	 */
-	load(data: YoutubeRawData): ChannelCompact {
-		ChannelCompactParser.loadChannelCompact(this, data);
+	load(data: YoutubeRawData): BaseChannel {
+		BaseChannelParser.loadBaseChannel(this, data);
 		return this;
 	}
 
@@ -147,7 +147,7 @@ export class ChannelCompact extends Base implements ChannelCompactAttributes {
 			data: { browseId: this.id, params, continuation },
 		});
 
-		const items = ChannelCompactParser.parseTabData(name, response.data);
+		const items = BaseChannelParser.parseTabData(name, response.data);
 		continuation = getContinuationFromItems(items);
 		const data = mapFilter(
 			items,

@@ -1,6 +1,6 @@
 import { YoutubeRawData } from "../../common";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { LiveVideo } from "../LiveVideo";
 import { Thumbnails } from "../Thumbnails";
 import { Video } from "../Video";
@@ -12,7 +12,7 @@ interface VideoCompactAttributes extends BaseAttributes {
 	thumbnails: Thumbnails;
 	duration: number | null;
 	isLive: boolean;
-	channel?: ChannelCompact;
+	channel?: BaseChannel;
 	uploadDate?: string;
 	viewCount?: number | null;
 }
@@ -30,7 +30,7 @@ export class VideoCompact extends Base implements VideoCompactAttributes {
 	/** Whether this video is a live now or not */
 	isLive!: boolean;
 	/** The channel who uploads this video */
-	channel?: ChannelCompact;
+	channel?: BaseChannel;
 	/** The date this video is uploaded at */
 	uploadDate?: string;
 	/** How many view does this video have, null if the view count is hidden */

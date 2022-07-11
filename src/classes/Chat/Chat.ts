@@ -1,13 +1,13 @@
 import { YoutubeRawData } from "../../common";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Video } from "../Video";
 import { ChatParser } from "./ChatParser";
 
 /** @hidden */
 interface ChatAttributes extends BaseAttributes {
 	video: Video;
-	author: ChannelCompact;
+	author: BaseChannel;
 	message: string;
 	timestamp: number;
 }
@@ -17,7 +17,7 @@ export class Chat extends Base implements ChatAttributes {
 	/** The video this chat belongs to */
 	video!: Video;
 	/** The chat's author */
-	author!: ChannelCompact;
+	author!: BaseChannel;
 	/** The message of this chat */
 	message!: string;
 	/** Timestamp in usec / microsecond */

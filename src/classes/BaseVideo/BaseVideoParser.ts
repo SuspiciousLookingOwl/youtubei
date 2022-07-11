@@ -1,5 +1,5 @@
 import { getContinuationFromItems, stripToInt, YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
@@ -21,7 +21,7 @@ export class BaseVideoParser {
 		// Channel
 		const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
 
-		target.channel = new ChannelCompact({
+		target.channel = new BaseChannel({
 			client: target.client,
 			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 			name: title.runs[0].text,

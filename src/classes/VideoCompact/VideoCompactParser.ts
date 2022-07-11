@@ -1,5 +1,5 @@
 import { getDuration, stripToInt, YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "./VideoCompact";
 
@@ -48,7 +48,7 @@ export class VideoCompactParser {
 				channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
 					.thumbnails;
 
-			target.channel = new ChannelCompact({
+			target.channel = new BaseChannel({
 				id: browseId,
 				name: (ownerText || shortBylineText).runs[0].text,
 				thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,

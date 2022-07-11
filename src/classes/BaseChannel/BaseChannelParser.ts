@@ -1,9 +1,9 @@
 import { stripToInt, YoutubeRawData } from "../../common";
 import { Thumbnails } from "../Thumbnails";
-import { ChannelCompact } from "./ChannelCompact";
+import { BaseChannel } from "./BaseChannel";
 
-export class ChannelCompactParser {
-	static loadChannelCompact(target: ChannelCompact, data: YoutubeRawData): ChannelCompact {
+export class BaseChannelParser {
+	static loadBaseChannel(target: BaseChannel, data: YoutubeRawData): BaseChannel {
 		const { channelId, title, thumbnail, videoCountText, subscriberCountText } = data;
 
 		target.id = channelId;

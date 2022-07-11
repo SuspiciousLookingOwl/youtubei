@@ -1,6 +1,6 @@
 import { YoutubeRawData } from "../../common";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Comment } from "../Comment";
 import { Video } from "../Video";
 import { ReplyParser } from "./ReplyParser";
@@ -9,7 +9,7 @@ import { ReplyParser } from "./ReplyParser";
 interface ReplyAttributes extends BaseAttributes {
 	comment: Comment;
 	video: Video;
-	author: ChannelCompact;
+	author: BaseChannel;
 	content: string;
 	publishDate: string;
 	likeCount: number;
@@ -23,7 +23,7 @@ export class Reply extends Base implements ReplyAttributes {
 	/** The video this reply belongs to */
 	video!: Video;
 	/** The comment's author */
-	author!: ChannelCompact;
+	author!: BaseChannel;
 	/** The content of this comment */
 	content!: string;
 	/** The publish date of the comment */

@@ -1,6 +1,6 @@
 import { YoutubeRawData } from "../../common";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Playlist } from "../Playlist/Playlist";
 import { Thumbnails } from "../Thumbnails";
 import { PlaylistCompactParser } from "./PlaylistCompactParser";
@@ -9,7 +9,7 @@ import { PlaylistCompactParser } from "./PlaylistCompactParser";
 interface PlaylistCompactAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
-	channel?: ChannelCompact;
+	channel?: BaseChannel;
 	videoCount: number;
 }
 
@@ -20,7 +20,7 @@ export class PlaylistCompact extends Base implements PlaylistCompactAttributes {
 	/** Thumbnails of the playlist with different sizes */
 	thumbnails!: Thumbnails;
 	/** The channel that made this playlist */
-	channel?: ChannelCompact;
+	channel?: BaseChannel;
 	/** How many videos in this playlist */
 	videoCount!: number;
 

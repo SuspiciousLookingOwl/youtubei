@@ -1,5 +1,5 @@
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
@@ -39,7 +39,7 @@ export class PlaylistParser {
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
 		if (videoOwner) {
 			const { title, thumbnail } = videoOwner.videoOwnerRenderer;
-			target.channel = new ChannelCompact({
+			target.channel = new BaseChannel({
 				id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
 				name: title.runs[0].text,
 				thumbnails: new Thumbnails().load(thumbnail.thumbnails),

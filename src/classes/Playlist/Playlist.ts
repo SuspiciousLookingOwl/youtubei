@@ -1,7 +1,7 @@
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact, ChannelCompactAttributes } from "../ChannelCompact";
+import { BaseChannel, BaseChannelAttributes } from "../BaseChannel";
 import { VideoCompact } from "../VideoCompact";
 import { PlaylistParser } from "./PlaylistParser";
 
@@ -11,7 +11,7 @@ interface PlaylistAttributes extends BaseAttributes {
 	videoCount: number;
 	viewCount: number;
 	lastUpdatedAt: string;
-	channel?: ChannelCompactAttributes;
+	channel?: BaseChannelAttributes;
 	videos: VideoCompact[];
 	continuation?: string;
 }
@@ -27,7 +27,7 @@ export class Playlist extends Base implements PlaylistAttributes {
 	/** Last time this playlist is updated */
 	lastUpdatedAt!: string;
 	/** The channel that made this playlist */
-	channel?: ChannelCompact;
+	channel?: BaseChannel;
 	/** Videos in the playlist */
 	videos: VideoCompact[] = [];
 	/** Current continuation token to load next videos  */

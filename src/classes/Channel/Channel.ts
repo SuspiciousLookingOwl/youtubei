@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import { ChannelCompact, ChannelCompactAttributes } from "../ChannelCompact";
+import { BaseChannel, BaseChannelAttributes } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
@@ -8,11 +8,11 @@ import { ChannelParser } from "./ChannelParser";
 export interface Shelf {
 	title: string;
 	subtitle?: string;
-	items: ChannelCompact[] | VideoCompact[] | PlaylistCompact[];
+	items: BaseChannel[] | VideoCompact[] | PlaylistCompact[];
 }
 
 /** @hidden */
-interface ChannelAttributes extends ChannelCompactAttributes {
+interface ChannelAttributes extends BaseChannelAttributes {
 	banner: Thumbnails;
 	tvBanner: Thumbnails;
 	mobileBanner: Thumbnails;
@@ -20,7 +20,7 @@ interface ChannelAttributes extends ChannelCompactAttributes {
 }
 
 /**  Represents a Youtube Channel */
-export class Channel extends ChannelCompact implements ChannelAttributes {
+export class Channel extends BaseChannel implements ChannelAttributes {
 	banner!: Thumbnails;
 	mobileBanner!: Thumbnails;
 	tvBanner!: Thumbnails;

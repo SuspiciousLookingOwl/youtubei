@@ -1,7 +1,7 @@
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
@@ -12,7 +12,7 @@ export interface BaseVideoAttributes extends BaseAttributes {
 	title: string;
 	thumbnails: Thumbnails;
 	description: string;
-	channel: ChannelCompact;
+	channel: BaseChannel;
 	uploadDate: string;
 	viewCount: number | null;
 	likeCount: number | null;
@@ -31,7 +31,7 @@ export class BaseVideo extends Base implements BaseVideoAttributes {
 	/** The description of this video */
 	description!: string;
 	/** The channel that uploaded this video */
-	channel!: ChannelCompact;
+	channel!: BaseChannel;
 	/** The date this video is uploaded at */
 	uploadDate!: string;
 	/** How many view does this video have, null if the view count is hidden */

@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Thumbnails } from "../Thumbnails";
 import { Reply } from "./Reply";
 
@@ -25,7 +25,7 @@ export class ReplyParser {
 
 		// Author
 		const { browseId } = authorEndpoint.browseEndpoint;
-		target.author = new ChannelCompact({
+		target.author = new BaseChannel({
 			id: browseId,
 			name: authorText.simpleText,
 			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),

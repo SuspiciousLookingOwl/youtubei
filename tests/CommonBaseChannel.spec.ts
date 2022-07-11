@@ -1,14 +1,14 @@
 import "jest-extended";
 
-import { ChannelCompact } from "../src";
+import { BaseChannel } from "../src";
 
 type Ignore = {
 	ignoreVideoCount?: boolean;
 	ignoreThumbnails?: boolean;
 };
 
-export const commonChannelCompactTest = (
-	channel: ChannelCompact,
+export const commonBaseChannelTest = (
+	channel: BaseChannel,
 	{ ignoreVideoCount, ignoreThumbnails }: Ignore = {
 		ignoreVideoCount: false,
 		ignoreThumbnails: false,

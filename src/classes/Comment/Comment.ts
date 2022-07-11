@@ -1,7 +1,7 @@
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
 import { Base, BaseAttributes } from "../Base";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
 import { Video } from "../Video";
 import { CommentParser } from "./CommentParser";
@@ -9,7 +9,7 @@ import { CommentParser } from "./CommentParser";
 /** @hidden */
 interface CommentAttributes extends BaseAttributes {
 	video: Video;
-	author: ChannelCompact;
+	author: BaseChannel;
 	content: string;
 	publishDate: string;
 	likeCount: number;
@@ -24,7 +24,7 @@ export class Comment extends Base implements CommentAttributes {
 	/** The video this comment belongs to */
 	video!: Video;
 	/** The comment's author */
-	author!: ChannelCompact;
+	author!: BaseChannel;
 	/** The content of this comment */
 	content!: string;
 	/** The publish date of the comment */

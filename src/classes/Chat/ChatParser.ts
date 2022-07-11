@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import { ChannelCompact } from "../ChannelCompact";
+import { BaseChannel } from "../BaseChannel";
 import { Chat } from "./Chat";
 
 export class ChatParser {
@@ -16,7 +16,7 @@ export class ChatParser {
 		// Basic information
 		target.id = id;
 		target.message = message.runs.map((r: YoutubeRawData) => r.text).join("");
-		target.author = new ChannelCompact({
+		target.author = new BaseChannel({
 			id: authorExternalChannelId,
 			name: authorName.simpleText,
 			thumbnails: authorPhoto.thumbnails,

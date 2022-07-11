@@ -1,7 +1,7 @@
 import "jest-extended";
 
 import { Client, Video } from "../src";
-import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
+import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
 
@@ -21,7 +21,7 @@ describe("Video", () => {
 		);
 		expect(video.duration).toBe(2172);
 		expect(typeof video.description).toBe("string");
-		commonChannelCompactTest(video.channel!, { ignoreVideoCount: true });
+		commonBaseChannelTest(video.channel!, { ignoreVideoCount: true });
 		expect(typeof video.uploadDate).toBe("string");
 		expect(video.viewCount).toBeGreaterThan(8000000);
 		expect(video.likeCount).toBeGreaterThan(245000);

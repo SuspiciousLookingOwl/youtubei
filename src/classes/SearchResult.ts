@@ -1,15 +1,15 @@
-import { ChannelCompact, Client, PlaylistCompact, VideoCompact } from ".";
+import { BaseChannel, Client, PlaylistCompact, VideoCompact } from ".";
 import { extendsBuiltIn, getContinuationFromItems, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 export type SearchResultType<T> = T extends "video" | VideoCompact
 	? VideoCompact
-	: T extends "channel" | ChannelCompact
-	? ChannelCompact
+	: T extends "channel" | BaseChannel
+	? BaseChannel
 	: T extends "playlist" | PlaylistCompact
 	? PlaylistCompact
-	: VideoCompact | ChannelCompact | PlaylistCompact;
+	: VideoCompact | BaseChannel | PlaylistCompact;
 /**
  * Represents search result, usually returned from `client.search();`.
  *
@@ -136,7 +136,7 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 				);
 			else if ("channelRenderer" in content)
 				newContent.push(
-					new ChannelCompact({ client: this.client }).load(content.channelRenderer)
+					new BaseChannel({ client: this.client }).load(content.channelRenderer)
 				);
 		}
 
