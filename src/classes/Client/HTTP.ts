@@ -35,6 +35,7 @@ export class HTTP {
 	async get(url: string, options?: Partial<Options>): Promise<Response> {
 		return await this.request(url, {
 			...options,
+			params: { prettyPrint: "false", ...options?.params },
 			method: "GET",
 		});
 	}
@@ -43,7 +44,7 @@ export class HTTP {
 		return await this.request(url, {
 			...options,
 			method: "POST",
-			params: { key: INNERTUBE_API_KEY, ...options?.params },
+			params: { key: INNERTUBE_API_KEY, prettyPrint: "false", ...options?.params },
 			data: {
 				context: {
 					client: {
