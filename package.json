@@ -62,6 +62,7 @@
 	},
 	"homepage": "https://youtubei.netlify.app",
 	"dependencies": {
-		"node-fetch": "2.6.7"
+		"node-fetch": "2.6.7",
+		"protocol-buffers": "5.0.0"
 	}
 }

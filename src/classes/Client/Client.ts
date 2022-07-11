@@ -5,21 +5,11 @@ import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
-import { SearchResult, SearchResultType } from "../SearchResult";
+import { SearchOptions, SearchResult, SearchResultContent } from "../SearchResult";
 import { Video } from "../Video";
 import { HTTP } from "./HTTP";
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 export namespace Client {
-	export type SearchType = "video" | "channel" | "playlist" | "all";
-
-	export type SearchOptions = {
-		/** Search type, can be `"video"`, `"channel"`, `"playlist"`, or `"all"` */
-		type?: SearchType;
-		/** Raw search params to be passed on the request, ignores `type` value if this is provided */
-		params?: string;
-	};
-
 	export type ClientOptions = {
 		initialCookie: string;
 		/** Optional options for http client */
@@ -53,21 +43,12 @@ export class Client {
 	 * Searches for videos / playlists / channels
 	 *
 	 * @param query The search query
-	 * @param searchOptions Search options
+	 * @param options Search options
 	 *
 	 */
-	async search<T extends Client.SearchOptions>(
-		query: string,
-		searchOptions?: T
-	): Promise<SearchResult<T["type"]>> {
-		const options: Client.SearchOptions = {
-			type: "all",
-			params: "",
-			...searchOptions,
-		};
-
+	async search<T extends SearchOptions>(query: string, options?: T): Promise<SearchResult<T>> {
 		const result = new SearchResult().load(this);
-		await result.init(query, options);
+		await result.init(query, options || {});
 		return result;
 	}
 
@@ -76,11 +57,11 @@ export class Client {
 	 *
 	 * @return Can be {@link VideoCompact} | {@link PlaylistCompact} | {@link Channel} | `undefined`
 	 */
-	async findOne<T extends Client.SearchOptions>(
+	async findOne<T extends SearchOptions>(
 		query: string,
-		searchOptions?: Partial<T>
-	): Promise<SearchResultType<T["type"]> | undefined> {
-		return (await this.search(query, searchOptions)).shift();
+		options?: T
+	): Promise<SearchResultContent<T> | undefined> {
+		return (await this.search(query, options)).shift();
 	}
 
 	/** Get playlist information and its videos by playlist id or URL */

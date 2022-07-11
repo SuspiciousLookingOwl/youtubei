@@ -1,4 +1,3 @@
-
 import { extendsBuiltIn } from "../../common";
 import { I_END_POINT } from "../../constants";
 import { BaseChannel } from "../BaseChannel";
@@ -6,15 +5,58 @@ import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { SearchResultParser } from "./SearchResultParser";
+import { SearchProto } from "./proto";
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export type SearchResultType<T = unknown> = T extends "video" | VideoCompact
+export type SearchOptions = {
+	type?: SearchType;
+	duration?: SearchDuration;
+	uploadDate?: SearchUploadDate;
+	sortBy?: SearchSort;
+};
+
+export enum SearchUploadDate {
+	ALL,
+	LAST_HOUR,
+	TODAY,
+	THIS_WEEK,
+	THIS_MONTH,
+	THIS_YEAR,
+}
+
+export enum SearchType {
+	ALL,
+	VIDEO,
+	CHANNEL,
+	PLAYLIST,
+}
+
+export enum SearchDuration {
+	ALL,
+	UNDER_FOUR_MINUTES = 1,
+	SHORT = 1,
+	FOUR_TO_TWENTY_MINUTES = 3,
+	MEDIUM = 3,
+	OVER_TWENTY_MINUTES = 2,
+	LONG = 2,
+}
+
+export enum SearchSort {
+	RELEVANCE,
+	RATING,
+	UPLOAD_DATE,
+	VIEW_COUNT,
+}
+
+export type SearchResultContent<T extends SearchOptions> = T["type"] extends
+	| SearchType.VIDEO
+	| VideoCompact
 	? VideoCompact
-	: T extends "channel" | BaseChannel
+	: T["type"] extends SearchType.CHANNEL | BaseChannel
 	? BaseChannel
-	: T extends "playlist" | PlaylistCompact
+	: T["type"] extends SearchType.PLAYLIST | PlaylistCompact
 	? PlaylistCompact
 	: VideoCompact | BaseChannel | PlaylistCompact;
+
 /**
  * Represents search result, usually returned from `client.search();`.
  *
@@ -39,7 +81,7 @@ export type SearchResultType<T = unknown> = T extends "video" | VideoCompact
  * @noInheritDoc
  */
 @extendsBuiltIn()
-export class SearchResult<T> extends Array<SearchResultType<T>> {
+export class SearchResult<T> extends Array<SearchResultContent<T>> {
 	/** The estimated search result count */
 	estimatedResults!: number;
 	continuation?: string;
@@ -68,19 +110,28 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param options Search Options
 	 * @hidden
 	 */
-	async init(query: string, options: Client.SearchOptions): Promise<SearchResult<T>> {
+	async init(query: string, options: SearchOptions): Promise<SearchResult<T>> {
+		const { sortBy, ...videoFilters } = options;
+		const bufferParams = SearchProto.SearchOptions.encode({
+			videoFilters,
+			sortBy,
+		});
+
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: {
 				query,
-				params: options.params || SearchResult.getSearchTypeParam(options.type || "all"),
+				params: Buffer.from(bufferParams).toString("base64"),
 			},
 		});
 
 		this.estimatedResults = +response.data.estimatedResults;
 
 		if (this.estimatedResults > 0) {
-			const {data, continuation} = SearchResultParser.parseInitialSearchResult(response.data, this.client);
-			this.push(...data  as SearchResultType<T>[]);
+			const { data, continuation } = SearchResultParser.parseInitialSearchResult(
+				response.data,
+				this.client
+			);
+			this.push(...(data as SearchResultContent<T>[]));
 			this.continuation = continuation;
 		}
 
@@ -102,7 +153,7 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 	 *
 	 * @param count How many times to load the next data
 	 */
-	async next(count = 1): Promise<Array<SearchResultType<T>>> {
+	async next(count = 1): Promise<Array<SearchResultContent<T>>> {
 		const newSearchResults = [];
 		for (let i = 0; i < count; i++) {
 			if (!this.continuation) break;
@@ -110,29 +161,14 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 				data: { continuation: this.continuation },
 			});
 
-			const {data, continuation} = SearchResultParser.parseContinuationSearchResult(response.data, this.client) ;
-			newSearchResults.push(...data as SearchResultType<T>[]);
+			const { data, continuation } = SearchResultParser.parseContinuationSearchResult(
+				response.data,
+				this.client
+			);
+			newSearchResults.push(...(data as SearchResultContent<T>[]));
 			this.continuation = continuation;
 		}
 		this.push(...newSearchResults);
 		return newSearchResults;
-	}
-
-	/** Load videos data from youtube */
-
-	/**
-	 * Get type query value
-	 *
-	 * @param type Search type
-	 * @hidden
-	 */
-	static getSearchTypeParam(type: "video" | "playlist" | "channel" | "all"): string {
-		const searchType = {
-			video: "EgIQAQ%3D%3D",
-			playlist: "EgIQAw%3D%3D",
-			channel: "EgIQAg%3D%3D",
-			all: "",
-		};
-		return type in searchType ? searchType[type] : "";
 	}
 }
