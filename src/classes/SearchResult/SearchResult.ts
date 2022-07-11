@@ -1,9 +1,14 @@
-import { BaseChannel, Client, PlaylistCompact, VideoCompact } from ".";
-import { extendsBuiltIn, getContinuationFromItems, YoutubeRawData } from "../common";
-import { I_END_POINT } from "../constants";
+
+import { extendsBuiltIn } from "../../common";
+import { I_END_POINT } from "../../constants";
+import { BaseChannel } from "../BaseChannel";
+import { Client } from "../Client";
+import { PlaylistCompact } from "../PlaylistCompact";
+import { VideoCompact } from "../VideoCompact";
+import { SearchResultParser } from "./SearchResultParser";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export type SearchResultType<T> = T extends "video" | VideoCompact
+export type SearchResultType<T = unknown> = T extends "video" | VideoCompact
 	? VideoCompact
 	: T extends "channel" | BaseChannel
 	? BaseChannel
@@ -74,10 +79,9 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 		this.estimatedResults = +response.data.estimatedResults;
 
 		if (this.estimatedResults > 0) {
-			this.loadSearchResult(
-				response.data.contents.twoColumnSearchResultsRenderer.primaryContents
-					.sectionListRenderer.contents
-			);
+			const items = SearchResultParser.parseInitialSearchResult(response.data, this.client) as SearchResultType<T>[];
+			this.push(...items);
+			this.continuation = SearchResultParser.parseInitialContinuation(response.data);
 		}
 
 		return this;
@@ -105,44 +109,16 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 			const response = await this.client.http.post(`${I_END_POINT}/search`, {
 				data: { continuation: this.continuation },
 			});
-			newSearchResults.push(
-				...this.loadSearchResult(
-					response.data.onResponseReceivedCommands[0].appendContinuationItemsAction
-						.continuationItems
-				)
-			);
+
+			const items = SearchResultParser.parseContinuationSearchResult(response.data, this.client) as SearchResultType<T>[];
+			newSearchResults.push(...items);
+			this.continuation = SearchResultParser.parseContinuation(response.data);
 		}
 		this.push(...newSearchResults);
 		return newSearchResults;
 	}
 
 	/** Load videos data from youtube */
-	private loadSearchResult(sectionListContents: YoutubeRawData): Array<SearchResultType<T>> {
-		const contents = sectionListContents
-			.filter((c: Record<string, unknown>) => "itemSectionRenderer" in c)
-			.at(-1).itemSectionRenderer.contents;
-
-		this.continuation = getContinuationFromItems(sectionListContents);
-		const newContent = [];
-
-		for (const content of contents) {
-			if ("playlistRenderer" in content)
-				newContent.push(
-					new PlaylistCompact({ client: this.client }).load(content.playlistRenderer)
-				);
-			else if ("videoRenderer" in content)
-				newContent.push(
-					new VideoCompact({ client: this.client }).load(content.videoRenderer)
-				);
-			else if ("channelRenderer" in content)
-				newContent.push(
-					new BaseChannel({ client: this.client }).load(content.channelRenderer)
-				);
-		}
-
-		this.push(...(newContent as Array<SearchResultType<T>>));
-		return newContent as Array<SearchResultType<T>>;
-	}
 
 	/**
 	 * Get type query value
