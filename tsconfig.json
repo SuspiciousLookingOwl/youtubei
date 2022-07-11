@@ -1,13 +1,14 @@
 {
 	"compilerOptions": {
+		"target": "ES2015",
 		"lib": ["ESNext"],
 		"outDir": "./dist",
 		"strict": true,
 		"esModuleInterop": true,
 		"experimentalDecorators": true,
+		"moduleResolution": "node",
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
-		"resolveJsonModule": true,
 		"types": ["vitest/globals"]
 	},
 	"exclude": ["./dist"]
