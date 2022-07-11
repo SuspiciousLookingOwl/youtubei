@@ -1,6 +1,6 @@
-import { RequestOptions } from "https";
+import { RequestInit } from "node-fetch";
 
-import { getQueryParameter, HTTP } from "../../common";
+import { getQueryParameter } from "../../common";
 import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -8,9 +8,10 @@ import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchResult, SearchResultType } from "../SearchResult";
 import { Video } from "../Video";
+import { HTTP } from "./HTTP";
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace ClientTypes {
+export namespace Client {
 	export type SearchType = "video" | "channel" | "playlist" | "all";
 
 	export type SearchOptions = {
@@ -21,13 +22,11 @@ export namespace ClientTypes {
 	};
 
 	export type ClientOptions = {
-		cookie: string;
+		initialCookie: string;
 		/** Optional options for http client */
-		requestOptions: Partial<RequestOptions>;
+		fetchOptions: Partial<RequestInit>;
 		/** Optional options passed when sending a request to youtube (context.client) */
 		youtubeClientOptions: Record<string, unknown>;
-		/** Use Node `https` module, set false to use `http` */
-		https: boolean;
 	};
 }
 
@@ -36,11 +35,10 @@ export class Client {
 	/** @hidden */
 	http: HTTP;
 
-	constructor(options: Partial<ClientTypes.ClientOptions> = {}) {
-		const fullOptions: ClientTypes.ClientOptions = {
-			cookie: "",
-			https: true,
-			requestOptions: {},
+	constructor(options: Partial<Client.ClientOptions> = {}) {
+		const fullOptions: Client.ClientOptions = {
+			initialCookie: "",
+			fetchOptions: {},
 			...options,
 			youtubeClientOptions: {
 				hl: "en",
@@ -59,11 +57,11 @@ export class Client {
 	 * @param searchOptions Search options
 	 *
 	 */
-	async search<T extends ClientTypes.SearchOptions>(
+	async search<T extends Client.SearchOptions>(
 		query: string,
 		searchOptions?: T
 	): Promise<SearchResult<T["type"]>> {
-		const options: ClientTypes.SearchOptions = {
+		const options: Client.SearchOptions = {
 			type: "all",
 			params: "",
 			...searchOptions,
@@ -79,7 +77,7 @@ export class Client {
 	 *
 	 * @return Can be {@link VideoCompact} | {@link PlaylistCompact} | {@link Channel} | `undefined`
 	 */
-	async findOne<T extends ClientTypes.SearchOptions>(
+	async findOne<T extends Client.SearchOptions>(
 		query: string,
 		searchOptions?: Partial<T>
 	): Promise<SearchResultType<T["type"]> | undefined> {

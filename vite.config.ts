@@ -3,7 +3,7 @@ import path from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-const external = ["url", "events", "querystring", "https", "http", "zlib"];
+const external = ["node-fetch", "url", "events"];
 
 export default defineConfig({
 	plugins: [

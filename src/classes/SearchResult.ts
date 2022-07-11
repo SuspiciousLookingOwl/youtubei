@@ -1,4 +1,4 @@
-import { ChannelCompact, Client, ClientTypes, PlaylistCompact, VideoCompact } from ".";
+import { ChannelCompact, Client, PlaylistCompact, VideoCompact } from ".";
 import { extendsBuiltIn, getContinuationFromItems, YoutubeRawData } from "../common";
 import { I_END_POINT } from "../constants";
 
@@ -63,7 +63,7 @@ export class SearchResult<T> extends Array<SearchResultType<T>> {
 	 * @param options Search Options
 	 * @hidden
 	 */
-	async init(query: string, options: ClientTypes.SearchOptions): Promise<SearchResult<T>> {
+	async init(query: string, options: Client.SearchOptions): Promise<SearchResult<T>> {
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: {
 				query,
