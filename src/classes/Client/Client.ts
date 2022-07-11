@@ -1,6 +1,5 @@
 import { RequestInit } from "node-fetch";
 
-import { getQueryParameter } from "../../common";
 import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -86,9 +85,8 @@ export class Client {
 
 	/** Get playlist information and its videos by playlist id or URL */
 	async getPlaylist<T extends Playlist | MixPlaylist | undefined>(
-		playlistIdOrUrl: string
+		playlistId: string
 	): Promise<T> {
-		const playlistId = getQueryParameter(playlistIdOrUrl, "list");
 		if (playlistId.startsWith("RD")) {
 			const response = await this.http.post(`${I_END_POINT}/next`, {
 				data: { playlistId },
@@ -111,9 +109,7 @@ export class Client {
 	}
 
 	/** Get video information by video id or URL */
-	async getVideo<T extends Video | LiveVideo | undefined>(videoIdOrUrl: string): Promise<T> {
-		const videoId = getQueryParameter(videoIdOrUrl, "v");
-
+	async getVideo<T extends Video | LiveVideo | undefined>(videoId: string): Promise<T> {
 		const response = await this.http.get(`${WATCH_END_POINT}`, {
 			params: { v: videoId, pbj: "1" },
 		});

@@ -1,5 +1,3 @@
-import { URL } from "url";
-
 import { YoutubeRawData } from "./types";
 
 export const getDuration = (s: string): number => {
@@ -15,15 +13,6 @@ export const getDuration = (s: string): number => {
 			sum += +spl[0] * 3600;
 		}
 		return sum;
-	}
-};
-
-export const getQueryParameter = (url: string, queryName: string): string => {
-	try {
-		return new URL(url).searchParams.get(queryName) || url;
-	} catch (err) {
-		/* not an URL */
-		return url;
 	}
 };
 
