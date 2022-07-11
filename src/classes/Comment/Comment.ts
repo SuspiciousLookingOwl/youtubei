@@ -14,7 +14,7 @@ interface CommentAttributes extends BaseAttributes {
 	publishDate: string;
 	likeCount: number;
 	isAuthorChannelOwner: boolean;
-	isPinnedComment: boolean;
+	isPinned: boolean;
 	replyCount: number;
 	replyContinuation?: string;
 }
@@ -34,7 +34,7 @@ export class Comment extends Base implements CommentAttributes {
 	/** Whether the comment is posted by the video uploader / owner */
 	isAuthorChannelOwner!: boolean;
 	/** Whether the comment is pinned */
-	isPinnedComment!: boolean;
+	isPinned!: boolean;
 	/** Comment's reply count */
 	replyCount!: number;
 	/** Comment's loaded replies */

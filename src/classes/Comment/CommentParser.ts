@@ -25,7 +25,7 @@ export class CommentParser {
 		target.publishDate = publishedTimeText.runs.shift().text;
 		target.likeCount = +(voteCount?.simpleText || 0);
 		target.isAuthorChannelOwner = authorIsChannelOwner;
-		target.isPinnedComment = !!pinnedCommentBadge;
+		target.isPinned = !!pinnedCommentBadge;
 		target.replyCount = replyCount;
 
 		// Reply Continuation
