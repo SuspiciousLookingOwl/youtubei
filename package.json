@@ -26,6 +26,7 @@
 		"vitest": "0.18.0"
 	},
 	"scripts": {
+		"dev": "tsc -w --noEmit",
 		"test": "vitest",
 		"test:coverage": "vitest run --coverage",
 		"build": "pnpm clean && pnpm build:cjs && pnpm build:esm && pnpm build:types",
