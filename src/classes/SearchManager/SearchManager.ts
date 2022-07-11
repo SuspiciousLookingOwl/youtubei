@@ -1,4 +1,3 @@
-import { extendsBuiltIn } from "../../common";
 import { I_END_POINT } from "../../constants";
 import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
@@ -78,27 +77,17 @@ export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | Vide
  *
  * @noInheritDoc
  */
-@extendsBuiltIn()
-export class SearchManager<T = SearchType.ALL> extends Array<SearchResult<T>> {
+export class SearchManager<T = SearchType.ALL> {
 	/** The estimated search result count */
 	estimatedResults!: number;
 	continuation?: string;
+	/** Fetched search result. Gets reset every time {@link SearchManager.search} is called */
+	fetched: SearchResult<T>[] = [];
 
 	private client!: Client;
 
-	/** @hidden */
-	constructor() {
-		super();
-	}
-
-	/**
-	 * Load this instance
-	 *
-	 * @hidden
-	 */
-	load(client: Client): SearchManager<T> {
+	constructor(client: Client) {
 		this.client = client;
-		return this;
 	}
 
 	/**
@@ -106,9 +95,11 @@ export class SearchManager<T = SearchType.ALL> extends Array<SearchResult<T>> {
 	 *
 	 * @param query Search query
 	 * @param options Search Options
-	 * @hidden
 	 */
-	async init(query: string, options: SearchOptions): Promise<SearchManager<T>> {
+	async search(query: string, options: SearchOptions): Promise<SearchManager<T>> {
+		this.fetched = [];
+		this.estimatedResults = 0;
+
 		const { sortBy, ...videoFilters } = options;
 		const bufferParams = SearchProto.SearchOptions.encode({
 			videoFilters,
@@ -129,7 +120,7 @@ export class SearchManager<T = SearchType.ALL> extends Array<SearchResult<T>> {
 				response.data,
 				this.client
 			);
-			this.push(...(data as SearchResult<T>[]));
+			this.fetched.push(...(data as SearchResult<T>[]));
 			this.continuation = continuation;
 		}
 
@@ -166,7 +157,7 @@ export class SearchManager<T = SearchType.ALL> extends Array<SearchResult<T>> {
 			newSearchResults.push(...(data as SearchResult<T>[]));
 			this.continuation = continuation;
 		}
-		this.push(...newSearchResults);
+		this.fetched.push(...newSearchResults);
 		return newSearchResults;
 	}
 }

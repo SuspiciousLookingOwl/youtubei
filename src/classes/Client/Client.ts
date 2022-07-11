@@ -50,9 +50,9 @@ export class Client {
 		query: string,
 		options?: T
 	): Promise<SearchManager<T["type"]>> {
-		const result = new SearchManager().load(this);
-		await result.init(query, options || {});
-		return result;
+		const manager = new SearchManager(this);
+		await manager.search(query, options || {});
+		return manager;
 	}
 
 	/**
@@ -64,7 +64,8 @@ export class Client {
 		query: string,
 		options?: T
 	): Promise<SearchResult<T["type"]> | undefined> {
-		return (await this.search(query, options)).shift();
+		const result = await this.search(query, options);
+		return result.fetched[0] || undefined;
 	}
 
 	/** Get playlist information and its videos by playlist id or URL */

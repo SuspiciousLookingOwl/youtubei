@@ -12,12 +12,12 @@ describe("SearchManager", () => {
 	});
 
 	it("search result should be more than 15", async () => {
-		expect(result.length).toBeGreaterThan(15);
+		expect(result.fetched.length).toBeGreaterThan(15);
 	});
 
 	it("load continuation", async () => {
 		const nextVideos = await result.next();
 		expect(nextVideos.length).toBeGreaterThan(15);
-		expect(result.length).toBeGreaterThan(35);
+		expect(result.fetched.length).toBeGreaterThan(35);
 	});
 });
