@@ -1,15 +1,8 @@
 {
+	"extends": "./typescript/tsconfig.base.json",
 	"compilerOptions": {
-		"target": "ES2015",
-		"lib": ["ESNext"],
-		"outDir": "./dist",
-		"strict": true,
-		"esModuleInterop": true,
-		"experimentalDecorators": true,
-		"moduleResolution": "node",
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"resolveJsonModule": true
 	},
-	"exclude": ["./dist"]
+	"include": ["./tests", "./@types/*.d.ts", "./src/**/*.ts"]
 }
