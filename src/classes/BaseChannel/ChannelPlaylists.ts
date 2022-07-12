@@ -2,7 +2,6 @@ import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../commo
 import { I_END_POINT } from "../../constants";
 import { Continuable, FetchReturnType } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
-import { VideoCompact } from "../VideoCompact";
 import { BaseChannel } from "./BaseChannel";
 import { BaseChannelParser } from "./BaseChannelParser";
 
