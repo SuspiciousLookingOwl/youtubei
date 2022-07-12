@@ -1,6 +1,6 @@
 import { extendsBuiltIn } from "../../common";
 
-interface Thumbnail {
+export interface Thumbnail {
 	url: string;
 	width: number;
 	height: number;

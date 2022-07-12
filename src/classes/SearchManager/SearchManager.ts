@@ -57,14 +57,13 @@ export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | Vide
 /**
  * Represents search result, usually returned from `client.search();`.
  *
- * {@link SearchManager} is a subclass of [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
- * with {@link SearchManager.next} method to navigate through pagination
+ * {@link SearchManager} is a helper class to manage search result
  *
  * @example
  * ```ts
- * const SearchManager = await youtube.search("Keyword");
+ * const searchManager = await youtube.search("Keyword");
  *
- * console.log(SearchManager); // search result from first page
+ * console.log(searchManager.fetched); // search result from first page
  *
  * let nextSearchResult = await SearchManager.next();
  * console.log(nextSearchResult); // search result from second page
@@ -72,7 +71,7 @@ export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | Vide
  * nextSearchResult = await SearchManager.next();
  * console.log(nextSearchResult); // search result from third page
  *
- * console.log(SearchManager); // search result from first, second, and third page.
+ * console.log(searchManager.fetched); // search result from first, second, and third page.
  * ```
  *
  * @noInheritDoc
