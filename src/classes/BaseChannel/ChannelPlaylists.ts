@@ -45,7 +45,7 @@ export class ChannelPlaylists extends Continuable<PlaylistCompact> {
 		return {
 			continuation,
 			items: data.map((i: YoutubeRawData) =>
-				new VideoCompact({ client: this.channel.client }).load(i)
+				new PlaylistCompact({ client: this.channel.client }).load(i)
 			),
 		};
 	}
