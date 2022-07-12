@@ -6,14 +6,15 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 
-function Home() {
+
+const Home: React.FC = () => {
 	const context = useDocusaurusContext();
-	const { siteConfig = {} } = context;
+	
 	return (
-		<Layout description="Youtubei Documentations">
+		<Layout>
 			<header className={clsx("hero hero--primary", styles.heroBanner)}>
 				<div className="container">
-					<h1 className="hero__title">{siteConfig.title}</h1>
+					<h1 className="hero__title">{context.siteConfig.title}</h1>
 					<p className="hero__subtitle">
 						<code>npm i youtubei</code>
 					</p>
@@ -32,6 +33,6 @@ function Home() {
 			</header>
 		</Layout>
 	);
-}
+};
 
 export default Home;

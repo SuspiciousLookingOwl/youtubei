@@ -2,15 +2,18 @@ module.exports = [
 	[
 		"docusaurus-plugin-typedoc",
 		{
-			inputFiles: ["../src/classes"],
+			entryPoints: ["../src/index.ts"],
 			mode: "file",
 			tsconfig: "../tsconfig.json",
-			exclude: ["**/common/**/*", "**/constants.ts"],
+			exclude: ["**/common/**/*", "**/constants.ts", "**/*Parser.ts"],
 			excludePrivate: true,
 			excludeProtected: true,
 			ignoreCompilerErrors: true,
 			disableSources: true,
-			plugin: ["typedoc-plugin-no-inherit"],
+			visibilityFilters: {
+				inherited: false,
+			},
+			// plugin: ["typedoc-plugin-no-inherit"],
 		},
 	],
 	require.resolve("@cmfcmf/docusaurus-search-local"),

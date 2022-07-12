@@ -14,10 +14,10 @@ import { Client } from "youtubei";
 
 const youtube = new Client();
 ```
+
 and all of the codes are running inside an async function.
 
 ---
-
 
 ### How to search for a video?
 
