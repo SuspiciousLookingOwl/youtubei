@@ -9,23 +9,21 @@ import { SearchOptions, SearchManager, SearchResult } from "../SearchManager";
 import { Video } from "../Video";
 import { HTTP } from "./HTTP";
 
-export namespace Client {
-	export type ClientOptions = {
-		initialCookie: string;
-		/** Optional options for http client */
-		fetchOptions: Partial<RequestInit>;
-		/** Optional options passed when sending a request to youtube (context.client) */
-		youtubeClientOptions: Record<string, unknown>;
-	};
-}
+export type ClientOptions = {
+	initialCookie: string;
+	/** Optional options for http client */
+	fetchOptions: Partial<RequestInit>;
+	/** Optional options passed when sending a request to youtube (context.client) */
+	youtubeClientOptions: Record<string, unknown>;
+};
 
 /** Youtube Client */
 export class Client {
 	/** @hidden */
 	http: HTTP;
 
-	constructor(options: Partial<Client.ClientOptions> = {}) {
-		const fullOptions: Client.ClientOptions = {
+	constructor(options: Partial<ClientOptions> = {}) {
+		const fullOptions: ClientOptions = {
 			initialCookie: "",
 			fetchOptions: {},
 			...options,

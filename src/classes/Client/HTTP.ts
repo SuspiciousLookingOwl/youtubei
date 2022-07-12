@@ -2,7 +2,7 @@ import fetch, { RequestInit, Response as FetchResponse, HeadersInit } from "node
 import { URLSearchParams } from "url";
 
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../../constants";
-import { Client } from "./Client";
+import { ClientOptions } from "./Client";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Response<T = any> = {
@@ -20,7 +20,7 @@ export class HTTP {
 	private defaultFetchOptions: Partial<RequestInit>;
 	private defaultClientOptions: Record<string, unknown>;
 
-	constructor(options: Client.ClientOptions) {
+	constructor(options: ClientOptions) {
 		this.cookie = options.initialCookie || "";
 		this.defaultHeaders = {
 			"x-youtube-client-version": INNERTUBE_CLIENT_VERSION,
