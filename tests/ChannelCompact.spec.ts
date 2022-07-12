@@ -19,14 +19,14 @@ describe("BaseChannel", () => {
 	});
 
 	it("load videos", async () => {
-		const videos = await channel.nextVideos(2);
+		const videos = await channel.videos.next(2);
 		expect(videos.length).toBeGreaterThan(50);
-		expect(channel.videos.length).toBe(videos.length);
+		expect(channel.videos.items.length).toBe(videos.length);
 	});
 
 	it("load playlists", async () => {
-		const playlists = await channel.nextPlaylists(2);
+		const playlists = await channel.playlists.next(2);
 		expect(playlists.length).toBe(60);
-		expect(channel.playlists.length).toBe(playlists.length);
+		expect(channel.playlists.items.length).toBe(playlists.length);
 	});
 });

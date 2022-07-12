@@ -29,8 +29,6 @@ export class Channel extends BaseChannel implements ChannelAttributes {
 	/** @hidden */
 	constructor(channel: Partial<ChannelAttributes> = {}) {
 		super();
-		this.videos = [];
-		this.playlists = [];
 		Object.assign(this, channel);
 	}
 

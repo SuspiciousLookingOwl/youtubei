@@ -4,6 +4,7 @@ export * from "./Channel";
 export * from "./BaseChannel";
 export * from "./Chat";
 export * from "./Client";
+export * from "./Continuable";
 export * from "./Comment";
 export * from "./LiveVideo";
 export * from "./MixPlaylist";
