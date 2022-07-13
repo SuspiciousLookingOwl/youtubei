@@ -30,7 +30,7 @@ export class ChannelPlaylists extends Continuable<PlaylistCompact> {
 		this.channel = channel;
 	}
 
-	protected async fetch(): Promise<FetchReturnType<PlaylistCompact>> {
+	protected async fetch(): FetchReturnType<PlaylistCompact> {
 		const params = "EglwbGF5bGlzdHMgAQ%3D%3D";
 
 		const response = await this.channel.client.http.post(`${I_END_POINT}/browse`, {

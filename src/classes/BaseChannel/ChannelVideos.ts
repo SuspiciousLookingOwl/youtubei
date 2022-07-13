@@ -30,7 +30,7 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 		this.channel = channel;
 	}
 
-	protected async fetch(): Promise<FetchReturnType<VideoCompact>> {
+	protected async fetch(): FetchReturnType<VideoCompact> {
 		const params = "EgZ2aWRlb3M%3D";
 
 		const response = await this.channel.client.http.post(`${I_END_POINT}/browse`, {

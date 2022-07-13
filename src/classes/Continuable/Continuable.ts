@@ -1,8 +1,8 @@
 /** @hidden */
-export type FetchReturnType<T> = {
+export type FetchReturnType<T> = Promise<{
 	items: T[];
 	continuation?: string;
-};
+}>;
 
 /** Represents a continuable list of items ({@link T[]}) (like pagination) */
 export abstract class Continuable<T> {
@@ -30,7 +30,7 @@ export abstract class Continuable<T> {
 		return newItems;
 	}
 
-	protected abstract fetch(): Promise<FetchReturnType<T>>;
+	protected abstract fetch(): FetchReturnType<T>;
 
 	private get hasContinuation(): boolean {
 		return this.strictContinuationCheck ? this.continuation !== undefined : !!this.continuation;
