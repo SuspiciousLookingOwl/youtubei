@@ -1,4 +1,4 @@
-type VideoFilters = {
+type Options = {
 	uploadDate?: number;
 	type?: number;
 	duration?: number;
@@ -6,7 +6,7 @@ type VideoFilters = {
 
 type SearchOptions = {
 	sortBy?: number;
-	videoFilters?: VideoFilters;
+	options?: Options;
 };
 
 export type SearchProto = {

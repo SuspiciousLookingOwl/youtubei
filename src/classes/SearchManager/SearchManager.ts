@@ -4,46 +4,46 @@ import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { SearchResultParser } from "./SearchManagerParser";
-import { SearchProto } from "./proto";
+import { optionsToProto, SearchProto } from "./proto";
 
 export type SearchOptions = {
-	type?: SearchType;
-	duration?: SearchDuration;
-	uploadDate?: SearchUploadDate;
-	sortBy?: SearchSort;
+	type?: SearchType | `${SearchType}`;
+	duration?: SearchDuration | `${SearchDuration}`;
+	uploadDate?: SearchUploadDate | `${SearchUploadDate}`;
+	sortBy?: SearchSort | `${SearchSort}`;
 };
 
 export enum SearchUploadDate {
-	ALL,
-	LAST_HOUR,
-	TODAY,
-	THIS_WEEK,
-	THIS_MONTH,
-	THIS_YEAR,
+	ALL = "all",
+	LAST_HOUR = "hour",
+	TODAY = "today",
+	THIS_WEEK = "week",
+	THIS_MONTH = "month",
+	THIS_YEAR = "year",
 }
 
 export enum SearchType {
-	ALL,
-	VIDEO,
-	CHANNEL,
-	PLAYLIST,
+	ALL = "all",
+	VIDEO = "video",
+	CHANNEL = "channel",
+	PLAYLIST = "playlist",
 }
 
 export enum SearchDuration {
-	ALL,
-	UNDER_FOUR_MINUTES = 1,
-	SHORT = 1,
-	FOUR_TO_TWENTY_MINUTES = 3,
-	MEDIUM = 3,
-	OVER_TWENTY_MINUTES = 2,
-	LONG = 2,
+	ALL = "all",
+	UNDER_FOUR_MINUTES = "short",
+	SHORT = "short",
+	FOUR_TO_TWENTY_MINUTES = "medium",
+	MEDIUM = "medium",
+	OVER_TWENTY_MINUTES = "long",
+	LONG = "long",
 }
 
 export enum SearchSort {
-	RELEVANCE,
-	RATING,
-	UPLOAD_DATE,
-	VIEW_COUNT,
+	RELEVANCE = "relevance",
+	RATING = "rating",
+	UPLOAD_DATE = "date",
+	VIEW_COUNT = "view",
 }
 
 export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | VideoCompact
@@ -99,11 +99,7 @@ export class SearchManager<T = SearchType.ALL> {
 		this.fetched = [];
 		this.estimatedResults = 0;
 
-		const { sortBy, ...videoFilters } = options;
-		const bufferParams = SearchProto.SearchOptions.encode({
-			videoFilters,
-			sortBy,
-		});
+		const bufferParams = SearchProto.SearchOptions.encode(optionsToProto(options));
 
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: {
