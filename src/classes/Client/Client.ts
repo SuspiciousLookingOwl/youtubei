@@ -48,7 +48,7 @@ export class Client {
 		query: string,
 		options?: T
 	): Promise<SearchManager<T["type"]>> {
-		const manager = new SearchManager(this);
+		const manager = new SearchManager({ client: this });
 		await manager.search(query, options || {});
 		return manager;
 	}

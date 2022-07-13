@@ -1,19 +1,30 @@
+import { Client } from "../Client";
+
 /** @hidden */
 export type FetchReturnType<T> = Promise<{
 	items: T[];
 	continuation?: string;
 }>;
 
+/** @hidden */
+export type ContinuableConstructorParams = {
+	client: Client;
+	strictContinuationCheck?: boolean;
+};
+
 /** Represents a continuable list of items ({@link T[]}) (like pagination) */
 export abstract class Continuable<T> {
+	client: Client;
 	items: T[] = [];
 	continuation?: string | null;
 
 	private strictContinuationCheck;
 
-	constructor(strictContinuationCheck = false) {
-		this.strictContinuationCheck = strictContinuationCheck;
-		if (strictContinuationCheck) this.continuation = null;
+	constructor({ client, strictContinuationCheck }: ContinuableConstructorParams) {
+		this.client = client;
+
+		this.strictContinuationCheck = !!strictContinuationCheck;
+		if (this.strictContinuationCheck) this.continuation = null;
 	}
 
 	async next(count = 1): Promise<T[]> {

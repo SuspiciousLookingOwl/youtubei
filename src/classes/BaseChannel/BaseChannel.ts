@@ -28,14 +28,16 @@ export class BaseChannel extends Base implements BaseChannelAttributes {
 	 */
 	subscriberCount?: string;
 	/** Continuable of videos */
-	videos = new ChannelVideos(this);
+	videos: ChannelVideos;
 	/** Continuable of playlists */
-	playlists = new ChannelPlaylists(this);
+	playlists: ChannelPlaylists;
 
 	/** @hidden */
 	constructor(channel: Partial<BaseChannelAttributes> = {}) {
 		super();
 		Object.assign(this, channel);
+		this.videos = new ChannelVideos({ channel: this, client: this.client });
+		this.playlists = new ChannelPlaylists({ channel: this, client: this.client });
 	}
 
 	/** The URL of the channel page */

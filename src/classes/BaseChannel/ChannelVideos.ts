@@ -1,9 +1,13 @@
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
-import { Continuable, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { BaseChannel } from "./BaseChannel";
 import { BaseChannelParser } from "./BaseChannelParser";
+
+type ConstructorParams = ContinuableConstructorParams & {
+	channel?: BaseChannel;
+};
 
 /**
  * {@link Continuable} of videos inside a Channel
@@ -23,18 +27,18 @@ import { BaseChannelParser } from "./BaseChannelParser";
  */
 export class ChannelVideos extends Continuable<VideoCompact> {
 	/** The channel this videos belongs to */
-	channel: BaseChannel;
+	channel?: BaseChannel;
 
-	constructor(channel: BaseChannel) {
-		super(true);
+	constructor({ client, channel }: ConstructorParams) {
+		super({ client, strictContinuationCheck: true });
 		this.channel = channel;
 	}
 
 	protected async fetch(): FetchReturnType<VideoCompact> {
 		const params = "EgZ2aWRlb3M%3D";
 
-		const response = await this.channel.client.http.post(`${I_END_POINT}/browse`, {
-			data: { browseId: this.channel.id, params, continuation: this.continuation },
+		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
+			data: { browseId: this.channel?.id, params, continuation: this.continuation },
 		});
 
 		const items = BaseChannelParser.parseTabData("videos", response.data);
@@ -44,7 +48,7 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 		return {
 			continuation,
 			items: data.map((i: YoutubeRawData) =>
-				new VideoCompact({ client: this.channel.client }).load(i)
+				new VideoCompact({ client: this.client }).load(i)
 			),
 		};
 	}

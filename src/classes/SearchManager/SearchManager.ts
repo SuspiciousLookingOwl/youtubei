@@ -1,7 +1,6 @@
 import { I_END_POINT } from "../../constants";
 import { BaseChannel } from "../BaseChannel";
-import { Client } from "../Client";
-import { Continuable, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { SearchResultParser } from "./SearchManagerParser";
@@ -47,11 +46,11 @@ export enum SearchSort {
 	VIEW_COUNT = "view",
 }
 
-export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | VideoCompact
+export type SearchResult<T = "all"> = T extends "video" | VideoCompact
 	? VideoCompact
-	: T extends SearchType.CHANNEL | BaseChannel
+	: T extends "channel" | BaseChannel
 	? BaseChannel
-	: T extends SearchType.PLAYLIST | PlaylistCompact
+	: T extends "playlist" | PlaylistCompact
 	? PlaylistCompact
 	: VideoCompact | BaseChannel | PlaylistCompact;
 
@@ -81,11 +80,8 @@ export class SearchManager<T = SearchType.ALL> extends Continuable<SearchResult<
 	/** The estimated search result count */
 	estimatedResults!: number;
 
-	private client!: Client;
-
-	constructor(client: Client) {
-		super();
-		this.client = client;
+	constructor({ client }: ContinuableConstructorParams) {
+		super({ client });
 	}
 
 	/**
