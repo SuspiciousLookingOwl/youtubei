@@ -12,7 +12,7 @@ export class VideoParser {
 			.reverse()
 			.find((c: YoutubeRawData) => c.itemSectionRenderer).itemSectionRenderer;
 
-		target.commentContinuation = getContinuationFromItems(itemSectionRenderer.contents);
+		target.comments.continuation = getContinuationFromItems(itemSectionRenderer.contents);
 
 		return target;
 	}

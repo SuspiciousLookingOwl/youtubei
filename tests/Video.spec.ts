@@ -32,13 +32,13 @@ describe("Video", () => {
 	});
 
 	it("load video comments", async () => {
-		expect(video.comments.length).toBe(0);
-		let comments = await video.nextComments();
+		expect(video.comments.items.length).toBe(0);
+		let comments = await video.comments.next();
 		expect(comments.length).toBe(20);
-		expect(video.comments.length).toBe(20);
-		comments = await video.nextComments(2);
+		expect(video.comments.items.length).toBe(20);
+		comments = await video.comments.next(2);
 		expect(comments.length).toBeGreaterThan(35);
-		expect(video.comments.length).toBeGreaterThan(55);
+		expect(video.comments.items.length).toBeGreaterThan(55);
 	});
 
 	it("load next related", async () => {

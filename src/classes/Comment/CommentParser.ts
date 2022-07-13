@@ -29,7 +29,7 @@ export class CommentParser {
 		target.replyCount = replyCount;
 
 		// Reply Continuation
-		target.replyContinuation = data.replies
+		target.replies.continuation = data.replies
 			? getContinuationFromItems(data.replies.commentRepliesRenderer.contents)
 			: undefined;
 

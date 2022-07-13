@@ -1,10 +1,9 @@
 import { YoutubeRawData } from "../../common";
-import { I_END_POINT } from "../../constants";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
-import { Reply } from "../Reply";
 import { Video } from "../Video";
 import { CommentParser } from "./CommentParser";
+import { CommentReplies } from "./CommentReplies";
 
 /** @hidden */
 interface CommentProperties extends BaseProperties {
@@ -17,7 +16,7 @@ interface CommentProperties extends BaseProperties {
 	isAuthorChannelOwner?: boolean;
 	isPinned?: boolean;
 	replyCount?: number;
-	replyContinuation?: string;
+	replies?: CommentReplies;
 }
 
 /** Represents a Comment / Reply */
@@ -40,14 +39,14 @@ export class Comment extends Base implements CommentProperties {
 	/** Comment's reply count */
 	replyCount!: number;
 	/** Comment's loaded replies */
-	replies: Reply[] = [];
-	/** Current continuation token to load next replies  */
-	replyContinuation?: string;
+	replies: CommentReplies;
 
 	/** @hidden */
 	constructor(attr: CommentProperties) {
 		super(attr.client);
 		Object.assign(this, attr);
+
+		this.replies = new CommentReplies({ client: attr.client, comment: this });
 	}
 
 	/**
@@ -63,24 +62,5 @@ export class Comment extends Base implements CommentProperties {
 	/** URL to the video with this comment being highlighted (appears on top of the comment section) */
 	get url(): string {
 		return `https://www.youtube.com/watch?v=${this.video.id}&lc=${this.id}`;
-	}
-
-	/** Load next replies of the comment */
-	async nextReplies(count = 1): Promise<Reply[]> {
-		const newReplies: Reply[] = [];
-		for (let i = 0; i < count || count == 0; i++) {
-			if (!this.replyContinuation) break;
-
-			// Send request
-			const response = await this.client.http.post(`${I_END_POINT}/next`, {
-				data: { continuation: this.replyContinuation },
-			});
-
-			this.replyContinuation = CommentParser.parseContinuation(response.data);
-			newReplies.push(...CommentParser.parseReplies(response.data, this));
-		}
-
-		this.replies.push(...newReplies);
-		return newReplies;
 	}
 }

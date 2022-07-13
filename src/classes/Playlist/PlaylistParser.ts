@@ -32,9 +32,6 @@ export class PlaylistParser {
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
 				.playlistVideoListRenderer?.contents || [];
 
-		// Video Continuation Token
-		target.continuation = getContinuationFromItems(playlistContents);
-
 		// Channel
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
 		if (videoOwner) {
@@ -48,7 +45,8 @@ export class PlaylistParser {
 		}
 
 		// Videos
-		target.videos = PlaylistParser.parseVideos(playlistContents, target);
+		target.videos.items = PlaylistParser.parseVideos(playlistContents, target);
+		target.videos.continuation = getContinuationFromItems(playlistContents);
 
 		return target;
 	}

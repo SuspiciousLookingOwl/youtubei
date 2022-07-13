@@ -1,9 +1,8 @@
 import { YoutubeRawData } from "../../common";
-import { I_END_POINT } from "../../constants";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel, BaseChannelProperties } from "../BaseChannel";
-import { VideoCompact } from "../VideoCompact";
 import { PlaylistParser } from "./PlaylistParser";
+import { PlaylistVideos } from "./PlaylistVideos";
 
 /** @hidden */
 interface PlaylistProperties extends BaseProperties {
@@ -13,8 +12,7 @@ interface PlaylistProperties extends BaseProperties {
 	viewCount?: number;
 	lastUpdatedAt?: string;
 	channel?: BaseChannelProperties;
-	videos?: VideoCompact[];
-	continuation?: string;
+	videos?: PlaylistVideos;
 }
 
 /** Represents a Playlist, usually returned from `client.getPlaylist()` */
@@ -31,14 +29,14 @@ export class Playlist extends Base implements PlaylistProperties {
 	/** The channel that made this playlist */
 	channel?: BaseChannel;
 	/** Videos in the playlist */
-	videos: VideoCompact[] = [];
-	/** Current continuation token to load next videos  */
-	continuation!: string | undefined;
+	videos: PlaylistVideos;
 
 	/** @hidden */
 	constructor(attr: PlaylistProperties) {
 		super(attr.client);
 		Object.assign(this, attr);
+
+		this.videos = new PlaylistVideos({ client: attr.client, playlist: this });
 	}
 
 	/**
@@ -49,38 +47,5 @@ export class Playlist extends Base implements PlaylistProperties {
 	load(data: YoutubeRawData): Playlist {
 		PlaylistParser.loadPlaylist(this, data);
 		return this;
-	}
-
-	/**
-	 * Load next 100 videos of the playlist, and push the loaded videos to {@link Playlist.videos}
-	 *
-	 * @example
-	 * ```js
-	 * const playlist = await youtube.getPlaylist(PLAYLIST_ID);
-	 * console.log(playlist.videos) // first 100 videos
-	 *
-	 * let newVideos = await playlist.next();
-	 * console.log(newVideos) // 100 loaded videos
-	 * console.log(playlist.videos) // first 200 videos
-	 *
-	 * await playlist.next(0); // load the rest of the videos in the playlist
-	 * ```
-	 *
-	 * @param count How many times to load the next videos. Set 0 to load all videos (might take a while on a large playlist!)
-	 */
-	async next(count = 1): Promise<VideoCompact[]> {
-		const newVideos: VideoCompact[] = [];
-		for (let i = 0; i < count || count == 0; i++) {
-			if (!this.continuation) break;
-			const response = await this.client.http.post(`${I_END_POINT}/browse`, {
-				data: { continuation: this.continuation },
-			});
-
-			newVideos.push(...PlaylistParser.parseContinuationVideos(response.data, this.client));
-			this.continuation = PlaylistParser.parseVideoContinuation(response.data);
-		}
-
-		this.videos.push(...newVideos);
-		return newVideos;
 	}
 }

@@ -24,7 +24,7 @@ describe("Playlist", () => {
 			ignoreVideoCount: true,
 			ignoreThumbnails: true,
 		});
-		expect(playlist.videos.length).toBe(100);
+		expect(playlist.videos.items.length).toBe(100);
 	});
 
 	it("match invalid getPlaylist", async () => {
@@ -32,13 +32,13 @@ describe("Playlist", () => {
 	});
 
 	it("load continuation", async () => {
-		let newVideos = await playlist.next();
+		let newVideos = await playlist.videos.next();
 		expect(newVideos.length).toBe(100);
-		expect(playlist.videos.length).toBe(200);
-		newVideos = await playlist.next(2);
+		expect(playlist.videos.items.length).toBe(200);
+		newVideos = await playlist.videos.next(2);
 		expect(newVideos.length).toBe(200);
-		expect(playlist.videos.length).toBe(400);
-		commonBaseChannelTest(playlist.videos[0].channel!, {
+		expect(playlist.videos.items.length).toBe(400);
+		commonBaseChannelTest(playlist.videos.items[0].channel!, {
 			ignoreVideoCount: true,
 			ignoreThumbnails: true,
 		});
