@@ -6,8 +6,10 @@ export interface BaseProperties {
 }
 
 export class Base implements BaseProperties {
+	/** An instance of {@link Client} */
 	client: Client;
 
+	/** @hidden */
 	constructor(client: Client) {
 		this.client = client;
 	}

@@ -15,6 +15,7 @@ export class CommentReplies extends Continuable<Reply> {
 	/** The comment this replies belongs to */
 	comment: Comment;
 
+	/** @hidden */
 	constructor({ client, comment }: ConstructorParams) {
 		super({ client, strictContinuationCheck: true });
 		this.comment = comment;

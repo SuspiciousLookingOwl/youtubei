@@ -13,13 +13,14 @@ export type ContinuableConstructorParams = {
 	strictContinuationCheck?: boolean;
 };
 
-/** Represents a continuable list of items ({@link T[]}) (like pagination) */
+/** Represents a continuable list of items `T` (like pagination) */
 export abstract class Continuable<T> extends Base {
 	items: T[] = [];
 	continuation?: string | null;
 
 	private strictContinuationCheck;
 
+	/** @hidden */
 	constructor({ client, strictContinuationCheck }: ContinuableConstructorParams) {
 		super(client);
 
@@ -27,6 +28,7 @@ export abstract class Continuable<T> extends Base {
 		if (this.strictContinuationCheck) this.continuation = null;
 	}
 
+	/** Fetch next items using continuation token */
 	async next(count = 1): Promise<T[]> {
 		const newItems: T[] = [];
 		for (let i = 0; i < count || count == 0; i++) {

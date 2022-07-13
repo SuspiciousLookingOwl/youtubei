@@ -16,11 +16,11 @@ type ConstructorParams = ContinuableConstructorParams & {
  * const playlist = await youtube.getPlaylist(PLAYLIST_ID);
  * console.log(playlist.videos) // first 100 videos
  *
- * let newVideos = await playlist.next();
+ * let newVideos = await playlist.videos.next();
  * console.log(newVideos) // 100 loaded videos
  * console.log(playlist.videos) // first 200 videos
  *
- * await playlist.next(0); // load the rest of the videos in the playlist
+ * await playlist.videos.next(0); // load the rest of the videos in the playlist
  * ```
  *
  * @param count How many times to load the next videos. Set 0 to load all videos (might take a while on a large playlist!)
@@ -29,6 +29,7 @@ export class PlaylistVideos extends Continuable<VideoCompact> {
 	/** The playlist this videos belongs to */
 	playlist?: Playlist;
 
+	/** @hidden */
 	constructor({ client, playlist }: ConstructorParams) {
 		super({ client, strictContinuationCheck: true });
 		this.playlist = playlist;

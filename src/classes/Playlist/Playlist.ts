@@ -28,7 +28,7 @@ export class Playlist extends Base implements PlaylistProperties {
 	lastUpdatedAt!: string;
 	/** The channel that made this playlist */
 	channel?: BaseChannel;
-	/** Videos in the playlist */
+	/** Continuable of videos in this playlist */
 	videos: PlaylistVideos;
 
 	/** @hidden */

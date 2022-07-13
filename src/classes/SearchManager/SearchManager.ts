@@ -63,7 +63,7 @@ export type SearchResult<T = "all"> = T extends "video" | VideoCompact
  * ```ts
  * const searchManager = await youtube.search("Keyword");
  *
- * console.log(searchManager.fetched); // search result from first page
+ * console.log(searchManager.items); // search result from first page
  *
  * let nextSearchResult = await SearchManager.next();
  * console.log(nextSearchResult); // search result from second page
@@ -71,7 +71,7 @@ export type SearchResult<T = "all"> = T extends "video" | VideoCompact
  * nextSearchResult = await SearchManager.next();
  * console.log(nextSearchResult); // search result from third page
  *
- * console.log(searchManager.fetched); // search result from first, second, and third page.
+ * console.log(searchManager.items); // search result from first, second, and third page.
  * ```
  *
  * @noInheritDoc
@@ -80,6 +80,7 @@ export class SearchManager<T = SearchType.ALL> extends Continuable<SearchResult<
 	/** The estimated search result count */
 	estimatedResults!: number;
 
+	/** @hidden */
 	constructor({ client }: ContinuableConstructorParams) {
 		super({ client });
 	}

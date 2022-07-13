@@ -14,12 +14,12 @@ interface ConstructorParams {
 
 /**
  * {@link Continuable} of related videos inside a Video
- * ```
  */
 export class VideoRelated extends Continuable<VideoCompact | PlaylistCompact> {
 	/** The video this list of related videos belongs to */
 	video?: BaseVideo;
 
+	/** @hidden */
 	constructor({ video, client }: ConstructorParams) {
 		super({ client });
 		this.video = video;

@@ -36,9 +36,9 @@ export class Comment extends Base implements CommentProperties {
 	isAuthorChannelOwner!: boolean;
 	/** Whether the comment is pinned */
 	isPinned!: boolean;
-	/** Comment's reply count */
+	/** Reply count of this comment */
 	replyCount!: number;
-	/** Comment's loaded replies */
+	/** Continuable of replies in this comment */
 	replies: CommentReplies;
 
 	/** @hidden */

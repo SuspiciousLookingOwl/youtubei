@@ -10,7 +10,7 @@ type ConstructorParams = ContinuableConstructorParams & {
 };
 
 /**
- * {@link Continuable} of videos inside a Channel
+ * {@link Continuable} of videos inside a {@link BaseChannel}
  *
  * @example
  * ```js
@@ -29,6 +29,7 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 	/** The channel this videos belongs to */
 	channel?: BaseChannel;
 
+	/** @hidden */
 	constructor({ client, channel }: ConstructorParams) {
 		super({ client, strictContinuationCheck: true });
 		this.channel = channel;

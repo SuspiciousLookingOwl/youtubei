@@ -19,7 +19,7 @@ export class BaseChannel extends Base implements BaseChannelProperties {
 	id!: string;
 	/** The channel's name */
 	name!: string;
-	/** Thumbnails of the Channel with different sizes */
+	/** Thumbnails of this Channel */
 	thumbnails?: Thumbnails;
 	/** How many video does this channel have */
 	videoCount?: number;
@@ -38,6 +38,7 @@ export class BaseChannel extends Base implements BaseChannelProperties {
 	constructor(attr: BaseChannelProperties) {
 		super(attr.client);
 		Object.assign(this, attr);
+
 		this.videos = new ChannelVideos({ channel: this, client: this.client });
 		this.playlists = new ChannelPlaylists({ channel: this, client: this.client });
 	}

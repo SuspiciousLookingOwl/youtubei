@@ -36,13 +36,13 @@ export class BaseVideo extends Base implements BaseVideoProperties {
 	uploadDate!: string;
 	/** How many view does this video have, null if the view count is hidden */
 	viewCount!: number | null;
-	/** How many like does this video have, null if the like count hidden */
+	/** How many like does this video have, null if the like count is hidden */
 	likeCount!: number | null;
 	/** Whether this video is a live content or not */
 	isLiveContent!: boolean;
 	/** The tags of this video */
 	tags!: string[];
-	/** Videos / playlists related to this video  */
+	/** Continuable of videos / playlists related to this video  */
 	related: VideoRelated;
 
 	/** @hidden */
@@ -66,7 +66,7 @@ export class BaseVideo extends Base implements BaseVideoProperties {
 	/**
 	 * Video / playlist to play next after this video, alias to
 	 * ```js
-	 * video.related[0]
+	 * video.related.items[0]
 	 * ```
 	 */
 	get upNext(): VideoCompact | PlaylistCompact {
