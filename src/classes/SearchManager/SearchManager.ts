@@ -1,6 +1,7 @@
 import { I_END_POINT } from "../../constants";
 import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
+import { Continuable, FetchReturnType } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { SearchResultParser } from "./SearchManagerParser";
@@ -76,16 +77,14 @@ export type SearchResult<T = SearchType.ALL> = T extends SearchType.VIDEO | Vide
  *
  * @noInheritDoc
  */
-export class SearchManager<T = SearchType.ALL> {
+export class SearchManager<T = SearchType.ALL> extends Continuable<SearchResult<T>> {
 	/** The estimated search result count */
 	estimatedResults!: number;
-	continuation?: string;
-	/** Fetched search result. Gets reset every time {@link SearchManager.search} is called */
-	fetched: SearchResult<T>[] = [];
 
 	private client!: Client;
 
 	constructor(client: Client) {
+		super();
 		this.client = client;
 	}
 
@@ -96,7 +95,7 @@ export class SearchManager<T = SearchType.ALL> {
 	 * @param options Search Options
 	 */
 	async search(query: string, options: SearchOptions): Promise<SearchManager<T>> {
-		this.fetched = [];
+		this.items = [];
 		this.estimatedResults = 0;
 
 		const bufferParams = SearchProto.SearchOptions.encode(optionsToProto(options));
@@ -115,44 +114,26 @@ export class SearchManager<T = SearchType.ALL> {
 				response.data,
 				this.client
 			);
-			this.fetched.push(...(data as SearchResult<T>[]));
+			this.items.push(...(data as SearchResult<T>[]));
 			this.continuation = continuation;
 		}
 
 		return this;
 	}
 
-	/**
-	 * Load next search data. Youtube returns inconsistent amount of search result, it usually varies from 18 to 20
-	 *
-	 * @example
-	 * ```js
-	 * const videos = await youtube.search("keyword", { type: "video" });
-	 * console.log(videos) // first 18-20 videos from the search result
-	 *
-	 * let newVideos = await videos.next();
-	 * console.log(newVideos) // 18-20 loaded videos
-	 * console.log(videos) // 36-40 first videos from the search result
-	 * ```
-	 *
-	 * @param count How many times to load the next data
-	 */
-	async next(count = 1): Promise<Array<SearchResult<T>>> {
-		const newSearchResults = [];
-		for (let i = 0; i < count; i++) {
-			if (!this.continuation) break;
-			const response = await this.client.http.post(`${I_END_POINT}/search`, {
-				data: { continuation: this.continuation },
-			});
+	protected async fetch(): FetchReturnType<SearchResult<T>> {
+		const response = await this.client.http.post(`${I_END_POINT}/search`, {
+			data: { continuation: this.continuation },
+		});
 
-			const { data, continuation } = SearchResultParser.parseContinuationSearchResult(
-				response.data,
-				this.client
-			);
-			newSearchResults.push(...(data as SearchResult<T>[]));
-			this.continuation = continuation;
-		}
-		this.fetched.push(...newSearchResults);
-		return newSearchResults;
+		const { data, continuation } = SearchResultParser.parseContinuationSearchResult(
+			response.data,
+			this.client
+		);
+
+		return {
+			items: (data as unknown) as SearchResult<T>[],
+			continuation,
+		};
 	}
 }

@@ -63,7 +63,7 @@ export class Client {
 		options?: T
 	): Promise<SearchResult<T["type"]> | undefined> {
 		const result = await this.search(query, options);
-		return result.fetched[0] || undefined;
+		return result.items[0] || undefined;
 	}
 
 	/** Get playlist information and its videos by playlist id or URL */
