@@ -56,7 +56,7 @@ export class Client {
 	/**
 	 * Search for videos / playlists / channels and returns the first result
 	 *
-	 * @return Can be {@link VideoCompact} | {@link PlaylistCompact} | {@link Channel} | `undefined`
+	 * @return Can be {@link VideoCompact} | {@link PlaylistCompact} | {@link BaseChannel} | `undefined`
 	 */
 	async findOne<T extends SearchOptions>(
 		query: string,
