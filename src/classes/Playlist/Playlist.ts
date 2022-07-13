@@ -1,23 +1,25 @@
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
-import { Base, BaseAttributes } from "../Base";
-import { BaseChannel, BaseChannelAttributes } from "../BaseChannel";
+import { Base, BaseProperties } from "../Base";
+import { BaseChannel, BaseChannelProperties } from "../BaseChannel";
 import { VideoCompact } from "../VideoCompact";
 import { PlaylistParser } from "./PlaylistParser";
 
 /** @hidden */
-interface PlaylistAttributes extends BaseAttributes {
-	title: string;
-	videoCount: number;
-	viewCount: number;
-	lastUpdatedAt: string;
-	channel?: BaseChannelAttributes;
-	videos: VideoCompact[];
+interface PlaylistProperties extends BaseProperties {
+	id?: string;
+	title?: string;
+	videoCount?: number;
+	viewCount?: number;
+	lastUpdatedAt?: string;
+	channel?: BaseChannelProperties;
+	videos?: VideoCompact[];
 	continuation?: string;
 }
 
 /** Represents a Playlist, usually returned from `client.getPlaylist()` */
-export class Playlist extends Base implements PlaylistAttributes {
+export class Playlist extends Base implements PlaylistProperties {
+	id!: string;
 	/** The title of this playlist */
 	title!: string;
 	/** How many videos in this playlist */
@@ -34,9 +36,9 @@ export class Playlist extends Base implements PlaylistAttributes {
 	continuation!: string | undefined;
 
 	/** @hidden */
-	constructor(playlist: Partial<Playlist> = {}) {
-		super();
-		Object.assign(this, playlist);
+	constructor(attr: PlaylistProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/**

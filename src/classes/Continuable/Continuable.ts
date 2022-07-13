@@ -1,3 +1,4 @@
+import { Base } from "../Base";
 import { Client } from "../Client";
 
 /** @hidden */
@@ -13,15 +14,14 @@ export type ContinuableConstructorParams = {
 };
 
 /** Represents a continuable list of items ({@link T[]}) (like pagination) */
-export abstract class Continuable<T> {
-	client: Client;
+export abstract class Continuable<T> extends Base {
 	items: T[] = [];
 	continuation?: string | null;
 
 	private strictContinuationCheck;
 
 	constructor({ client, strictContinuationCheck }: ContinuableConstructorParams) {
-		this.client = client;
+		super(client);
 
 		this.strictContinuationCheck = !!strictContinuationCheck;
 		if (this.strictContinuationCheck) this.continuation = null;

@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { LiveVideo } from "../LiveVideo";
 import { Thumbnails } from "../Thumbnails";
@@ -7,18 +7,20 @@ import { Video } from "../Video";
 import { VideoCompactParser } from "./VideoCompactParser";
 
 /** @hidden */
-interface VideoCompactAttributes extends BaseAttributes {
-	title: string;
-	thumbnails: Thumbnails;
-	duration: number | null;
-	isLive: boolean;
+interface VideoCompactProperties extends BaseProperties {
+	id?: string;
+	title?: string;
+	thumbnails?: Thumbnails;
+	duration?: number | null;
+	isLive?: boolean;
 	channel?: BaseChannel;
 	uploadDate?: string;
 	viewCount?: number | null;
 }
 
 /** Represent a compact video (e.g. from search result, playlist's videos, channel's videos) */
-export class VideoCompact extends Base implements VideoCompactAttributes {
+export class VideoCompact extends Base implements VideoCompactProperties {
+	id!: string;
 	/** The title of the video */
 	title!: string;
 	/** Thumbnails of the video with different sizes */
@@ -37,9 +39,9 @@ export class VideoCompact extends Base implements VideoCompactAttributes {
 	viewCount?: number | null;
 
 	/** @hidden */
-	constructor(videoCompact: Partial<VideoCompactAttributes> = {}) {
-		super();
-		Object.assign(this, videoCompact);
+	constructor(attr: VideoCompactProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/** Whether this video is private / deleted or not, only useful in playlist's videos */

@@ -1,17 +1,19 @@
 import { YoutubeRawData } from "../../common";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { VideoCompact } from "../VideoCompact";
 import { MixPlaylistParser } from "./MixPlaylistParser";
 
 /** @hidden */
-interface PlaylistAttributes extends BaseAttributes {
-	title: string;
-	videoCount: number;
-	videos: VideoCompact[];
+interface MixPlaylistProperties extends BaseProperties {
+	id?: string;
+	title?: string;
+	videoCount?: number;
+	videos?: VideoCompact[];
 }
 
 /** Represents a MixPlaylist, usually returned from `client.getPlaylist()` */
-export class MixPlaylist extends Base implements PlaylistAttributes {
+export class MixPlaylist extends Base implements MixPlaylistProperties {
+	id!: string;
 	/** The title of this playlist */
 	title!: string;
 	/** How many videos in this playlist */
@@ -20,9 +22,9 @@ export class MixPlaylist extends Base implements PlaylistAttributes {
 	videos: VideoCompact[] = [];
 
 	/** @hidden */
-	constructor(playlist: Partial<MixPlaylist> = {}) {
-		super();
-		Object.assign(this, playlist);
+	constructor(attr: MixPlaylistProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/**

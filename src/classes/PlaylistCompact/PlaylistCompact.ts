@@ -1,20 +1,22 @@
 import { YoutubeRawData } from "../../common";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { Playlist } from "../Playlist/Playlist";
 import { Thumbnails } from "../Thumbnails";
 import { PlaylistCompactParser } from "./PlaylistCompactParser";
 
 /** @hidden */
-interface PlaylistCompactAttributes extends BaseAttributes {
-	title: string;
-	thumbnails: Thumbnails;
+interface PlaylistCompactProperties extends BaseProperties {
+	id?: string;
+	title?: string;
+	thumbnails?: Thumbnails;
 	channel?: BaseChannel;
-	videoCount: number;
+	videoCount?: number;
 }
 
 /** Represents a Compact Playlist (e.g. from search result, related of a video) */
-export class PlaylistCompact extends Base implements PlaylistCompactAttributes {
+export class PlaylistCompact extends Base implements PlaylistCompactProperties {
+	id!: string;
 	/** The playlist's title */
 	title!: string;
 	/** Thumbnails of the playlist with different sizes */
@@ -25,9 +27,9 @@ export class PlaylistCompact extends Base implements PlaylistCompactAttributes {
 	videoCount!: number;
 
 	/** @hidden */
-	constructor(playlist: Partial<PlaylistCompactAttributes> = {}) {
-		super();
-		Object.assign(this, playlist);
+	constructor(attr: PlaylistCompactProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/**

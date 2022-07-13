@@ -1,19 +1,21 @@
 import { YoutubeRawData } from "../../common";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { Video } from "../Video";
 import { ChatParser } from "./ChatParser";
 
 /** @hidden */
-interface ChatAttributes extends BaseAttributes {
-	video: Video;
-	author: BaseChannel;
-	message: string;
-	timestamp: number;
+interface ChatProperties extends BaseProperties {
+	id?: string;
+	video?: Video;
+	author?: BaseChannel;
+	message?: string;
+	timestamp?: number;
 }
 
 /** Represents a chat in a live stream */
-export class Chat extends Base implements ChatAttributes {
+export class Chat extends Base implements ChatProperties {
+	id?: string;
 	/** The video this chat belongs to */
 	video!: Video;
 	/** The chat's author */
@@ -24,9 +26,9 @@ export class Chat extends Base implements ChatAttributes {
 	timestamp!: number;
 
 	/** @hidden */
-	constructor(chat: Partial<ChatAttributes> = {}) {
-		super();
-		Object.assign(this, chat);
+	constructor(attr: ChatProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/**

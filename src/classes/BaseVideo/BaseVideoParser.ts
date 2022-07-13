@@ -47,12 +47,11 @@ export class BaseVideoParser {
 				.results;
 
 		if (secondaryContents) {
-			target.related = BaseVideoParser.parseRelatedFromSecondaryContent(
+			target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(
 				secondaryContents,
 				target.client
 			);
-			// Related continuation
-			target.relatedContinuation = getContinuationFromItems(secondaryContents);
+			target.related.continuation = getContinuationFromItems(secondaryContents);
 		}
 
 		return target;

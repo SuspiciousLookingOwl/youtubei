@@ -28,7 +28,7 @@ describe("Video", () => {
 		expect(video.isLiveContent).toBeFalse();
 		expect(video.tags.length).toBe(1);
 		expect(video.tags[0]).toBe("#FramesWinGames");
-		expect(video.related.length).toBeGreaterThan(0);
+		expect(video.related.items.length).toBeGreaterThan(0);
 	});
 
 	it("load video comments", async () => {
@@ -42,8 +42,8 @@ describe("Video", () => {
 	});
 
 	it("load next related", async () => {
-		await video.nextRelated(2);
-		expect(video.related.length).toBeGreaterThan(40);
+		await video.related.next(2);
+		expect(video.related.items.length).toBeGreaterThan(40);
 	});
 
 	it("match ended live getVideo result", () => {

@@ -1,18 +1,18 @@
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
-import { BaseVideo, BaseVideoAttributes } from "../BaseVideo";
+import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
 import { Comment } from "../Comment";
 import { VideoParser } from "./VideoParser";
 
 /** @hidden */
-interface VideoAttributes extends BaseVideoAttributes {
-	duration: number;
-	comments: Comment[];
+interface VideoProperties extends BaseVideoProperties {
+	duration?: number;
+	comments?: Comment[];
 	commentContinuation?: string;
 }
 
 /** Represents a Video, usually returned from `client.getVideo()`  */
-export class Video extends BaseVideo implements VideoAttributes {
+export class Video extends BaseVideo implements VideoProperties {
 	/** The duration of this video in second */
 	duration!: number;
 	/**
@@ -25,9 +25,9 @@ export class Video extends BaseVideo implements VideoAttributes {
 	commentContinuation?: string;
 
 	/** @hidden */
-	constructor(video: Partial<VideoAttributes> = {}) {
-		super();
-		Object.assign(this, video);
+	constructor(attr: VideoProperties) {
+		super(attr);
+		Object.assign(this, attr);
 	}
 
 	/**

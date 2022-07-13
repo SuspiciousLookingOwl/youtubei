@@ -1,11 +1,11 @@
 import "jest-extended";
 
-import { Reply } from "../src";
+import { Client, Reply } from "../src";
 import commentReplyRenderer from "./data/commentReplyRenderer.json";
 
 describe("Chat", () => {
 	it("match chat load", () => {
-		const reply = new Reply().load(commentReplyRenderer);
+		const reply = new Reply({ client: new Client() }).load(commentReplyRenderer);
 
 		expect(reply.id).toBe("UgwxLeoyuMjwpVQZjP14AaABAg.9KBiYFA7H5w9KGoxAGz1EC");
 		expect(reply.content).toBe(" @Adam Henriksson  Makes sense.");

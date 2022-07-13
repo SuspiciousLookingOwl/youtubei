@@ -2,13 +2,13 @@ import { EventEmitter } from "events";
 
 import { applyMixins, YoutubeRawData } from "../../common";
 import { LIVE_CHAT_END_POINT } from "../../constants";
-import { BaseVideo, BaseVideoAttributes } from "../BaseVideo";
+import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
 import { Chat } from "../Chat";
 import { LiveVideoParser } from "./LiveVideoParser";
 
 /** @hidden */
-interface LiveVideoAttributes extends BaseVideoAttributes {
-	watchingCount: number;
+interface LiveVideoProperties extends BaseVideoProperties {
+	watchingCount?: number;
 	chatContinuation?: string;
 }
 
@@ -29,7 +29,7 @@ declare interface LiveVideo {
 }
 
 /** Represents a video that's currently live, usually returned from `client.getVideo()` */
-class LiveVideo extends BaseVideo implements LiveVideoAttributes {
+class LiveVideo extends BaseVideo implements LiveVideoProperties {
 	/** Number of people who's watching the live stream right now */
 	watchingCount!: number;
 	/** Current continuation token to load next chat  */
@@ -42,9 +42,9 @@ class LiveVideo extends BaseVideo implements LiveVideoAttributes {
 	private _chatQueue: Chat[] = [];
 
 	/** @hidden */
-	constructor(video: Partial<LiveVideoAttributes> = {}) {
-		super();
-		Object.assign(this, video);
+	constructor(attr: LiveVideoProperties) {
+		super(attr);
+		Object.assign(this, attr);
 	}
 
 	/**

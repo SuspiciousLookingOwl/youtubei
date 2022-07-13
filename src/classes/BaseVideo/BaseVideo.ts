@@ -1,29 +1,29 @@
 import { YoutubeRawData } from "../../common";
-import { I_END_POINT } from "../../constants";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
 import { BaseVideoParser } from "./BaseVideoParser";
+import { VideoRelated } from "./VideoRelated";
 
 /** @hidden */
-export interface BaseVideoAttributes extends BaseAttributes {
-	title: string;
-	thumbnails: Thumbnails;
-	description: string;
-	channel: BaseChannel;
-	uploadDate: string;
-	viewCount: number | null;
-	likeCount: number | null;
-	isLiveContent: boolean;
-	tags: string[];
-	related: (VideoCompact | PlaylistCompact)[];
-	relatedContinuation?: string;
+export interface BaseVideoProperties extends BaseProperties {
+	id?: string;
+	title?: string;
+	thumbnails?: Thumbnails;
+	description?: string;
+	channel?: BaseChannel;
+	uploadDate?: string;
+	viewCount?: number | null;
+	likeCount?: number | null;
+	isLiveContent?: boolean;
+	tags?: string[];
 }
 
 /** Represents a Video  */
-export class BaseVideo extends Base implements BaseVideoAttributes {
+export class BaseVideo extends Base implements BaseVideoProperties {
+	id!: string;
 	/** The title of this video */
 	title!: string;
 	/** Thumbnails of the video with different sizes */
@@ -43,14 +43,14 @@ export class BaseVideo extends Base implements BaseVideoAttributes {
 	/** The tags of this video */
 	tags!: string[];
 	/** Videos / playlists related to this video  */
-	related: (VideoCompact | PlaylistCompact)[] = [];
-	/** Current continuation token to load next related content  */
-	relatedContinuation?: string;
+	related: VideoRelated;
 
 	/** @hidden */
-	constructor(video: Partial<BaseVideoAttributes> = {}) {
-		super();
-		Object.assign(this, video);
+	constructor(attr: BaseVideoProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
+
+		this.related = new VideoRelated({ client: this.client, video: this });
 	}
 
 	/**
@@ -70,24 +70,6 @@ export class BaseVideo extends Base implements BaseVideoAttributes {
 	 * ```
 	 */
 	get upNext(): VideoCompact | PlaylistCompact {
-		return this.related[0];
-	}
-
-	/** Load next related videos / playlists */
-	async nextRelated(count = 1): Promise<(VideoCompact | PlaylistCompact)[]> {
-		const newRelated: (VideoCompact | PlaylistCompact)[] = [];
-		for (let i = 0; i < count || count == 0; i++) {
-			if (this.relatedContinuation === undefined) break;
-
-			const response = await this.client.http.post(`${I_END_POINT}/next`, {
-				data: { continuation: this.relatedContinuation },
-			});
-
-			newRelated.push(...BaseVideoParser.parseRelated(response.data, this.client));
-			this.relatedContinuation = BaseVideoParser.parseContinuation(response.data);
-		}
-
-		this.related.push(...newRelated);
-		return newRelated;
+		return this.related.items[0];
 	}
 }

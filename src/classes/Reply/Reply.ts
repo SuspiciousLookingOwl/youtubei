@@ -1,23 +1,25 @@
 import { YoutubeRawData } from "../../common";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { Comment } from "../Comment";
 import { Video } from "../Video";
 import { ReplyParser } from "./ReplyParser";
 
 /** @hidden */
-interface ReplyAttributes extends BaseAttributes {
-	comment: Comment;
-	video: Video;
-	author: BaseChannel;
-	content: string;
-	publishDate: string;
-	likeCount: number;
-	isAuthorChannelOwner: boolean;
+interface ReplyProperties extends BaseProperties {
+	id?: string;
+	comment?: Comment;
+	video?: Video;
+	author?: BaseChannel;
+	content?: string;
+	publishDate?: string;
+	likeCount?: number;
+	isAuthorChannelOwner?: boolean;
 }
 
 /** Represents a Reply */
-export class Reply extends Base implements ReplyAttributes {
+export class Reply extends Base implements ReplyProperties {
+	id!: string;
 	/** The comment this reply belongs to */
 	comment!: Comment;
 	/** The video this reply belongs to */
@@ -34,9 +36,9 @@ export class Reply extends Base implements ReplyAttributes {
 	isAuthorChannelOwner!: boolean;
 
 	/** @hidden */
-	constructor(reply: Partial<ReplyAttributes> = {}) {
-		super();
-		Object.assign(this, reply);
+	constructor(attr: ReplyProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/**

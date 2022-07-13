@@ -1,20 +1,22 @@
 import { YoutubeRawData } from "../../common";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { Thumbnails } from "../Thumbnails";
 import { BaseChannelParser } from "./BaseChannelParser";
 import { ChannelPlaylists } from "./ChannelPlaylists";
 import { ChannelVideos } from "./ChannelVideos";
 
 /** @hidden */
-export interface BaseChannelAttributes extends BaseAttributes {
-	name: string;
+export interface BaseChannelProperties extends BaseProperties {
+	id?: string;
+	name?: string;
 	thumbnails?: Thumbnails;
 	videoCount?: number;
 	subscriberCount?: string;
 }
 
 /**  Represents a Youtube Channel */
-export class BaseChannel extends Base implements BaseChannelAttributes {
+export class BaseChannel extends Base implements BaseChannelProperties {
+	id!: string;
 	/** The channel's name */
 	name!: string;
 	/** Thumbnails of the Channel with different sizes */
@@ -33,9 +35,9 @@ export class BaseChannel extends Base implements BaseChannelAttributes {
 	playlists: ChannelPlaylists;
 
 	/** @hidden */
-	constructor(channel: Partial<BaseChannelAttributes> = {}) {
-		super();
-		Object.assign(this, channel);
+	constructor(attr: BaseChannelProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 		this.videos = new ChannelVideos({ channel: this, client: this.client });
 		this.playlists = new ChannelPlaylists({ channel: this, client: this.client });
 	}

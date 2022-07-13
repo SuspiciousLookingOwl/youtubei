@@ -1,5 +1,5 @@
 import { YoutubeRawData } from "../../common";
-import { BaseChannel, BaseChannelAttributes } from "../BaseChannel";
+import { BaseChannel, BaseChannelProperties } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
@@ -12,24 +12,24 @@ export interface Shelf {
 }
 
 /** @hidden */
-interface ChannelAttributes extends BaseChannelAttributes {
-	banner: Thumbnails;
-	tvBanner: Thumbnails;
-	mobileBanner: Thumbnails;
-	shelves: Shelf[];
+interface ChannelProperties extends BaseChannelProperties {
+	banner?: Thumbnails;
+	tvBanner?: Thumbnails;
+	mobileBanner?: Thumbnails;
+	shelves?: Shelf[];
 }
 
 /**  Represents a Youtube Channel */
-export class Channel extends BaseChannel implements ChannelAttributes {
+export class Channel extends BaseChannel implements ChannelProperties {
 	banner!: Thumbnails;
 	mobileBanner!: Thumbnails;
 	tvBanner!: Thumbnails;
 	shelves: Shelf[] = [];
 
 	/** @hidden */
-	constructor(channel: Partial<ChannelAttributes> = {}) {
-		super();
-		Object.assign(this, channel);
+	constructor(attr: ChannelProperties) {
+		super(attr);
+		Object.assign(this, attr);
 	}
 
 	/**

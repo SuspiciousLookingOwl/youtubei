@@ -1,26 +1,28 @@
 import { YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
-import { Base, BaseAttributes } from "../Base";
+import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
 import { Video } from "../Video";
 import { CommentParser } from "./CommentParser";
 
 /** @hidden */
-interface CommentAttributes extends BaseAttributes {
-	video: Video;
-	author: BaseChannel;
-	content: string;
-	publishDate: string;
-	likeCount: number;
-	isAuthorChannelOwner: boolean;
-	isPinned: boolean;
-	replyCount: number;
+interface CommentProperties extends BaseProperties {
+	id?: string;
+	video?: Video;
+	author?: BaseChannel;
+	content?: string;
+	publishDate?: string;
+	likeCount?: number;
+	isAuthorChannelOwner?: boolean;
+	isPinned?: boolean;
+	replyCount?: number;
 	replyContinuation?: string;
 }
 
 /** Represents a Comment / Reply */
-export class Comment extends Base implements CommentAttributes {
+export class Comment extends Base implements CommentProperties {
+	id!: string;
 	/** The video this comment belongs to */
 	video!: Video;
 	/** The comment's author */
@@ -43,9 +45,9 @@ export class Comment extends Base implements CommentAttributes {
 	replyContinuation?: string;
 
 	/** @hidden */
-	constructor(comment: Partial<CommentAttributes> = {}) {
-		super();
-		Object.assign(this, comment);
+	constructor(attr: CommentProperties) {
+		super(attr.client);
+		Object.assign(this, attr);
 	}
 
 	/**
