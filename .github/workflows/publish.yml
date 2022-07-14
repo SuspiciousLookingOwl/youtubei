@@ -34,14 +34,10 @@ jobs:
       - name: Install deps
         if: steps.check.outputs.changed == 'true'
         run: pnpm i
-        env:
-          CI: true
 
       - name: Build
         if: steps.check.outputs.changed == 'true'
         run: pnpm build
-        env:
-          CI: true
 
       - name: Set NPM Token
         if: steps.check.outputs.changed == 'true'
