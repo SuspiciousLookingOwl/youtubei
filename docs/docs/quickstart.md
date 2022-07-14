@@ -21,11 +21,11 @@ import { Client } from "youtubei";
 const youtube = new Client();
 
 (async () => {
-	const videos = await youtube.search("Never gonna give you up", {
+	const result = await youtube.search("Never gonna give you up", {
 		type: "video", // video | playlist | channel | all
 	});
 
-	console.log(videos);
+	console.log(result.items);
 })();
 ```
 

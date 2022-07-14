@@ -26,7 +26,7 @@ const videos = await youtube.search("Keyword", {
 	type: "video"
 });
 
-console.log(videos);
+console.log(videos.items);
 ```
 
 ### How to get search result from next pagination?
@@ -36,7 +36,7 @@ const videos = await youtube.search("Keyword", {
 	type: "video"
 });
 
-console.log(videos); // search result from first page
+console.log(videos.items); // search result from first page
 
 let nextVideos = await videos.next();
 console.log(nextVideos); // search result from second page
@@ -44,7 +44,7 @@ console.log(nextVideos); // search result from second page
 nextVideos = await videos.next();
 console.log(nextVideos); // search result from third page
 
-console.log(videos); // search result from first, second, and third page.
+console.log(videos.items); // search result from first, second, and third page.
 ```
 
 ### How to get all videos in a playlist?
@@ -52,9 +52,9 @@ console.log(videos); // search result from first, second, and third page.
 ```js
 const playlist = await youtube.getPlaylist(PLAYLIST_ID);
 
-await playlist.next(0);
+await playlist.videos.next(0);
 
-console.log(playlist.videos);
+console.log(playlist.videos.items);
 ```
 
 ### How to get video's comments?
@@ -62,16 +62,16 @@ console.log(playlist.videos);
 ```js
 const video = await youtube.getVideo(VIDEO_ID);
 
-let comments = await video.nextComments();
-console.log(comments); // first 20 comments
+let comments = await video.comments.next();
+console.log(comments.items); // first 20 comments
 
-comments = await video.nextComments();
-console.log(comments); // next 20 comments
+comments = await video.comments.next();
+console.log(comments.items); // next 20 comments
 
-console.log(video.comments); // all 40 loaded comments
+console.log(video.comments.items); // all 40 loaded comments
 
-await video.nextComments(0); // load the rest of the comments
-console.log(video.comments); // all comments on the video
+await video.comments.next(0); // load the rest of the comments
+console.log(video.comments.items); // all comments on the video
 
 ```
 
