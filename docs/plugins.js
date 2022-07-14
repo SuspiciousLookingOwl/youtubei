@@ -4,7 +4,7 @@ module.exports = [
 		{
 			entryPoints: ["../src/index.ts"],
 			mode: "file",
-			tsconfig: "../tsconfig.json",
+			tsconfig: "../tsconfig.docs.json",
 			exclude: ["**/common/**/*", "**/constants.ts", "**/*Parser.ts"],
 			excludePrivate: true,
 			excludeProtected: true,
