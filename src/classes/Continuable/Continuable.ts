@@ -2,10 +2,10 @@ import { Base } from "../Base";
 import { Client } from "../Client";
 
 /** @hidden */
-export type FetchReturnType<T> = Promise<{
+export type FetchResult<T> = {
 	items: T[];
 	continuation?: string;
-}>;
+};
 
 /** @hidden */
 export type ContinuableConstructorParams = {
@@ -43,7 +43,7 @@ export abstract class Continuable<T> extends Base {
 		return newItems;
 	}
 
-	protected abstract fetch(): FetchReturnType<T>;
+	protected abstract fetch(): Promise<FetchResult<T>>;
 
 	private get hasContinuation(): boolean {
 		return this.strictContinuationCheck ? this.continuation !== undefined : !!this.continuation;

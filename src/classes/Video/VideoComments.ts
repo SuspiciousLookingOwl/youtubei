@@ -1,6 +1,6 @@
 import { I_END_POINT } from "../../constants";
 import { Comment } from "../Comment";
-import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { Video } from "./Video";
 import { VideoParser } from "./VideoParser";
 
@@ -38,7 +38,7 @@ export class VideoComments extends Continuable<Comment> {
 		this.video = video;
 	}
 
-	protected async fetch(): FetchReturnType<Comment> {
+	protected async fetch(): Promise<FetchResult<Comment>> {
 		const response = await this.client.http.post(`${I_END_POINT}/next`, {
 			data: { continuation: this.continuation },
 		});

@@ -1,6 +1,6 @@
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
-import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { BaseChannel } from "./BaseChannel";
 import { BaseChannelParser } from "./BaseChannelParser";
@@ -35,7 +35,7 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 		this.channel = channel;
 	}
 
-	protected async fetch(): FetchReturnType<VideoCompact> {
+	protected async fetch(): Promise<FetchResult<VideoCompact>> {
 		const params = "EgZ2aWRlb3M%3D";
 
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {

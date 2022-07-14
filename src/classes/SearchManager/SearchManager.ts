@@ -1,6 +1,6 @@
 import { I_END_POINT } from "../../constants";
 import { BaseChannel } from "../BaseChannel";
-import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { SearchResultParser } from "./SearchManagerParser";
@@ -118,7 +118,7 @@ export class SearchManager<T = SearchType.ALL> extends Continuable<SearchResult<
 		return this;
 	}
 
-	protected async fetch(): FetchReturnType<SearchResult<T>> {
+	protected async fetch(): Promise<FetchResult<SearchResult<T>>> {
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: { continuation: this.continuation },
 		});

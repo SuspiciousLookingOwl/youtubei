@@ -1,5 +1,5 @@
 import { I_END_POINT } from "../../constants";
-import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { Playlist } from "./Playlist";
 import { PlaylistParser } from "./PlaylistParser";
@@ -35,7 +35,7 @@ export class PlaylistVideos extends Continuable<VideoCompact> {
 		this.playlist = playlist;
 	}
 
-	protected async fetch(): FetchReturnType<VideoCompact> {
+	protected async fetch(): Promise<FetchResult<VideoCompact>> {
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 			data: { continuation: this.continuation },
 		});

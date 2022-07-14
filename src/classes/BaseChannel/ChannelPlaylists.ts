@@ -1,6 +1,6 @@
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
 import { I_END_POINT } from "../../constants";
-import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { BaseChannel } from "./BaseChannel";
 import { BaseChannelParser } from "./BaseChannelParser";
@@ -35,7 +35,7 @@ export class ChannelPlaylists extends Continuable<PlaylistCompact> {
 		this.channel = channel;
 	}
 
-	protected async fetch(): FetchReturnType<PlaylistCompact> {
+	protected async fetch(): Promise<FetchResult<PlaylistCompact>> {
 		const params = "EglwbGF5bGlzdHMgAQ%3D%3D";
 
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {

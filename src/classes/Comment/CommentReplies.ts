@@ -1,5 +1,5 @@
 import { I_END_POINT } from "../../constants";
-import { Continuable, ContinuableConstructorParams, FetchReturnType } from "../Continuable";
+import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { Reply } from "../Reply";
 import { Comment } from "./Comment";
 import { CommentParser } from "./CommentParser";
@@ -21,7 +21,7 @@ export class CommentReplies extends Continuable<Reply> {
 		this.comment = comment;
 	}
 
-	protected async fetch(): FetchReturnType<Reply> {
+	protected async fetch(): Promise<FetchResult<Reply>> {
 		const response = await this.client.http.post(`${I_END_POINT}/next`, {
 			data: { continuation: this.continuation },
 		});
