@@ -1,0 +1,36 @@
+name: Build and Test
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        strategy:
+            matrix:
+                node-version: [12.x, 14.x]
+
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                node-version: ${{ matrix.node-version }}
+
+            - uses: pnpm/action-setup@v2.0.1
+              name: Install pnpm
+              id: pnpm-install
+              with:
+                version: 7
+                run_install: false
+
+            - name: install, build, and test
+              run: |
+                pnpm i
+                pnpm build
+                pnpm t
