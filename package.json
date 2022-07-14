@@ -60,7 +60,7 @@
 	"bugs": {
 		"url": "https://github.com/SuspiciousLookingOwl/youtubei/issues"
 	},
-	"homepage": "https://youtubei.netlify.app",
+	"homepage": "https://suspiciouslookingowl.github.io/youtubei",
 	"dependencies": {
 		"node-fetch": "2.6.7",
 		"protocol-buffers": "5.0.0"
