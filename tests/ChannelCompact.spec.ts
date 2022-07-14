@@ -1,29 +1,32 @@
-import { ChannelCompact, Client } from "../src";
 import "jest-extended";
-import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
+
+import { BaseChannel, Client } from "../src";
+import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 const youtube = new Client();
 
-describe("ChannelCompact", () => {
-	let channel: ChannelCompact;
+describe("BaseChannel", () => {
+	let channel: BaseChannel;
 
 	beforeAll(async () => {
-		channel = (await youtube.findOne("Linus Tech Tips", { type: "channel" })) as ChannelCompact;
+		channel = (await youtube.findOne("Linus Tech Tips", {
+			type: "channel",
+		})) as BaseChannel;
 	});
 
 	it("match channel from search result", () => {
-		commonChannelCompactTest(channel);
+		commonBaseChannelTest(channel);
 	});
 
 	it("load videos", async () => {
-		const videos = await channel.nextVideos(2);
+		const videos = await channel.videos.next(2);
 		expect(videos.length).toBeGreaterThan(50);
-		expect(channel.videos.length).toBe(videos.length);
+		expect(channel.videos.items.length).toBe(videos.length);
 	});
 
 	it("load playlists", async () => {
-		const playlists = await channel.nextPlaylists(2);
+		const playlists = await channel.playlists.next(2);
 		expect(playlists.length).toBe(60);
-		expect(channel.playlists.length).toBe(playlists.length);
+		expect(channel.playlists.items.length).toBe(playlists.length);
 	});
 });

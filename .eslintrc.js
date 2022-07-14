@@ -15,6 +15,7 @@ module.exports = {
 		"linebreak-style": ["error", "unix"],
 		"no-mixed-spaces-and-tabs": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-namespace": "off",
 		indent: ["off", "tab"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],

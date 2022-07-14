@@ -1,6 +1,7 @@
-import { VideoCompact } from "../src";
 import "jest-extended";
-import { commonChannelCompactTest } from "./CommonChannelCompact.spec";
+
+import { VideoCompact } from "../src";
+import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 type Ignore = {
 	ignoreChannelVideoCount: boolean;
@@ -18,7 +19,7 @@ export const commonVideoCompactTest = (
 	expect(video.duration).toBeGreaterThan(126);
 	expect(video.isLive).toBe(false);
 	expect(video.isPrivateOrDeleted).toBe(false);
-	commonChannelCompactTest(video.channel!, { ignoreVideoCount: ignoreChannelVideoCount });
+	commonBaseChannelTest(video.channel!, { ignoreVideoCount: ignoreChannelVideoCount });
 	if (!ignoreUploadDate) expect(typeof video.uploadDate).toBe("string");
 	if (!ignoreViewCount) expect(video.viewCount).toBeGreaterThan(135000);
 };

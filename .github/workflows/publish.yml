@@ -1,0 +1,52 @@
+name: Publish
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish_to_npm:
+    name: Publish to NPM
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Check if version bump
+        id: check
+        uses: EndBug/version-check@v1.1.1
+
+      - name: Log when unchanged
+        if: steps.check.outputs.changed != 'true'
+        run: echo "No version change"
+
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: Install deps
+        if: steps.check.outputs.changed == 'true'
+        run: pnpm i
+
+      - name: Build
+        if: steps.check.outputs.changed == 'true'
+        run: pnpm build
+
+      - name: Set NPM Token
+        if: steps.check.outputs.changed == 'true'
+        uses: filipstefansson/set-npm-token-action@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish new version
+        if: steps.check.outputs.changed == 'true'
+        run: npm publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

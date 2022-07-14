@@ -1,6 +1,6 @@
 // import { Client, MixPlaylist } from "../src";
-
 import "jest-extended";
+
 // const youtube = new Client();
 
 // NOTE: Seems like mix playlist doesn't lasts forever(?), making this test fails
