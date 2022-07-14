@@ -1,7 +1,0 @@
-{
-	"extends": "./typescript/tsconfig.base.json",
-	"compilerOptions": {
-		"target": "ESNext"
-	},
-	"include": ["./src/**/*.ts", "./@types/*.d.ts"]
-}
