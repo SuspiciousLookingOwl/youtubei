@@ -2,7 +2,7 @@ module.exports = {
 	title: "Youtubei",
 	tagline: "Get Youtube Data",
 	url: "https://github.com/SuspiciousLookingOwl/youtubei",
-	baseUrl: "/youtubei",
+	baseUrl: "/youtubei/",
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
 	favicon: "img/favicon.ico",
