@@ -7,44 +7,19 @@ import { SearchResultParser } from "./SearchManagerParser";
 import { optionsToProto, SearchProto } from "./proto";
 
 export type SearchOptions = {
-	type?: SearchType | `${SearchType}`;
-	duration?: SearchDuration | `${SearchDuration}`;
-	uploadDate?: SearchUploadDate | `${SearchUploadDate}`;
-	sortBy?: SearchSort | `${SearchSort}`;
+	type?: SearchType;
+	duration?: SearchDuration;
+	uploadDate?: SearchUploadDate;
+	sortBy?: SearchSort;
 };
 
-export enum SearchUploadDate {
-	ALL = "all",
-	LAST_HOUR = "hour",
-	TODAY = "today",
-	THIS_WEEK = "week",
-	THIS_MONTH = "month",
-	THIS_YEAR = "year",
-}
+export type SearchUploadDate = "all" | "hour" | "today" | "week" | "month" | "year";
 
-export enum SearchType {
-	ALL = "all",
-	VIDEO = "video",
-	CHANNEL = "channel",
-	PLAYLIST = "playlist",
-}
+export type SearchType = "all" | "video" | "channel" | "playlist";
 
-export enum SearchDuration {
-	ALL = "all",
-	UNDER_FOUR_MINUTES = "short",
-	SHORT = "short",
-	FOUR_TO_TWENTY_MINUTES = "medium",
-	MEDIUM = "medium",
-	OVER_TWENTY_MINUTES = "long",
-	LONG = "long",
-}
+export type SearchDuration = "all" | "short" | "medium" | "long";
 
-export enum SearchSort {
-	RELEVANCE = "relevance",
-	RATING = "rating",
-	UPLOAD_DATE = "date",
-	VIEW_COUNT = "view",
-}
+export type SearchSort = "relevance" | "rating" | "date" | "view";
 
 export type SearchResult<T = "all"> = T extends "video" | VideoCompact
 	? VideoCompact
@@ -76,7 +51,9 @@ export type SearchResult<T = "all"> = T extends "video" | VideoCompact
  *
  * @noInheritDoc
  */
-export class SearchManager<T = SearchType.ALL> extends Continuable<SearchResult<T>> {
+export class SearchManager<T extends SearchType | undefined = "all"> extends Continuable<
+	SearchResult<T>
+> {
 	/** The estimated search result count */
 	estimatedResults!: number;
 

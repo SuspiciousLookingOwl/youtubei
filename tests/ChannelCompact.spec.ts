@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { BaseChannel, Client, SearchType } from "../src";
+import { BaseChannel, Client } from "../src";
 import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 const youtube = new Client();
@@ -10,7 +10,7 @@ describe("BaseChannel", () => {
 
 	beforeAll(async () => {
 		channel = (await youtube.findOne("Linus Tech Tips", {
-			type: SearchType.CHANNEL,
+			type: "channel",
 		})) as BaseChannel;
 	});
 
