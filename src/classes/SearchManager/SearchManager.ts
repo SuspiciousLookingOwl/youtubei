@@ -36,17 +36,17 @@ export type SearchResult<T = "all"> = T extends "video" | VideoCompact
  *
  * @example
  * ```ts
- * const searchManager = await youtube.search("Keyword");
+ * const result = await youtube.search("Keyword");
  *
- * console.log(searchManager.items); // search result from first page
+ * console.log(result.items); // search result from first page
  *
- * let nextSearchResult = await SearchManager.next();
+ * let nextSearchResult = await result.next();
  * console.log(nextSearchResult); // search result from second page
  *
- * nextSearchResult = await SearchManager.next();
+ * nextSearchResult = await result.next();
  * console.log(nextSearchResult); // search result from third page
  *
- * console.log(searchManager.items); // search result from first, second, and third page.
+ * console.log(result.items); // search result from first, second, and third page.
  * ```
  *
  * @noInheritDoc
