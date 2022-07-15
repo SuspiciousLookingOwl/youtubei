@@ -9,6 +9,9 @@ module.exports = {
 	organizationName: "SuspiciousLookingOwl", // Usually your GitHub org/user name.
 	projectName: "youtubei", // Usually your repo name.
 	themeConfig: {
+		colorMode: {
+			defaultMode: "dark",
+		},
 		navbar: {
 			title: "Youtubei",
 			items: [
