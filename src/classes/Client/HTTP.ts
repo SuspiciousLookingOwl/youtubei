@@ -66,8 +66,8 @@ export class HTTP {
 				...this.defaultHeaders,
 				cookie: this.cookie,
 				...partialOptions.headers,
+				...this.defaultFetchOptions.headers,
 			},
-
 			body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined,
 		};
 
