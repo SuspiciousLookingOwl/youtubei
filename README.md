@@ -4,7 +4,7 @@
 
 <b>Requires Node >= 12</b>
 
-#### [Documentation](https://youtubei.netlify.app/docs)
+#### [Documentation](https://suspiciouslookingowl.github.io/youtubei)
 
 ## Installation
 
