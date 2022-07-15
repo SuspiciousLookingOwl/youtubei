@@ -11,7 +11,7 @@ export * from "./MixPlaylist";
 export * from "./Playlist";
 export * from "./PlaylistCompact";
 export * from "./Reply";
-export * from "./SearchManager";
+export * from "./SearchResult";
 export * from "./Thumbnails";
 export * from "./Video";
 export * from "./VideoCompact";

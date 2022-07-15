@@ -6,7 +6,7 @@ import {
 	SearchSort,
 	SearchType,
 	SearchUploadDate,
-} from "../SearchManager";
+} from "../SearchResult";
 import { SearchProto as ProtoType } from "./SearchProto";
 
 // TODO move this to .proto file

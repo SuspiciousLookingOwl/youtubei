@@ -1,11 +1,11 @@
 import "jest-extended";
 
-import { Client, SearchManager } from "../src";
+import { Client, SearchResult } from "../src";
 
 const youtube = new Client();
 
-describe("SearchManager", () => {
-	let result: SearchManager;
+describe("SearchResult", () => {
+	let result: SearchResult;
 
 	beforeAll(async () => {
 		result = await youtube.search("foo");
