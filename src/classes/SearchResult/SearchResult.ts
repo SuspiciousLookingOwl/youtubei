@@ -67,6 +67,8 @@ export class SearchResult<T extends SearchType | undefined = "all"> extends Cont
 	 *
 	 * @param query Search query
 	 * @param options Search Options
+	 *
+	 * @hidden
 	 */
 	async search(query: string, options: SearchOptions): Promise<SearchResult<T>> {
 		this.items = [];
