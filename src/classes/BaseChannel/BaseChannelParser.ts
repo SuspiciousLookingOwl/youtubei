@@ -21,8 +21,9 @@ export class BaseChannelParser {
 		return (
 			data.contents?.twoColumnBrowseResultsRenderer.tabs[index].tabRenderer.content
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer
-				.items ||
-			data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems
+				?.items ||
+			data.onResponseReceivedActions?.[0].appendContinuationItemsAction.continuationItems ||
+			[]
 		);
 	}
 }
