@@ -49,7 +49,7 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 		return {
 			continuation,
 			items: data.map((i: YoutubeRawData) =>
-				new VideoCompact({ client: this.client }).load(i)
+				new VideoCompact({ client: this.client, channel: this.channel }).load(i)
 			),
 		};
 	}
