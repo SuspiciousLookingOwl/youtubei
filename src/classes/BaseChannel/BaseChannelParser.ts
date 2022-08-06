@@ -19,7 +19,7 @@ export class BaseChannelParser {
 	static parseTabData(name: "videos" | "playlists", data: YoutubeRawData): YoutubeRawData {
 		const index = name === "videos" ? 1 : 2;
 		return (
-			data.contents?.twoColumnBrowseResultsRenderer.tabs[index].tabRenderer.content
+			data.contents?.twoColumnBrowseResultsRenderer.tabs[index].tabRenderer.content?
 				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer
 				?.items ||
 			data.onResponseReceivedActions?.[0].appendContinuationItemsAction.continuationItems ||
