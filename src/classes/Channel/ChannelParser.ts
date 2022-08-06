@@ -18,7 +18,7 @@ export class ChannelParser {
 		target.name = title;
 		target.thumbnails = new Thumbnails().load(avatar.thumbnails);
 		target.videoCount = 0; // data not available
-		target.subscriberCount = subscriberCountText.simpleText;
+		target.subscriberCount = subscriberCountText?.simpleText;
 
 		const { tvBanner, mobileBanner, banner } = data.header.c4TabbedHeaderRenderer;
 
