@@ -37,7 +37,7 @@ export class Thumbnails extends Array<Thumbnail> {
 	 *
 	 * @example
 	 * ```js
-	 * const min = video.thumbnails.min;
+	 * const best = video.thumbnails.best;
 	 * ```
 	 */
 	get best(): string | undefined {
