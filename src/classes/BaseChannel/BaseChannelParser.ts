@@ -3,6 +3,11 @@ import { Thumbnails } from "../Thumbnails";
 import { BaseChannel } from "./BaseChannel";
 
 export class BaseChannelParser {
+	static TAB_TYPE_PARAMS = {
+		videos: "EgZ2aWRlb3M%3D",
+		playlists: "EglwbGF5bGlzdHM%3D",
+	} as const;
+
 	static loadBaseChannel(target: BaseChannel, data: YoutubeRawData): BaseChannel {
 		const { channelId, title, thumbnail, videoCountText, subscriberCountText } = data;
 
@@ -17,11 +22,16 @@ export class BaseChannelParser {
 
 	/** Parse tab data from request, tab name is ignored if it's a continuation data */
 	static parseTabData(name: "videos" | "playlists", data: YoutubeRawData): YoutubeRawData {
-		const index = name === "videos" ? 1 : 2;
+		const tab = data.contents?.twoColumnBrowseResultsRenderer.tabs.find((t: YoutubeRawData) => {
+			return (
+				t.tabRenderer?.endpoint.browseEndpoint.params ===
+				BaseChannelParser.TAB_TYPE_PARAMS[name]
+			);
+		});
+
 		return (
-			data.contents?.twoColumnBrowseResultsRenderer.tabs[index].tabRenderer.content
-				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer
-				?.items ||
+			tab?.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
+				.gridRenderer?.items ||
 			data.onResponseReceivedActions?.[0].appendContinuationItemsAction.continuationItems ||
 			[]
 		);
