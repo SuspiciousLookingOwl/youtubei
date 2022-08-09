@@ -26,7 +26,7 @@ export class VideoCompactParser {
 		target.uploadDate = publishedTimeText?.simpleText;
 		target.description =
 			detailedMetadataSnippets?.[0].snippetText.runs
-				.map((r: YoutubeRawData) => r.text)
+				?.map((r: YoutubeRawData) => r.text)
 				.join("") || "";
 
 		target.duration =
