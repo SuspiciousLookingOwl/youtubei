@@ -2,6 +2,7 @@ import proto from "protocol-buffers";
 
 import {
 	SearchDuration,
+	SearchFeature,
 	SearchOptions,
 	SearchSort,
 	SearchType,
@@ -16,6 +17,15 @@ export const SearchProto = proto<ProtoType>(`
 			optional int32 uploadDate = 1;
 			optional int32 type = 2;
 			optional int32 duration = 3;
+			optional int32 hd = 4;
+			optional int32 subtitles = 5;
+			optional int32 creativeCommons = 6;
+			optional int32 live = 8;
+			optional int32 4k = 14;
+			optional int32 360 = 15;
+			optional int32 location = 23;
+			optional int32 hdr = 25;
+			optional int32 vr180 = 26;
 		}
 
 		optional int32 sortBy = 1;
@@ -54,12 +64,19 @@ const searchSortProto: Record<SearchSort, number> = {
 };
 
 export const optionsToProto = (options: SearchOptions): ProtoType["SearchOptions"] => {
+	const featuresRecord =
+		options.features?.reduce((acc, val) => {
+			if (val) acc[val] = 1;
+			return acc;
+		}, {} as Record<SearchFeature, number>) || {};
+
 	return {
 		sortBy: options.sortBy && searchSortProto[options.sortBy],
 		options: {
 			duration: options.duration && searchDurationProto[options.duration],
 			type: options.type && searchTypeProto[options.type],
 			uploadDate: options.uploadDate && searchUploadDateProto[options.uploadDate],
+			...featuresRecord,
 		},
 	};
 };

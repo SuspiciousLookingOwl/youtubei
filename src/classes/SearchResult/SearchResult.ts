@@ -11,6 +11,7 @@ export type SearchOptions = {
 	duration?: SearchDuration;
 	uploadDate?: SearchUploadDate;
 	sortBy?: SearchSort;
+	features?: SearchFeature[];
 };
 
 export type SearchUploadDate = "all" | "hour" | "today" | "week" | "month" | "year";
@@ -20,6 +21,18 @@ export type SearchType = "all" | "video" | "channel" | "playlist";
 export type SearchDuration = "all" | "short" | "medium" | "long";
 
 export type SearchSort = "relevance" | "rating" | "date" | "view";
+
+export type SearchFeature =
+	| "live"
+	| "4k"
+	| "hd"
+	| "subtitles"
+	| "creativeCommons"
+	| "360"
+	| "vr180"
+	| "3d"
+	| "hdr"
+	| "location";
 
 export type SearchResultItem<T = "all"> = T extends "video" | VideoCompact
 	? VideoCompact
