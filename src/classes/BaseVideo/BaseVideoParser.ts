@@ -17,6 +17,10 @@ export class BaseVideoParser {
 		target.viewCount = +videoInfo.videoDetails.viewCount || null;
 		target.isLiveContent = videoInfo.videoDetails.isLiveContent;
 		target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
+		target.streamingUrl = videoInfo.streamingData.formats[1].url
+		target.gameChannelId = videoInfo.metadataRowContainer
+			?.metadataRowContainerRenderer?.rows?.at(0)?.richMetadataRowRenderer?.contents?.at(0)
+			?.richMetadataRenderer?.endpoint?.browseEndpoint?.browseId || null
 
 		// Channel
 		const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
