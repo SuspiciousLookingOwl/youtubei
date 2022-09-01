@@ -10,9 +10,9 @@ export class VideoParser {
 
 		const itemSectionRenderer = data[3].response.contents.twoColumnWatchNextResults.results.results.contents
 			.reverse()
-			.find((c: YoutubeRawData) => c.itemSectionRenderer).itemSectionRenderer;
+			.find((c: YoutubeRawData) => c.itemSectionRenderer)?.itemSectionRenderer;
 
-		target.comments.continuation = getContinuationFromItems(itemSectionRenderer.contents);
+		target.comments.continuation = getContinuationFromItems(itemSectionRenderer?.contents || []);
 
 		return target;
 	}

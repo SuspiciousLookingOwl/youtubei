@@ -8,10 +8,12 @@ const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
 describe("Video", () => {
 	let video: Video;
 	let endedLiveVideo: Video;
+	let membershipVideo: Video;
 
 	beforeAll(async () => {
 		video = (await youtube.getVideo("OX31kZbAXsA")) as Video;
 		endedLiveVideo = (await youtube.getVideo("iXn9O-Rzb_M")) as Video;
+		membershipVideo = (await youtube.getVideo("ALz5YW2i5y0")) as Video;
 	});
 
 	it("match getVideo result", () => {
@@ -49,5 +51,15 @@ describe("Video", () => {
 	it("match ended live getVideo result", () => {
 		expect(endedLiveVideo.isLiveContent).toBeTrue();
 		expect(endedLiveVideo.duration).toBe(4842);
+	});
+
+	it("match membership video getVideo result", () => {
+		expect(membershipVideo.id).toBe("ALz5YW2i5y0");
+		expect(membershipVideo.title).toBe(
+			"台湾のビール Beer in Taiwan"
+		);
+		expect(membershipVideo.duration).toBe(196);
+		expect(typeof membershipVideo.description).toBe("string");
+		expect(typeof membershipVideo.uploadDate).toBe("string");
 	});
 });
