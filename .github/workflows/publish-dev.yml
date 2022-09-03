@@ -1,0 +1,50 @@
+name: Publish Dev
+on:
+  push:
+    branches:
+      - development
+
+jobs:
+  publish_dev:
+    name: Publish to dist branch
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+
+      - uses: pnpm/action-setup@v2.0.1
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 7
+          run_install: false
+
+      - name: Install deps
+        run: pnpm i
+
+      - name: Build
+        run: pnpm build
+
+      - name: Publish new version
+        run: npm publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+      - name: move files
+        run: |
+          mkdir build
+          mv dist build/dist
+          cp {LICENSE,README.md,package.json} dist
+
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: dist
+          FOLDER: ./build
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
