@@ -16,7 +16,7 @@ jobs:
                   node-version: "16.x"
                   registry-url: "https://registry.npmjs.org"
 
-            - name: Check if version bump
+            - name: Check Version Bump
               id: check
               uses: EndBug/version-check@v1.1.1
 
@@ -27,8 +27,11 @@ jobs:
                   version: 7
                   run_install: false
 
-            - name: Install deps
+            - name: Install Deps
               run: pnpm i
+
+            - name: Test
+              run: pnpm t
 
             - name: Build
               run: pnpm build
@@ -38,7 +41,7 @@ jobs:
               with:
                   token: ${{ secrets.NPM_TOKEN }}
 
-            - name: Publish new version
+            - name: Publish New Version
               run: npm publish
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

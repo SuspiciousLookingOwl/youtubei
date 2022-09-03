@@ -1,10 +1,8 @@
 name: Build and Test
 
 on:
-    push:
-        branches: [development]
     pull_request:
-        branches: [main, development]
+        branches: [development]
 
 jobs:
     test:
@@ -29,8 +27,11 @@ jobs:
                   version: 7
                   run_install: false
 
-            - name: install, build, and test
-              run: |
-                  pnpm i
-                  pnpm build
-                  pnpm t
+            - name: Install Deps
+              run: pnpm i
+
+            - name: Build
+              run: pnpm build
+
+            - name: Test
+              run: pnpm t

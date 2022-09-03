@@ -6,7 +6,7 @@ on:
 
 jobs:
     publish_dev:
-        name: Publish to dist branch
+        name: Publish to dist Branch
         runs-on: ubuntu-latest
 
         steps:
@@ -23,16 +23,16 @@ jobs:
                   version: 7
                   run_install: false
 
-            - name: Install deps
+            - name: Install Deps
               run: pnpm i
-
-            - name: Build
-              run: pnpm build
 
             - name: Test
               run: pnpm t
 
-            - name: move files
+            - name: Build
+              run: pnpm build
+
+            - name: Move Files
               run: |
                   mkdir build
                   mv dist build/dist

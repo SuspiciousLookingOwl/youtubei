@@ -23,10 +23,10 @@ jobs:
                   version: 7
                   run_install: false
 
-            - name: Install library deps
+            - name: Install Library Deps
               run: pnpm i
 
-            - name: Install docs deps
+            - name: Install Docs Deps
               working-directory: ./docs
               run: pnpm i
 
