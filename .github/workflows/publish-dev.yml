@@ -28,11 +28,6 @@ jobs:
 
       - name: Build
         run: pnpm build
-
-      - name: Publish new version
-        run: npm publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         
       - name: move files
         run: |
