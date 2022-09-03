@@ -45,4 +45,5 @@ jobs:
                   BRANCH: dist
                   FOLDER: ./build
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  SKIP_EMPTY_COMMITS: true
                   MESSAGE: "Build: ({sha}) {msg}"
