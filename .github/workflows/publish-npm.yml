@@ -1,44 +1,44 @@
 name: Publish NPM
 on:
-  push:
-    branches:
-      - main
+    push:
+        branches:
+            - main
 
 jobs:
-  publish_to_npm:
-    name: Publish to NPM
-    runs-on: ubuntu-latest
+    publish_to_npm:
+        name: Publish to NPM
+        runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: "16.x"
+                  registry-url: "https://registry.npmjs.org"
 
-      - name: Check if version bump
-        id: check
-        uses: EndBug/version-check@v1.1.1
+            - name: Check if version bump
+              id: check
+              uses: EndBug/version-check@v1.1.1
 
-      - uses: pnpm/action-setup@v2.0.1
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
+            - uses: pnpm/action-setup@v2.0.1
+              name: Install pnpm
+              id: pnpm-install
+              with:
+                  version: 7
+                  run_install: false
 
-      - name: Install deps
-        run: pnpm i
+            - name: Install deps
+              run: pnpm i
 
-      - name: Build
-        run: pnpm build
+            - name: Build
+              run: pnpm build
 
-      - name: Set NPM Token
-        uses: filipstefansson/set-npm-token-action@v1
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
+            - name: Set NPM Token
+              uses: filipstefansson/set-npm-token-action@v1
+              with:
+                  token: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish new version
-        run: npm publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            - name: Publish new version
+              run: npm publish
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

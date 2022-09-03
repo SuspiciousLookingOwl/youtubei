@@ -20,17 +20,17 @@ jobs:
             - name: Use Node.js ${{ matrix.node-version }}
               uses: actions/setup-node@v1
               with:
-                node-version: ${{ matrix.node-version }}
+                  node-version: ${{ matrix.node-version }}
 
             - uses: pnpm/action-setup@v2.0.1
               name: Install pnpm
               id: pnpm-install
               with:
-                version: 7
-                run_install: false
+                  version: 7
+                  run_install: false
 
             - name: install, build, and test
               run: |
-                pnpm i
-                pnpm build
-                pnpm t
+                  pnpm i
+                  pnpm build
+                  pnpm t
