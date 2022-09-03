@@ -29,6 +29,9 @@ jobs:
             - name: Build
               run: pnpm build
 
+            - name: Test
+              run: pnpm t
+
             - name: move files
               run: |
                   mkdir build
