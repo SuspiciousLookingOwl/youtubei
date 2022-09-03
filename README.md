@@ -11,6 +11,10 @@
 ```
 npm i youtubei
 ```
+or use the dev build directly from GitHub:
+```
+npm i git://github.com/suspiciouslookingowl/youtubei.git#dist
+```
 
 ## Example
 
