@@ -71,6 +71,54 @@ import { I_END_POINT } from "../../constants";
 import { Continuable } from "../Continuable";
 import { SearchResultParser } from "./SearchResultParser";
 import { optionsToProto, SearchProto } from "./proto";
+export var SearchEnum;
+(function (SearchEnum) {
+    var UploadDate;
+    (function (UploadDate) {
+        UploadDate["All"] = "all";
+        UploadDate["Hour"] = "hour";
+        UploadDate["Today"] = "today";
+        UploadDate["Week"] = "week";
+        UploadDate["Month"] = "month";
+        UploadDate["Year"] = "year";
+    })(UploadDate = SearchEnum.UploadDate || (SearchEnum.UploadDate = {}));
+    var Type;
+    (function (Type) {
+        Type["Video"] = "video";
+        Type["Playlist"] = "playlist";
+        Type["Channel"] = "channel";
+        Type["All"] = "all";
+    })(Type = SearchEnum.Type || (SearchEnum.Type = {}));
+    var Duration;
+    (function (Duration) {
+        Duration["All"] = "all";
+        Duration["Short"] = "short";
+        Duration["Medium"] = "medium";
+        Duration["Long"] = "long";
+    })(Duration = SearchEnum.Duration || (SearchEnum.Duration = {}));
+    var Sort;
+    (function (Sort) {
+        Sort["Relevance"] = "relevance";
+        Sort["Rating"] = "rating";
+        Sort["Date"] = "date";
+        Sort["View"] = "view";
+    })(Sort = SearchEnum.Sort || (SearchEnum.Sort = {}));
+    var Feature;
+    (function (Feature) {
+        Feature["Live"] = "live";
+        Feature["4K"] = "4k";
+        Feature["UHD"] = "4k";
+        Feature["HD"] = "hd";
+        Feature["Subtitles"] = "subtitles";
+        Feature["CreativeCommons"] = "creativeCommons";
+        Feature["Spherical"] = "360";
+        Feature["VR180"] = "vr180";
+        Feature["3D"] = "3d";
+        Feature["ThreeDimensions"] = "3d";
+        Feature["HDR"] = "hdr";
+        Feature["Location"] = "location";
+    })(Feature = SearchEnum.Feature || (SearchEnum.Feature = {}));
+})(SearchEnum || (SearchEnum = {}));
 /**
  * Represents search result, usually returned from `client.search();`.
  *

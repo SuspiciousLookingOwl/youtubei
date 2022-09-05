@@ -9,11 +9,53 @@ export declare type SearchOptions = {
     sortBy?: SearchSort;
     features?: SearchFeature[];
 };
-export declare type SearchUploadDate = "all" | "hour" | "today" | "week" | "month" | "year";
-export declare type SearchType = "all" | "video" | "channel" | "playlist";
-export declare type SearchDuration = "all" | "short" | "medium" | "long";
-export declare type SearchSort = "relevance" | "rating" | "date" | "view";
-export declare type SearchFeature = "live" | "4k" | "hd" | "subtitles" | "creativeCommons" | "360" | "vr180" | "3d" | "hdr" | "location";
+export declare namespace SearchEnum {
+    enum UploadDate {
+        All = "all",
+        Hour = "hour",
+        Today = "today",
+        Week = "week",
+        Month = "month",
+        Year = "year"
+    }
+    enum Type {
+        Video = "video",
+        Playlist = "playlist",
+        Channel = "channel",
+        All = "all"
+    }
+    enum Duration {
+        All = "all",
+        Short = "short",
+        Medium = "medium",
+        Long = "long"
+    }
+    enum Sort {
+        Relevance = "relevance",
+        Rating = "rating",
+        Date = "date",
+        View = "view"
+    }
+    enum Feature {
+        Live = "live",
+        "4K" = "4k",
+        UHD = "4k",
+        HD = "hd",
+        Subtitles = "subtitles",
+        CreativeCommons = "creativeCommons",
+        Spherical = "360",
+        VR180 = "vr180",
+        "3D" = "3d",
+        ThreeDimensions = "3d",
+        HDR = "hdr",
+        Location = "location"
+    }
+}
+export declare type SearchUploadDate = "all" | "hour" | "today" | "week" | "month" | "year" | SearchEnum.UploadDate;
+export declare type SearchType = "all" | "video" | "channel" | "playlist" | SearchEnum.Type;
+export declare type SearchDuration = "all" | "short" | "medium" | "long" | SearchEnum.Duration;
+export declare type SearchSort = "relevance" | "rating" | "date" | "view" | SearchEnum.Sort;
+export declare type SearchFeature = "live" | "4k" | "hd" | "subtitles" | "creativeCommons" | "360" | "vr180" | "3d" | "hdr" | "location" | SearchEnum.Feature;
 export declare type SearchResultItem<T = "all"> = T extends "video" | VideoCompact ? VideoCompact : T extends "channel" | BaseChannel ? BaseChannel : T extends "playlist" | PlaylistCompact ? PlaylistCompact : VideoCompact | BaseChannel | PlaylistCompact;
 /**
  * Represents search result, usually returned from `client.search();`.

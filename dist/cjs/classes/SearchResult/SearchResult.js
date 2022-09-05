@@ -9,11 +9,59 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SearchResult = void 0;
+exports.SearchResult = exports.SearchEnum = void 0;
 const constants_1 = require("../../constants");
 const Continuable_1 = require("../Continuable");
 const SearchResultParser_1 = require("./SearchResultParser");
 const proto_1 = require("./proto");
+var SearchEnum;
+(function (SearchEnum) {
+    let UploadDate;
+    (function (UploadDate) {
+        UploadDate["All"] = "all";
+        UploadDate["Hour"] = "hour";
+        UploadDate["Today"] = "today";
+        UploadDate["Week"] = "week";
+        UploadDate["Month"] = "month";
+        UploadDate["Year"] = "year";
+    })(UploadDate = SearchEnum.UploadDate || (SearchEnum.UploadDate = {}));
+    let Type;
+    (function (Type) {
+        Type["Video"] = "video";
+        Type["Playlist"] = "playlist";
+        Type["Channel"] = "channel";
+        Type["All"] = "all";
+    })(Type = SearchEnum.Type || (SearchEnum.Type = {}));
+    let Duration;
+    (function (Duration) {
+        Duration["All"] = "all";
+        Duration["Short"] = "short";
+        Duration["Medium"] = "medium";
+        Duration["Long"] = "long";
+    })(Duration = SearchEnum.Duration || (SearchEnum.Duration = {}));
+    let Sort;
+    (function (Sort) {
+        Sort["Relevance"] = "relevance";
+        Sort["Rating"] = "rating";
+        Sort["Date"] = "date";
+        Sort["View"] = "view";
+    })(Sort = SearchEnum.Sort || (SearchEnum.Sort = {}));
+    let Feature;
+    (function (Feature) {
+        Feature["Live"] = "live";
+        Feature["4K"] = "4k";
+        Feature["UHD"] = "4k";
+        Feature["HD"] = "hd";
+        Feature["Subtitles"] = "subtitles";
+        Feature["CreativeCommons"] = "creativeCommons";
+        Feature["Spherical"] = "360";
+        Feature["VR180"] = "vr180";
+        Feature["3D"] = "3d";
+        Feature["ThreeDimensions"] = "3d";
+        Feature["HDR"] = "hdr";
+        Feature["Location"] = "location";
+    })(Feature = SearchEnum.Feature || (SearchEnum.Feature = {}));
+})(SearchEnum = exports.SearchEnum || (exports.SearchEnum = {}));
 /**
  * Represents search result, usually returned from `client.search();`.
  *
