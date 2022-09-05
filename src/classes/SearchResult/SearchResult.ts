@@ -14,14 +14,64 @@ export type SearchOptions = {
 	features?: SearchFeature[];
 };
 
-export type SearchUploadDate = "all" | "hour" | "today" | "week" | "month" | "year";
+export namespace SearchEnum {
+	export enum UploadDate {
+		All = "all",
+		Hour = "hour",
+		Today = "today",
+		Week = "week",
+		Month = "month",
+		Year = "year",
+	}
 
-export type SearchType = "all" | "video" | "channel" | "playlist";
+	export enum Type {
+		Video = "video",
+		Playlist = "playlist",
+		Channel = "channel",
+		All = "all",
+	}
 
-export type SearchDuration = "all" | "short" | "medium" | "long";
+	export enum Duration {
+		All = "all",
+		Short = "short",
+		Medium = "medium",
+		Long = "long",
+	}
 
-export type SearchSort = "relevance" | "rating" | "date" | "view";
+	export enum Sort {
+		Relevance = "relevance",
+		Rating = "rating",
+		Date = "date",
+		View = "view",
+	}
 
+	export enum Feature {
+		Live = "live",
+		"4K" = "4k",
+		UHD = "4k",
+		HD = "hd",
+		Subtitles = "subtitles",
+		CreativeCommons = "creativeCommons",
+		Spherical = "360",
+		VR180 = "vr180",
+		"3D" = "3d",
+		ThreeDimensions = "3d",
+		HDR = "hdr",
+		Location = "location",
+	}
+}
+
+export type SearchUploadDate =
+	| "all"
+	| "hour"
+	| "today"
+	| "week"
+	| "month"
+	| "year"
+	| SearchEnum.UploadDate;
+export type SearchType = "all" | "video" | "channel" | "playlist" | SearchEnum.Type;
+export type SearchDuration = "all" | "short" | "medium" | "long" | SearchEnum.Duration;
+export type SearchSort = "relevance" | "rating" | "date" | "view" | SearchEnum.Sort;
 export type SearchFeature =
 	| "live"
 	| "4k"
@@ -32,7 +82,8 @@ export type SearchFeature =
 	| "vr180"
 	| "3d"
 	| "hdr"
-	| "location";
+	| "location"
+	| SearchEnum.Feature;
 
 export type SearchResultItem<T = "all"> = T extends "video" | VideoCompact
 	? VideoCompact
