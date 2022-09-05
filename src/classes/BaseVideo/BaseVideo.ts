@@ -19,6 +19,8 @@ export interface BaseVideoProperties extends BaseProperties {
 	likeCount?: number | null;
 	isLiveContent?: boolean;
 	tags?: string[];
+	gameChannelId?: string;
+	gameName?: string;
 }
 
 /** Represents a Video  */
@@ -44,6 +46,10 @@ export class BaseVideo extends Base implements BaseVideoProperties {
 	tags!: string[];
 	/** Continuable of videos / playlists related to this video  */
 	related: VideoRelated;
+	/** The game's channel id that this video related */
+	gameChannelId?: string;
+	/** The game's name id that this video related */
+	gameName?: string;
 
 	/** @hidden */
 	constructor(attr: BaseVideoProperties) {
