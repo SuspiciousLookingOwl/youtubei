@@ -15,13 +15,13 @@ class BaseChannelParser {
     }
     /** Parse tab data from request, tab name is ignored if it's a continuation data */
     static parseTabData(name, data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         const tab = (_a = data.contents) === null || _a === void 0 ? void 0 : _a.twoColumnBrowseResultsRenderer.tabs.find((t) => {
             var _a;
             return (((_a = t.tabRenderer) === null || _a === void 0 ? void 0 : _a.endpoint.browseEndpoint.params) ===
                 BaseChannelParser.TAB_TYPE_PARAMS[name]);
         });
-        return (((_b = tab === null || tab === void 0 ? void 0 : tab.tabRenderer.content.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].gridRenderer) === null || _b === void 0 ? void 0 : _b.items) || ((_c = data.onResponseReceivedActions) === null || _c === void 0 ? void 0 : _c[0].appendContinuationItemsAction.continuationItems) ||
+        return (((_c = (_b = tab === null || tab === void 0 ? void 0 : tab.tabRenderer.content.sectionListRenderer.contents) === null || _b === void 0 ? void 0 : _b[0].itemSectionRenderer.contents[0].gridRenderer) === null || _c === void 0 ? void 0 : _c.items) || (tab === null || tab === void 0 ? void 0 : tab.tabRenderer.content.richGridRenderer.contents.map((c) => { var _a; return ((_a = c.richItemRenderer) === null || _a === void 0 ? void 0 : _a.content) || c; })) || ((_d = data.onResponseReceivedActions) === null || _d === void 0 ? void 0 : _d[0].appendContinuationItemsAction.continuationItems.map((c) => { var _a; return ((_a = c.richItemRenderer) === null || _a === void 0 ? void 0 : _a.content) || c; })) ||
             []);
     }
 }

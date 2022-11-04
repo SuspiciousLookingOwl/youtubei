@@ -93,7 +93,7 @@ var ChannelVideos = /** @class */ (function (_super) {
                         response = _b.sent();
                         items = BaseChannelParser.parseTabData("videos", response.data);
                         continuation = getContinuationFromItems(items);
-                        data = mapFilter(items, "gridVideoRenderer");
+                        data = mapFilter(items, "videoRenderer");
                         return [2 /*return*/, {
                                 continuation: continuation,
                                 items: data.map(function (i) {

@@ -46,7 +46,7 @@ class ChannelVideos extends Continuable_1.Continuable {
             });
             const items = BaseChannelParser_1.BaseChannelParser.parseTabData("videos", response.data);
             const continuation = common_1.getContinuationFromItems(items);
-            const data = common_1.mapFilter(items, "gridVideoRenderer");
+            const data = common_1.mapFilter(items, "videoRenderer");
             return {
                 continuation,
                 items: data.map((i) => new VideoCompact_1.VideoCompact({ client: this.client, channel: this.channel }).load(i)),
