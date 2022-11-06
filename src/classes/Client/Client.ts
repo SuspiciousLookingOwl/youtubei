@@ -11,6 +11,7 @@ import { HTTP } from "./HTTP";
 
 export type ClientOptions = {
 	initialCookie: string;
+	proxy:string;
 	/** Optional options for http client */
 	fetchOptions: Partial<RequestInit>;
 	/** Optional options passed when sending a request to youtube (context.client) */
@@ -25,6 +26,7 @@ export class Client {
 	constructor(options: Partial<ClientOptions> = {}) {
 		const fullOptions: ClientOptions = {
 			initialCookie: "",
+			proxy: "",
 			fetchOptions: {},
 			...options,
 			youtubeClientOptions: {
