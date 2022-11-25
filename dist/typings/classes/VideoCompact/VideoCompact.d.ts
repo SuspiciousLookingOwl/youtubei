@@ -3,6 +3,7 @@ import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { LiveVideo } from "../LiveVideo";
 import { Thumbnails } from "../Thumbnails";
+import { Transcript } from "../Transcript";
 import { Video } from "../Video";
 /** @hidden */
 interface VideoCompactProperties extends BaseProperties {
@@ -38,6 +39,7 @@ export declare class VideoCompact extends Base implements VideoCompactProperties
     constructor(attr: VideoCompactProperties);
     /** Whether this video is private / deleted or not, only useful in playlist's videos */
     get isPrivateOrDeleted(): boolean;
+    getTranscript(): Promise<Transcript[] | undefined>;
     /**
      * Load this instance with raw data from Youtube
      *

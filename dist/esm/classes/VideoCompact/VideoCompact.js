@@ -66,6 +66,13 @@ var VideoCompact = /** @class */ (function (_super) {
         enumerable: false,
         configurable: true
     });
+    VideoCompact.prototype.getTranscript = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.client.getTranscript(this.id)];
+            });
+        });
+    };
     /**
      * Load this instance with raw data from Youtube
      *

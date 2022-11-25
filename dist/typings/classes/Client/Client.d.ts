@@ -4,6 +4,7 @@ import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
+import { Transcript } from "../Transcript";
 import { Video } from "../Video";
 import { HTTP } from "./HTTP";
 export declare type ClientOptions = {
@@ -38,4 +39,5 @@ export declare class Client {
     getVideo<T extends Video | LiveVideo | undefined>(videoId: string): Promise<T>;
     /** Get channel information by channel id+ */
     getChannel(channelId: string): Promise<Channel | undefined>;
+    getTranscript(videoId: string): Promise<Transcript[] | undefined>;
 }

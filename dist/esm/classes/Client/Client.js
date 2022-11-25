@@ -51,6 +51,7 @@ import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchResult } from "../SearchResult";
+import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
 import { HTTP } from "./HTTP";
 /** Youtube Client */
@@ -167,6 +168,27 @@ var Client = /** @class */ (function () {
                             return [2 /*return*/, undefined];
                         }
                         return [2 /*return*/, new Channel({ client: this }).load(response.data)];
+                }
+            });
+        });
+    };
+    Client.prototype.getTranscript = function (videoId) {
+        return __awaiter(this, void 0, void 0, function () {
+            var bufferParams, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        bufferParams = TranscriptParamsProto.TranscriptParams.encode({ videoId: videoId });
+                        return [4 /*yield*/, this.http.post(I_END_POINT + "/get_transcript", {
+                                data: { params: Buffer.from(bufferParams).toString("base64") },
+                            })];
+                    case 1:
+                        response = _a.sent();
+                        if (!response.data.actions)
+                            return [2 /*return*/, undefined];
+                        return [2 /*return*/, response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups
+                                .map(function (t) { return t.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer; })
+                                .map(function (t) { return new Transcript().load(t); })];
                 }
             });
         });

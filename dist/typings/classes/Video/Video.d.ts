@@ -1,5 +1,6 @@
 import { YoutubeRawData } from "../../common";
 import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
+import { Transcript } from "../Transcript";
 import { VideoComments } from "./VideoComments";
 /** @hidden */
 interface VideoProperties extends BaseVideoProperties {
@@ -14,6 +15,7 @@ export declare class Video extends BaseVideo implements VideoProperties {
     comments: VideoComments;
     /** @hidden */
     constructor(attr: VideoProperties);
+    getTranscript(): Promise<Transcript[] | undefined>;
     /**
      * Load this instance with raw data from Youtube
      *

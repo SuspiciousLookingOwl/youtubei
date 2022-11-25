@@ -5,11 +5,12 @@ const common_1 = require("../../common");
 const Thumbnails_1 = require("../Thumbnails");
 class BaseChannelParser {
     static loadBaseChannel(target, data) {
+        var _a;
         const { channelId, title, thumbnail, videoCountText, subscriberCountText } = data;
         target.id = channelId;
         target.name = title.simpleText;
         target.thumbnails = new Thumbnails_1.Thumbnails().load(thumbnail.thumbnails);
-        target.videoCount = common_1.stripToInt(videoCountText === null || videoCountText === void 0 ? void 0 : videoCountText.runs[0].text) || 0;
+        target.videoCount = common_1.stripToInt((_a = videoCountText === null || videoCountText === void 0 ? void 0 : videoCountText.runs) === null || _a === void 0 ? void 0 : _a[0].text) || 0; // TODO this sometimes contains subscriber count for some reason
         target.subscriberCount = subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText;
         return target;
     }

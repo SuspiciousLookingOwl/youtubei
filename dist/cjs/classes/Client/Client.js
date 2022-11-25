@@ -16,6 +16,7 @@ const LiveVideo_1 = require("../LiveVideo");
 const MixPlaylist_1 = require("../MixPlaylist");
 const Playlist_1 = require("../Playlist");
 const SearchResult_1 = require("../SearchResult");
+const Transcript_1 = require("../Transcript");
 const Video_1 = require("../Video");
 const HTTP_1 = require("./HTTP");
 /** Youtube Client */
@@ -95,6 +96,19 @@ class Client {
                 return undefined;
             }
             return new Channel_1.Channel({ client: this }).load(response.data);
+        });
+    }
+    getTranscript(videoId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const bufferParams = Transcript_1.TranscriptParamsProto.TranscriptParams.encode({ videoId });
+            const response = yield this.http.post(`${constants_1.I_END_POINT}/get_transcript`, {
+                data: { params: Buffer.from(bufferParams).toString("base64") },
+            });
+            if (!response.data.actions)
+                return undefined;
+            return response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups
+                .map((t) => t.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer)
+                .map((t) => new Transcript_1.Transcript().load(t));
         });
     }
 }
