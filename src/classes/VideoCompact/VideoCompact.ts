@@ -51,7 +51,7 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	}
 
 	async getTranscript(): Promise<Transcript[] | undefined> {
-		return this.client.getTranscript(this.id);
+		return this.client.getVideoTranscript(this.id);
 	}
 
 	/**

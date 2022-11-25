@@ -117,7 +117,7 @@ export class Client {
 		return new Channel({ client: this }).load(response.data);
 	}
 
-	async getTranscript(videoId: string): Promise<Transcript[] | undefined> {
+	async getVideoTranscript(videoId: string): Promise<Transcript[] | undefined> {
 		const bufferParams = TranscriptParamsProto.TranscriptParams.encode({ videoId });
 		const response = await this.http.post(`${I_END_POINT}/get_transcript`, {
 			data: { params: Buffer.from(bufferParams).toString("base64") },

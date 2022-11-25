@@ -26,7 +26,7 @@ export class Video extends BaseVideo implements VideoProperties {
 	}
 
 	async getTranscript(): Promise<Transcript[] | undefined> {
-		return this.client.getTranscript(this.id);
+		return this.client.getVideoTranscript(this.id);
 	}
 
 	/**
