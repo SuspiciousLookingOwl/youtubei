@@ -18,6 +18,6 @@ describe("SearchResult", () => {
 	it("load continuation", async () => {
 		const nextVideos = await result.next();
 		expect(nextVideos.length).toBeGreaterThan(15);
-		expect(result.items.length).toBeGreaterThan(35);
+		expect(result.items.length).toBeGreaterThanOrEqual(35);
 	});
 });

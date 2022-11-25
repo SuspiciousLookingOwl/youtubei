@@ -15,7 +15,7 @@ describe("BaseChannel", () => {
 	});
 
 	it("match channel from search result", () => {
-		commonBaseChannelTest(channel);
+		commonBaseChannelTest(channel, { ignoreVideoCount: true });
 	});
 
 	it("load videos", async () => {
