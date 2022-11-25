@@ -1,11 +1,13 @@
 import { RequestInit } from "node-fetch";
 
+import { YoutubeRawData } from "../../common";
 import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
+import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
 import { HTTP } from "./HTTP";
 
@@ -113,5 +115,17 @@ export class Client {
 			return undefined;
 		}
 		return new Channel({ client: this }).load(response.data);
+	}
+
+	async getTranscript(videoId: string): Promise<Transcript[] | undefined> {
+		const bufferParams = TranscriptParamsProto.TranscriptParams.encode({ videoId });
+		const response = await this.http.post(`${I_END_POINT}/get_transcript`, {
+			data: { params: Buffer.from(bufferParams).toString("base64") },
+		});
+
+		if (!response.data.actions) return undefined;
+		return response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups
+			.map((t: YoutubeRawData) => t.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer)
+			.map((t: YoutubeRawData) => new Transcript().load(t));
 	}
 }

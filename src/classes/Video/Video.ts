@@ -1,5 +1,6 @@
 import { YoutubeRawData } from "../../common";
 import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
+import { Transcript } from "../Transcript";
 import { VideoComments } from "./VideoComments";
 import { VideoParser } from "./VideoParser";
 
@@ -22,6 +23,10 @@ export class Video extends BaseVideo implements VideoProperties {
 		Object.assign(this, attr);
 
 		this.comments = new VideoComments({ client: attr.client, video: this });
+	}
+
+	async getTranscript(): Promise<Transcript[] | undefined> {
+		return this.client.getTranscript(this.id);
 	}
 
 	/**

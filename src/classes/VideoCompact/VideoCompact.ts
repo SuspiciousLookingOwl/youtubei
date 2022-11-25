@@ -3,6 +3,7 @@ import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { LiveVideo } from "../LiveVideo";
 import { Thumbnails } from "../Thumbnails";
+import { Transcript } from "../Transcript";
 import { Video } from "../Video";
 import { VideoCompactParser } from "./VideoCompactParser";
 
@@ -47,6 +48,10 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	/** Whether this video is private / deleted or not, only useful in playlist's videos */
 	get isPrivateOrDeleted(): boolean {
 		return !this.duration;
+	}
+
+	async getTranscript(): Promise<Transcript[] | undefined> {
+		return this.client.getTranscript(this.id);
 	}
 
 	/**

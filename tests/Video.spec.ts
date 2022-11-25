@@ -48,6 +48,11 @@ describe("Video", () => {
 		expect(video.related.items.length).toBeGreaterThan(40);
 	});
 
+	it("load video transcript", async () => {
+		const result = await video.getTranscript();
+		expect(result?.length).toBeGreaterThan(0);
+	});
+
 	it("match ended live getVideo result", () => {
 		expect(endedLiveVideo.isLiveContent).toBeTrue();
 		expect(endedLiveVideo.duration).toBe(4842);
@@ -55,9 +60,7 @@ describe("Video", () => {
 
 	it("match membership video getVideo result", () => {
 		expect(membershipVideo.id).toBe("ALz5YW2i5y0");
-		expect(membershipVideo.title).toBe(
-			"台湾のビール Beer in Taiwan"
-		);
+		expect(membershipVideo.title).toBe("台湾のビール Beer in Taiwan");
 		expect(membershipVideo.duration).toBe(196);
 		expect(typeof membershipVideo.description).toBe("string");
 		expect(typeof membershipVideo.uploadDate).toBe("string");
