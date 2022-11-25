@@ -39,5 +39,5 @@ export declare class Client {
     getVideo<T extends Video | LiveVideo | undefined>(videoId: string): Promise<T>;
     /** Get channel information by channel id+ */
     getChannel(channelId: string): Promise<Channel | undefined>;
-    getTranscript(videoId: string): Promise<Transcript[] | undefined>;
+    getVideoTranscript(videoId: string): Promise<Transcript[] | undefined>;
 }

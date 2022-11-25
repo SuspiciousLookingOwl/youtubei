@@ -25,7 +25,7 @@ class VideoCompact extends Base_1.Base {
     }
     getTranscript() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.client.getTranscript(this.id);
+            return this.client.getVideoTranscript(this.id);
         });
     }
     /**

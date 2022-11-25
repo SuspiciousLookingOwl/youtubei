@@ -172,7 +172,7 @@ var Client = /** @class */ (function () {
             });
         });
     };
-    Client.prototype.getTranscript = function (videoId) {
+    Client.prototype.getVideoTranscript = function (videoId) {
         return __awaiter(this, void 0, void 0, function () {
             var bufferParams, response;
             return __generator(this, function (_a) {

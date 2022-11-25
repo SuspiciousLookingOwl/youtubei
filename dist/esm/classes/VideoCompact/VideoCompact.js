@@ -69,7 +69,7 @@ var VideoCompact = /** @class */ (function (_super) {
     VideoCompact.prototype.getTranscript = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.client.getTranscript(this.id)];
+                return [2 /*return*/, this.client.getVideoTranscript(this.id)];
             });
         });
     };

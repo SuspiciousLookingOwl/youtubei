@@ -15,3 +15,4 @@ export * from "./SearchResult";
 export * from "./Thumbnails";
 export * from "./Video";
 export * from "./VideoCompact";
+export * from "./Transcript";
