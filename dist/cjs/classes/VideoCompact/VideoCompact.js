@@ -23,11 +23,6 @@ class VideoCompact extends Base_1.Base {
     get isPrivateOrDeleted() {
         return !this.duration;
     }
-    getTranscript() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.client.getVideoTranscript(this.id);
-        });
-    }
     /**
      * Load this instance with raw data from Youtube
      *
@@ -48,6 +43,19 @@ class VideoCompact extends Base_1.Base {
     getVideo() {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.client.getVideo(this.id);
+        });
+    }
+    /**
+     * Get Video transcript (if exists)
+     *
+     * Equivalent to
+     * ```js
+     * client.getVideoTranscript(video.id);
+     * ```
+     */
+    getTranscript() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.client.getVideoTranscript(this.id);
         });
     }
 }

@@ -39,7 +39,6 @@ export declare class VideoCompact extends Base implements VideoCompactProperties
     constructor(attr: VideoCompactProperties);
     /** Whether this video is private / deleted or not, only useful in playlist's videos */
     get isPrivateOrDeleted(): boolean;
-    getTranscript(): Promise<Transcript[] | undefined>;
     /**
      * Load this instance with raw data from Youtube
      *
@@ -55,5 +54,14 @@ export declare class VideoCompact extends Base implements VideoCompactProperties
      * ```
      */
     getVideo<T extends Video | LiveVideo>(): Promise<T>;
+    /**
+     * Get Video transcript (if exists)
+     *
+     * Equivalent to
+     * ```js
+     * client.getVideoTranscript(video.id);
+     * ```
+     */
+    getTranscript(): Promise<Transcript[] | undefined>;
 }
 export {};

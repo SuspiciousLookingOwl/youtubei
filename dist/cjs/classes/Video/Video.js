@@ -21,11 +21,6 @@ class Video extends BaseVideo_1.BaseVideo {
         Object.assign(this, attr);
         this.comments = new VideoComments_1.VideoComments({ client: attr.client, video: this });
     }
-    getTranscript() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return this.client.getVideoTranscript(this.id);
-        });
-    }
     /**
      * Load this instance with raw data from Youtube
      *
@@ -35,6 +30,19 @@ class Video extends BaseVideo_1.BaseVideo {
         super.load(data);
         VideoParser_1.VideoParser.loadVideo(this, data);
         return this;
+    }
+    /**
+     * Get Video transcript (if exists)
+     *
+     * Equivalent to
+     * ```js
+     * client.getVideoTranscript(video.id);
+     * ```
+     */
+    getTranscript() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.client.getVideoTranscript(this.id);
+        });
     }
 }
 exports.Video = Video;

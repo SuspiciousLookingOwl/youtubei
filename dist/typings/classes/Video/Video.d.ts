@@ -15,12 +15,20 @@ export declare class Video extends BaseVideo implements VideoProperties {
     comments: VideoComments;
     /** @hidden */
     constructor(attr: VideoProperties);
-    getTranscript(): Promise<Transcript[] | undefined>;
     /**
      * Load this instance with raw data from Youtube
      *
      * @hidden
      */
     load(data: YoutubeRawData): Video;
+    /**
+     * Get Video transcript (if exists)
+     *
+     * Equivalent to
+     * ```js
+     * client.getVideoTranscript(video.id);
+     * ```
+     */
+    getTranscript(): Promise<Transcript[] | undefined>;
 }
 export {};

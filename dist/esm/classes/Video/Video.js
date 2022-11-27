@@ -60,13 +60,6 @@ var Video = /** @class */ (function (_super) {
         _this.comments = new VideoComments({ client: attr.client, video: _this });
         return _this;
     }
-    Video.prototype.getTranscript = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, this.client.getVideoTranscript(this.id)];
-            });
-        });
-    };
     /**
      * Load this instance with raw data from Youtube
      *
@@ -76,6 +69,21 @@ var Video = /** @class */ (function (_super) {
         _super.prototype.load.call(this, data);
         VideoParser.loadVideo(this, data);
         return this;
+    };
+    /**
+     * Get Video transcript (if exists)
+     *
+     * Equivalent to
+     * ```js
+     * client.getVideoTranscript(video.id);
+     * ```
+     */
+    Video.prototype.getTranscript = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, this.client.getVideoTranscript(this.id)];
+            });
+        });
     };
     return Video;
 }(BaseVideo));
