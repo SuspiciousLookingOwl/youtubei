@@ -25,10 +25,6 @@ export class Video extends BaseVideo implements VideoProperties {
 		this.comments = new VideoComments({ client: attr.client, video: this });
 	}
 
-	async getTranscript(): Promise<Transcript[] | undefined> {
-		return this.client.getVideoTranscript(this.id);
-	}
-
 	/**
 	 * Load this instance with raw data from Youtube
 	 *
@@ -38,5 +34,17 @@ export class Video extends BaseVideo implements VideoProperties {
 		super.load(data);
 		VideoParser.loadVideo(this, data);
 		return this;
+	}
+
+	/**
+	 * Get Video transcript (if exists)
+	 *
+	 * Equivalent to
+	 * ```js
+	 * client.getVideoTranscript(video.id);
+	 * ```
+	 */
+	async getTranscript(): Promise<Transcript[] | undefined> {
+		return this.client.getVideoTranscript(this.id);
 	}
 }

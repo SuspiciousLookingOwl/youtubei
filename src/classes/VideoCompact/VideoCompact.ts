@@ -50,10 +50,6 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 		return !this.duration;
 	}
 
-	async getTranscript(): Promise<Transcript[] | undefined> {
-		return this.client.getVideoTranscript(this.id);
-	}
-
 	/**
 	 * Load this instance with raw data from Youtube
 	 *
@@ -74,5 +70,17 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	 */
 	async getVideo<T extends Video | LiveVideo>(): Promise<T> {
 		return await this.client.getVideo(this.id);
+	}
+
+	/**
+	 * Get Video transcript (if exists)
+	 *
+	 * Equivalent to
+	 * ```js
+	 * client.getVideoTranscript(video.id);
+	 * ```
+	 */
+	async getTranscript(): Promise<Transcript[] | undefined> {
+		return this.client.getVideoTranscript(this.id);
 	}
 }
