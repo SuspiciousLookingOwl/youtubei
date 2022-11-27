@@ -22,6 +22,7 @@ jobs:
               uses: EndBug/version-check@v1.1.1
 
             - uses: pnpm/action-setup@v2.0.1
+              if: steps.check.outputs.changed == 'true'
               name: Install pnpm
               id: pnpm-install
               with:
@@ -29,20 +30,25 @@ jobs:
                   run_install: false
 
             - name: Install Deps
+              if: steps.check.outputs.changed == 'true'
               run: pnpm i
 
             - name: Test
+              if: steps.check.outputs.changed == 'true'
               run: pnpm t
 
             - name: Build
+              if: steps.check.outputs.changed == 'true'
               run: pnpm build
 
             - name: Set NPM Token
+              if: steps.check.outputs.changed == 'true'
               uses: filipstefansson/set-npm-token-action@v1
               with:
                   token: ${{ secrets.NPM_TOKEN }}
 
             - name: Publish New Version
+              if: steps.check.outputs.changed == 'true'
               run: npm publish
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
