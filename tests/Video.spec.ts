@@ -7,11 +7,13 @@ const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
 
 describe("Video", () => {
 	let video: Video;
+	let videoWithChapters: Video;
 	let endedLiveVideo: Video;
 	let membershipVideo: Video;
 
 	beforeAll(async () => {
 		video = (await youtube.getVideo("OX31kZbAXsA")) as Video;
+		videoWithChapters = (await youtube.getVideo("3jWRrafhO7M")) as Video;
 		endedLiveVideo = (await youtube.getVideo("iXn9O-Rzb_M")) as Video;
 		membershipVideo = (await youtube.getVideo("ALz5YW2i5y0")) as Video;
 	});
@@ -51,6 +53,13 @@ describe("Video", () => {
 	it("load video transcript", async () => {
 		const result = await video.getTranscript();
 		expect(result?.length).toBeGreaterThan(0);
+	});
+
+	it("match getVideo with chapters result", () => {
+		expect(videoWithChapters.chapters.length).toBeGreaterThan(0);
+		expect(typeof videoWithChapters.chapters[0].title).toBe("string");
+		expect(typeof videoWithChapters.chapters[0].start).toBe("number");
+		expect(typeof videoWithChapters.chapters[0].thumbnails[0].url).toBe("string");
 	});
 
 	it("match ended live getVideo result", () => {

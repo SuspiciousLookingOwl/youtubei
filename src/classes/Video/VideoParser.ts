@@ -1,6 +1,7 @@
 import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
 import { BaseVideoParser } from "../BaseVideo";
 import { Comment } from "../Comment";
+import { Thumbnails } from "../Thumbnails";
 import { Video } from "./Video";
 
 export class VideoParser {
@@ -15,6 +16,18 @@ export class VideoParser {
 		target.comments.continuation = getContinuationFromItems(
 			itemSectionRenderer?.contents || []
 		);
+
+		const chapters =
+			data[3].response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer
+				?.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap[0]
+				.value.chapters;
+
+		target.chapters =
+			chapters?.map(({ chapterRenderer: c }: YoutubeRawData) => ({
+				title: c.title.simpleText,
+				start: c.timeRangeStartMillis,
+				thumbnails: new Thumbnails().load(c.thumbnail.thumbnails),
+			})) || [];
 
 		return target;
 	}
