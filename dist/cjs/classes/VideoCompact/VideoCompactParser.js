@@ -20,14 +20,18 @@ class VideoCompactParser {
         target.isLive = !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW");
         // Channel
         if (ownerText || shortBylineText) {
-            const { browseId } = (ownerText || shortBylineText).runs[0].navigationEndpoint.browseEndpoint;
-            const thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
-            target.channel = new BaseChannel_1.BaseChannel({
-                id: browseId,
-                name: (ownerText || shortBylineText).runs[0].text,
-                thumbnails: thumbnails ? new Thumbnails_1.Thumbnails().load(thumbnails) : undefined,
-                client: target.client,
-            });
+            const browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint
+                .browseEndpoint;
+            if (browseEndpoint) {
+                const id = browseEndpoint.browseId;
+                const thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
+                target.channel = new BaseChannel_1.BaseChannel({
+                    id,
+                    name: (ownerText || shortBylineText).runs[0].text,
+                    thumbnails: thumbnails ? new Thumbnails_1.Thumbnails().load(thumbnails) : undefined,
+                    client: target.client,
+                });
+            }
         }
         target.viewCount = common_1.stripToInt((viewCountText === null || viewCountText === void 0 ? void 0 : viewCountText.simpleText) || (viewCountText === null || viewCountText === void 0 ? void 0 : viewCountText.runs[0].text));
         return target;
