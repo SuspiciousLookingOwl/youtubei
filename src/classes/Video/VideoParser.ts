@@ -19,7 +19,7 @@ export class VideoParser {
 
 		const chapters =
 			data[3].response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer
-				?.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap[0]
+				?.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap?.[0]
 				.value.chapters;
 
 		target.chapters =
