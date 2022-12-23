@@ -40,20 +40,22 @@ export class VideoCompactParser {
 
 		// Channel
 		if (ownerText || shortBylineText) {
-			const { browseId } = (
-				ownerText || shortBylineText
-			).runs[0].navigationEndpoint.browseEndpoint;
+			const browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint
+				.browseEndpoint;
 
-			const thumbnails =
-				channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
-					.thumbnails;
+			if (browseEndpoint) {
+				const id = browseEndpoint.browseId;
+				const thumbnails =
+					channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
+						.thumbnails;
 
-			target.channel = new BaseChannel({
-				id: browseId,
-				name: (ownerText || shortBylineText).runs[0].text,
-				thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
-				client: target.client,
-			});
+				target.channel = new BaseChannel({
+					id,
+					name: (ownerText || shortBylineText).runs[0].text,
+					thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
+					client: target.client,
+				});
+			}
 		}
 
 		target.viewCount = stripToInt(viewCountText?.simpleText || viewCountText?.runs[0].text);
