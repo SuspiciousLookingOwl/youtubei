@@ -84,7 +84,8 @@ var BaseVideoParser = /** @class */ (function () {
     };
     BaseVideoParser.parseButtonRenderer = function (data) {
         var _a;
-        var buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+        var likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
+        var buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
         var accessibilityData = (((_a = buttonRenderer.defaultText) === null || _a === void 0 ? void 0 : _a.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
         return accessibilityData.label;
     };
