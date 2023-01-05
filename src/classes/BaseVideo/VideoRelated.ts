@@ -1,8 +1,8 @@
-import { I_END_POINT } from "../../constants";
 import { Client } from "../Client";
 import { Continuable, FetchResult } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
+import { I_END_POINT } from "../constants";
 import { BaseVideo } from "./BaseVideo";
 import { BaseVideoParser } from "./BaseVideoParser";
 

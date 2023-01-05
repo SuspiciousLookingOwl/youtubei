@@ -1,9 +1,8 @@
-import { YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
-import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
-import { Channel, Shelf } from "./Channel";
+import { Channel, ChannelShelf } from "./Channel";
 
 export class ChannelParser {
 	static loadChannel(target: Channel, data: YoutubeRawData): Channel {
@@ -30,8 +29,8 @@ export class ChannelParser {
 		return target;
 	}
 
-	static parseShelves(target: Channel, data: YoutubeRawData): Shelf[] {
-		const shelves: Shelf[] = [];
+	static parseShelves(target: Channel, data: YoutubeRawData): ChannelShelf[] {
+		const shelves: ChannelShelf[] = [];
 
 		const rawShelves =
 			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
@@ -65,7 +64,7 @@ export class ChannelParser {
 				})
 				.filter((i: YoutubeRawData) => i !== undefined);
 
-			const shelf: Shelf = {
+			const shelf: ChannelShelf = {
 				title: title.runs[0].text,
 				subtitle: subtitle?.simpleText,
 				items,

@@ -1,6 +1,5 @@
-import { YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Thumbnails } from "../Thumbnails";
 import { Reply } from "./Reply";
 
 export class ReplyParser {

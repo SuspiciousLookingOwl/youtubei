@@ -1,7 +1,6 @@
-import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
+import { getContinuationFromItems, mapFilter, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
-import { Thumbnails } from "../Thumbnails";
 import { Comment } from "./Comment";
 
 export class CommentParser {

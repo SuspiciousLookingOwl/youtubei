@@ -1,6 +1,6 @@
-import { I_END_POINT } from "../../constants";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { Reply } from "../Reply";
+import { I_END_POINT } from "../constants";
 import { Comment } from "./Comment";
 import { CommentParser } from "./CommentParser";
 

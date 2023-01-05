@@ -1,5 +1,4 @@
-import { stripToInt, YoutubeRawData } from "../../common";
-import { Thumbnails } from "../Thumbnails";
+import { stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "./BaseChannel";
 
 export class BaseChannelParser {

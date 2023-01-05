@@ -1,9 +1,9 @@
 import { EventEmitter } from "events";
 
 import { applyMixins, YoutubeRawData } from "../../common";
-import { LIVE_CHAT_END_POINT } from "../../constants";
 import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
 import { Chat } from "../Chat";
+import { LIVE_CHAT_END_POINT } from "../constants";
 import { LiveVideoParser } from "./LiveVideoParser";
 
 /** @hidden */

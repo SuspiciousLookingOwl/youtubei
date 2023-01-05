@@ -1,4 +1,4 @@
-import { extendsBuiltIn } from "../../common";
+import { extendsBuiltIn } from "../../utils";
 
 export interface Thumbnail {
 	url: string;

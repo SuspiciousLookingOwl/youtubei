@@ -1,6 +1,5 @@
-import { getDuration, stripToInt, YoutubeRawData } from "../../common";
+import { getDuration, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "./VideoCompact";
 
 export class VideoCompactParser {

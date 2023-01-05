@@ -1,22 +1,19 @@
-import { YoutubeRawData } from "../../common";
+import { Shelf, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel, BaseChannelProperties } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
-import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
 import { ChannelParser } from "./ChannelParser";
 
-export interface Shelf {
-	title: string;
+export type ChannelShelf = Shelf<BaseChannel[] | VideoCompact[] | PlaylistCompact[]> & {
 	subtitle?: string;
-	items: BaseChannel[] | VideoCompact[] | PlaylistCompact[];
-}
+};
 
 /** @hidden */
 interface ChannelProperties extends BaseChannelProperties {
 	banner?: Thumbnails;
 	tvBanner?: Thumbnails;
 	mobileBanner?: Thumbnails;
-	shelves?: Shelf[];
+	shelves?: ChannelShelf[];
 }
 
 /**  Represents a Youtube Channel */
@@ -24,7 +21,7 @@ export class Channel extends BaseChannel implements ChannelProperties {
 	banner!: Thumbnails;
 	mobileBanner!: Thumbnails;
 	tvBanner!: Thumbnails;
-	shelves: Shelf[] = [];
+	shelves: ChannelShelf[] = [];
 
 	/** @hidden */
 	constructor(attr: ChannelProperties) {

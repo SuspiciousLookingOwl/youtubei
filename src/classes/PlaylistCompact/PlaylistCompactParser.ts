@@ -1,6 +1,5 @@
-import { stripToInt, YoutubeRawData } from "../../common";
+import { stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Thumbnails } from "../Thumbnails";
 import { PlaylistCompact } from "./PlaylistCompact";
 
 export class PlaylistCompactParser {

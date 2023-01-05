@@ -1,7 +1,7 @@
-import fetch, { RequestInit, Response as FetchResponse, HeadersInit } from "node-fetch";
+import fetch, { HeadersInit, RequestInit, Response as FetchResponse } from "node-fetch";
 import { URLSearchParams } from "url";
 
-import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../../constants";
+import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 import { ClientOptions } from "./Client";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

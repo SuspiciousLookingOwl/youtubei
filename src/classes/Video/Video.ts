@@ -1,6 +1,5 @@
-import { YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
-import { Thumbnails } from "../Thumbnails";
 import { Transcript } from "../Transcript";
 import { VideoComments } from "./VideoComments";
 import { VideoParser } from "./VideoParser";

@@ -1,7 +1,6 @@
 import { RequestInit } from "node-fetch";
 
 import { YoutubeRawData } from "../../common";
-import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
@@ -9,6 +8,7 @@ import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
 import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
+import { I_END_POINT, WATCH_END_POINT } from "../constants";
 import { HTTP } from "./HTTP";
 
 export type ClientOptions = {

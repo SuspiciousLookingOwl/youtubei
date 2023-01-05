@@ -1,6 +1,6 @@
-import { I_END_POINT } from "../../constants";
 import { Comment } from "../Comment";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
+import { I_END_POINT } from "../constants";
 import { Video } from "./Video";
 import { VideoParser } from "./VideoParser";
 

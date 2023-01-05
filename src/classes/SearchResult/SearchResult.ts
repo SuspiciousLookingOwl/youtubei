@@ -1,8 +1,8 @@
-import { I_END_POINT } from "../../constants";
 import { BaseChannel } from "../BaseChannel";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
+import { I_END_POINT } from "../constants";
 import { SearchResultParser } from "./SearchResultParser";
 import { optionsToProto, SearchProto } from "./proto";
 
