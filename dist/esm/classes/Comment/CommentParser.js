@@ -1,7 +1,6 @@
-import { getContinuationFromItems, mapFilter } from "../../common";
+import { getContinuationFromItems, mapFilter, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
-import { Thumbnails } from "../Thumbnails";
 var CommentParser = /** @class */ (function () {
     function CommentParser() {
     }

@@ -37,7 +37,7 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-import { extendsBuiltIn } from "../../common";
+import { extendsBuiltIn } from "../../utils";
 /**
  * Represents Thumbnails, usually found inside Playlist / Channel / Video, etc.
  *

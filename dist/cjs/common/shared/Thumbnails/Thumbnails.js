@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var Thumbnails_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Thumbnails = void 0;
-const common_1 = require("../../common");
+const utils_1 = require("../../utils");
 /**
  * Represents Thumbnails, usually found inside Playlist / Channel / Video, etc.
  *
@@ -62,6 +62,6 @@ let Thumbnails = Thumbnails_1 = class Thumbnails extends Array {
     }
 };
 Thumbnails = Thumbnails_1 = __decorate([
-    common_1.extendsBuiltIn()
+    utils_1.extendsBuiltIn()
 ], Thumbnails);
 exports.Thumbnails = Thumbnails;

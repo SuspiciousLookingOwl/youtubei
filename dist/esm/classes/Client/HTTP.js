@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
-import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../../constants";
+import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 var HTTP = /** @class */ (function () {
     function HTTP(options) {
         this.cookie = options.initialCookie || "";

@@ -1,6 +1,5 @@
-import { YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
-import { Thumbnails } from "../Thumbnails";
 import { ChannelPlaylists } from "./ChannelPlaylists";
 import { ChannelVideos } from "./ChannelVideos";
 /** @hidden */

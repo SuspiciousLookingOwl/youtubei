@@ -4,7 +4,6 @@ exports.BaseVideoParser = void 0;
 const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 const PlaylistCompact_1 = require("../PlaylistCompact");
-const Thumbnails_1 = require("../Thumbnails");
 const VideoCompact_1 = require("../VideoCompact");
 class BaseVideoParser {
     static loadBaseVideo(target, data) {
@@ -16,7 +15,7 @@ class BaseVideoParser {
         target.uploadDate = videoInfo.dateText.simpleText;
         target.viewCount = +videoInfo.videoDetails.viewCount || null;
         target.isLiveContent = videoInfo.videoDetails.isLiveContent;
-        target.thumbnails = new Thumbnails_1.Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
+        target.thumbnails = new common_1.Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
         // Channel
         const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
         target.channel = new BaseChannel_1.BaseChannel({
@@ -24,7 +23,7 @@ class BaseVideoParser {
             id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
             name: title.runs[0].text,
             subscriberCount: subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText,
-            thumbnails: new Thumbnails_1.Thumbnails().load(thumbnail.thumbnails),
+            thumbnails: new common_1.Thumbnails().load(thumbnail.thumbnails),
         });
         // Like Count and Dislike Count
         const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;

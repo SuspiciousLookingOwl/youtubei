@@ -1,5 +1,4 @@
-import { stripToInt } from "../../common";
-import { Thumbnails } from "../Thumbnails";
+import { stripToInt, Thumbnails } from "../../common";
 var BaseChannelParser = /** @class */ (function () {
     function BaseChannelParser() {
     }

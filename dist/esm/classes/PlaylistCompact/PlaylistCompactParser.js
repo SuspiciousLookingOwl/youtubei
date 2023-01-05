@@ -1,6 +1,5 @@
-import { stripToInt } from "../../common";
+import { stripToInt, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Thumbnails } from "../Thumbnails";
 var PlaylistCompactParser = /** @class */ (function () {
     function PlaylistCompactParser() {
     }

@@ -45,7 +45,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { I_END_POINT, WATCH_END_POINT } from "../../constants";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
@@ -53,6 +52,7 @@ import { Playlist } from "../Playlist";
 import { SearchResult } from "../SearchResult";
 import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
+import { I_END_POINT, WATCH_END_POINT } from "../constants";
 import { HTTP } from "./HTTP";
 /** Youtube Client */
 var Client = /** @class */ (function () {

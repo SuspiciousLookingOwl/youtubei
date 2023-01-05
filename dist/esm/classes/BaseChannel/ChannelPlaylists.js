@@ -48,9 +48,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { getContinuationFromItems, mapFilter } from "../../common";
-import { I_END_POINT } from "../../constants";
 import { Continuable } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
+import { I_END_POINT } from "../constants";
 import { BaseChannelParser } from "./BaseChannelParser";
 /**
  * {@link Continuable} of playlists inside a {@link BaseChannel}

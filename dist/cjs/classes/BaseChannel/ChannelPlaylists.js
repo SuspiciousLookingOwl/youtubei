@@ -11,9 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelPlaylists = void 0;
 const common_1 = require("../../common");
-const constants_1 = require("../../constants");
 const Continuable_1 = require("../Continuable");
 const PlaylistCompact_1 = require("../PlaylistCompact");
+const constants_1 = require("../constants");
 const BaseChannelParser_1 = require("./BaseChannelParser");
 /**
  * {@link Continuable} of playlists inside a {@link BaseChannel}

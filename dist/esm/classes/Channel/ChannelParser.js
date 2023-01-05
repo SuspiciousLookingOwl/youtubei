@@ -9,9 +9,9 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
+import { Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
-import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
 var ChannelParser = /** @class */ (function () {
     function ChannelParser() {

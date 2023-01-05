@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SearchResult = exports.SearchEnum = void 0;
-const constants_1 = require("../../constants");
 const Continuable_1 = require("../Continuable");
+const constants_1 = require("../constants");
 const SearchResultParser_1 = require("./SearchResultParser");
 const proto_1 = require("./proto");
 var SearchEnum;

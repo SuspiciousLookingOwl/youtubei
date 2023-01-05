@@ -4,7 +4,6 @@ exports.VideoParser = void 0;
 const common_1 = require("../../common");
 const BaseVideo_1 = require("../BaseVideo");
 const Comment_1 = require("../Comment");
-const Thumbnails_1 = require("../Thumbnails");
 class VideoParser {
     static loadVideo(target, data) {
         var _a, _b, _c;
@@ -19,7 +18,7 @@ class VideoParser {
             (chapters === null || chapters === void 0 ? void 0 : chapters.map(({ chapterRenderer: c }) => ({
                 title: c.title.simpleText,
                 start: c.timeRangeStartMillis,
-                thumbnails: new Thumbnails_1.Thumbnails().load(c.thumbnail.thumbnails),
+                thumbnails: new common_1.Thumbnails().load(c.thumbnail.thumbnails),
             }))) || [];
         return target;
     }

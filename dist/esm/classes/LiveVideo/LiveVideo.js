@@ -60,9 +60,9 @@ var __values = (this && this.__values) || function(o) {
 };
 import { EventEmitter } from "events";
 import { applyMixins } from "../../common";
-import { LIVE_CHAT_END_POINT } from "../../constants";
 import { BaseVideo } from "../BaseVideo";
 import { Chat } from "../Chat";
+import { LIVE_CHAT_END_POINT } from "../constants";
 import { LiveVideoParser } from "./LiveVideoParser";
 /** Represents a video that's currently live, usually returned from `client.getVideo()` */
 var LiveVideo = /** @class */ (function (_super) {

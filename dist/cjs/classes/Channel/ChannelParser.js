@@ -1,22 +1,22 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelParser = void 0;
+const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 const PlaylistCompact_1 = require("../PlaylistCompact");
-const Thumbnails_1 = require("../Thumbnails");
 const VideoCompact_1 = require("../VideoCompact");
 class ChannelParser {
     static loadChannel(target, data) {
         const { channelId, title, avatar, subscriberCountText, } = data.header.c4TabbedHeaderRenderer;
         target.id = channelId;
         target.name = title;
-        target.thumbnails = new Thumbnails_1.Thumbnails().load(avatar.thumbnails);
+        target.thumbnails = new common_1.Thumbnails().load(avatar.thumbnails);
         target.videoCount = 0; // data not available
         target.subscriberCount = subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText;
         const { tvBanner, mobileBanner, banner } = data.header.c4TabbedHeaderRenderer;
-        target.banner = new Thumbnails_1.Thumbnails().load((banner === null || banner === void 0 ? void 0 : banner.thumbnails) || []);
-        target.tvBanner = new Thumbnails_1.Thumbnails().load((tvBanner === null || tvBanner === void 0 ? void 0 : tvBanner.thumbnails) || []);
-        target.mobileBanner = new Thumbnails_1.Thumbnails().load((mobileBanner === null || mobileBanner === void 0 ? void 0 : mobileBanner.thumbnails) || []);
+        target.banner = new common_1.Thumbnails().load((banner === null || banner === void 0 ? void 0 : banner.thumbnails) || []);
+        target.tvBanner = new common_1.Thumbnails().load((tvBanner === null || tvBanner === void 0 ? void 0 : tvBanner.thumbnails) || []);
+        target.mobileBanner = new common_1.Thumbnails().load((mobileBanner === null || mobileBanner === void 0 ? void 0 : mobileBanner.thumbnails) || []);
         target.shelves = ChannelParser.parseShelves(target, data);
         return target;
     }

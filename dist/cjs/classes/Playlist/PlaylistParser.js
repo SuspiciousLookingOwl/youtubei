@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlaylistParser = void 0;
 const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
-const Thumbnails_1 = require("../Thumbnails");
 const VideoCompact_1 = require("../VideoCompact");
 class PlaylistParser {
     static loadPlaylist(target, data) {
@@ -35,7 +34,7 @@ class PlaylistParser {
             target.channel = new BaseChannel_1.BaseChannel({
                 id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
                 name: title.runs[0].text,
-                thumbnails: new Thumbnails_1.Thumbnails().load(thumbnail.thumbnails),
+                thumbnails: new common_1.Thumbnails().load(thumbnail.thumbnails),
                 client: target.client,
             });
         }

@@ -47,8 +47,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { I_END_POINT } from "../../constants";
 import { Continuable } from "../Continuable";
+import { I_END_POINT } from "../constants";
 import { VideoParser } from "./VideoParser";
 /**
  * {@link Continuable} of videos inside a {@link Video}

@@ -3,14 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.VideoCompactParser = void 0;
 const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
-const Thumbnails_1 = require("../Thumbnails");
 class VideoCompactParser {
     static loadVideoCompact(target, data) {
         var _a, _b, _c;
         const { videoId, title, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
         target.id = videoId;
         target.title = title.simpleText || ((_a = title.runs[0]) === null || _a === void 0 ? void 0 : _a.text);
-        target.thumbnails = new Thumbnails_1.Thumbnails().load(thumbnail.thumbnails);
+        target.thumbnails = new common_1.Thumbnails().load(thumbnail.thumbnails);
         target.uploadDate = publishedTimeText === null || publishedTimeText === void 0 ? void 0 : publishedTimeText.simpleText;
         target.description =
             ((_b = detailedMetadataSnippets === null || detailedMetadataSnippets === void 0 ? void 0 : detailedMetadataSnippets[0].snippetText.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text).join("")) || "";
@@ -28,7 +27,7 @@ class VideoCompactParser {
                 target.channel = new BaseChannel_1.BaseChannel({
                     id,
                     name: (ownerText || shortBylineText).runs[0].text,
-                    thumbnails: thumbnails ? new Thumbnails_1.Thumbnails().load(thumbnails) : undefined,
+                    thumbnails: thumbnails ? new common_1.Thumbnails().load(thumbnails) : undefined,
                     client: target.client,
                 });
             }

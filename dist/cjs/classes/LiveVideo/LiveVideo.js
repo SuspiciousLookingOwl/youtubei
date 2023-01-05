@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LiveVideo = void 0;
 const events_1 = require("events");
 const common_1 = require("../../common");
-const constants_1 = require("../../constants");
 const BaseVideo_1 = require("../BaseVideo");
 const Chat_1 = require("../Chat");
+const constants_1 = require("../constants");
 const LiveVideoParser_1 = require("./LiveVideoParser");
 /** Represents a video that's currently live, usually returned from `client.getVideo()` */
 class LiveVideo extends BaseVideo_1.BaseVideo {

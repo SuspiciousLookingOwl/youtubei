@@ -1,7 +1,6 @@
-import { getContinuationFromItems, mapFilter } from "../../common";
+import { getContinuationFromItems, mapFilter, Thumbnails } from "../../common";
 import { BaseVideoParser } from "../BaseVideo";
 import { Comment } from "../Comment";
-import { Thumbnails } from "../Thumbnails";
 var VideoParser = /** @class */ (function () {
     function VideoParser() {
     }

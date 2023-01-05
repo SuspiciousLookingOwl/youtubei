@@ -9,10 +9,9 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { getContinuationFromItems, stripToInt } from "../../common";
+import { getContinuationFromItems, stripToInt, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
-import { Thumbnails } from "../Thumbnails";
 import { VideoCompact } from "../VideoCompact";
 var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {

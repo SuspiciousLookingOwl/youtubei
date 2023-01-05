@@ -1,5 +1,5 @@
+import { Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Thumbnails } from "../Thumbnails";
 var ReplyParser = /** @class */ (function () {
     function ReplyParser() {
     }

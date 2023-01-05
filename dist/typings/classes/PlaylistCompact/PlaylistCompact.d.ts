@@ -1,8 +1,7 @@
-import { YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { Playlist } from "../Playlist/Playlist";
-import { Thumbnails } from "../Thumbnails";
 /** @hidden */
 interface PlaylistCompactProperties extends BaseProperties {
     id?: string;

@@ -1,6 +1,5 @@
-import { getDuration, stripToInt } from "../../common";
+import { getDuration, stripToInt, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Thumbnails } from "../Thumbnails";
 var VideoCompactParser = /** @class */ (function () {
     function VideoCompactParser() {
     }

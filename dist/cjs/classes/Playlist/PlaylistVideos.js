@@ -10,8 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlaylistVideos = void 0;
-const constants_1 = require("../../constants");
 const Continuable_1 = require("../Continuable");
+const constants_1 = require("../constants");
 const PlaylistParser_1 = require("./PlaylistParser");
 /**
  * {@link Continuable} of videos inside a {@link Playlist}

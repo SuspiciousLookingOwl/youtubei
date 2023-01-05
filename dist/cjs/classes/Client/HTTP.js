@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTP = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const url_1 = require("url");
-const constants_1 = require("../../constants");
+const constants_1 = require("../constants");
 class HTTP {
     constructor(options) {
         this.cookie = options.initialCookie || "";

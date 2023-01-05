@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
-const constants_1 = require("../../constants");
 const Channel_1 = require("../Channel");
 const LiveVideo_1 = require("../LiveVideo");
 const MixPlaylist_1 = require("../MixPlaylist");
@@ -18,6 +17,7 @@ const Playlist_1 = require("../Playlist");
 const SearchResult_1 = require("../SearchResult");
 const Transcript_1 = require("../Transcript");
 const Video_1 = require("../Video");
+const constants_1 = require("../constants");
 const HTTP_1 = require("./HTTP");
 /** Youtube Client */
 class Client {

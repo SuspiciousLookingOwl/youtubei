@@ -67,8 +67,8 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
-import { I_END_POINT } from "../../constants";
 import { Continuable } from "../Continuable";
+import { I_END_POINT } from "../constants";
 import { SearchResultParser } from "./SearchResultParser";
 import { optionsToProto, SearchProto } from "./proto";
 export var SearchEnum;

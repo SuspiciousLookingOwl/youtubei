@@ -4,7 +4,6 @@ exports.CommentParser = void 0;
 const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 const Reply_1 = require("../Reply");
-const Thumbnails_1 = require("../Thumbnails");
 class CommentParser {
     static loadComment(target, data) {
         const { authorText, authorThumbnail, authorEndpoint, contentText, publishedTimeText, commentId, voteCount, authorIsChannelOwner, pinnedCommentBadge, replyCount, } = data.comment.commentRenderer;
@@ -25,7 +24,7 @@ class CommentParser {
         target.author = new BaseChannel_1.BaseChannel({
             id: browseId,
             name: authorText.simpleText,
-            thumbnails: new Thumbnails_1.Thumbnails().load(authorThumbnail.thumbnails),
+            thumbnails: new common_1.Thumbnails().load(authorThumbnail.thumbnails),
             client: target.client,
         });
         return target;

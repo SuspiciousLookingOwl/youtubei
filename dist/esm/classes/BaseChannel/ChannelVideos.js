@@ -48,9 +48,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import { getContinuationFromItems, mapFilter } from "../../common";
-import { I_END_POINT } from "../../constants";
 import { Continuable } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
+import { I_END_POINT } from "../constants";
 import { BaseChannelParser } from "./BaseChannelParser";
 /**
  * {@link Continuable} of videos inside a {@link BaseChannel}
