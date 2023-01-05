@@ -1,6 +1,6 @@
 import { RequestInit } from "node-fetch";
 
-import { YoutubeRawData } from "../../common";
+import { HTTP, YoutubeRawData } from "../../common";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
@@ -8,8 +8,14 @@ import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
 import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
-import { I_END_POINT, WATCH_END_POINT } from "../constants";
-import { HTTP } from "./HTTP";
+import {
+	BASE_URL,
+	INNERTUBE_API_KEY,
+	INNERTUBE_CLIENT_NAME,
+	INNERTUBE_CLIENT_VERSION,
+	I_END_POINT,
+	WATCH_END_POINT,
+} from "../constants";
 
 export type ClientOptions = {
 	initialCookie: string;
@@ -36,7 +42,13 @@ export class Client {
 			},
 		};
 
-		this.http = new HTTP(fullOptions);
+		this.http = new HTTP({
+			apiKey: INNERTUBE_API_KEY,
+			baseUrl: BASE_URL,
+			clientName: INNERTUBE_CLIENT_NAME,
+			clientVersion: INNERTUBE_CLIENT_VERSION,
+			...fullOptions,
+		});
 	}
 
 	/**
