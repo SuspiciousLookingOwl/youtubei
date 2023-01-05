@@ -1,4 +1,5 @@
 import { RequestInit } from "node-fetch";
+import { HTTP } from "../../common";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
@@ -6,7 +7,6 @@ import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
 import { Transcript } from "../Transcript";
 import { Video } from "../Video";
-import { HTTP } from "./HTTP";
 export declare type ClientOptions = {
     initialCookie: string;
     /** Optional options for http client */

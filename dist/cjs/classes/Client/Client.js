@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
+const common_1 = require("../../common");
 const Channel_1 = require("../Channel");
 const LiveVideo_1 = require("../LiveVideo");
 const MixPlaylist_1 = require("../MixPlaylist");
@@ -18,12 +19,11 @@ const SearchResult_1 = require("../SearchResult");
 const Transcript_1 = require("../Transcript");
 const Video_1 = require("../Video");
 const constants_1 = require("../constants");
-const HTTP_1 = require("./HTTP");
 /** Youtube Client */
 class Client {
     constructor(options = {}) {
         const fullOptions = Object.assign(Object.assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
-        this.http = new HTTP_1.HTTP(fullOptions);
+        this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: constants_1.INNERTUBE_CLIENT_NAME, clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, fullOptions));
     }
     /**
      * Searches for videos / playlists / channels

@@ -1,3 +1,4 @@
+export var INNERTUBE_CLIENT_NAME = "WEB";
 export var INNERTUBE_CLIENT_VERSION = "2.20201209.01.00";
 export var INNERTUBE_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 export var BASE_URL = "www.youtube.com";

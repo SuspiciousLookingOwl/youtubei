@@ -47,12 +47,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
-import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../constants";
 var HTTP = /** @class */ (function () {
     function HTTP(options) {
+        this.apiKey = options.apiKey;
+        this.baseUrl = options.baseUrl;
+        this.clientName = options.clientName;
+        this.clientVersion = options.clientVersion;
         this.cookie = options.initialCookie || "";
         this.defaultHeaders = {
-            "x-youtube-client-version": INNERTUBE_CLIENT_VERSION,
+            "x-youtube-client-version": this.clientVersion,
             "x-youtube-client-name": "1",
             "content-type": "application/json",
             "accept-encoding": "gzip, deflate, br",
@@ -74,8 +77,8 @@ var HTTP = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.request(url, __assign(__assign({}, options), { method: "POST", params: __assign({ key: INNERTUBE_API_KEY, prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), data: __assign({ context: {
-                                    client: __assign({ clientName: "WEB", clientVersion: INNERTUBE_CLIENT_VERSION }, this.defaultClientOptions),
+                    case 0: return [4 /*yield*/, this.request(url, __assign(__assign({}, options), { method: "POST", params: __assign({ key: this.apiKey, prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), data: __assign({ context: {
+                                    client: __assign({ clientName: this.clientName, clientVersion: this.clientVersion }, this.defaultClientOptions),
                                 } }, options === null || options === void 0 ? void 0 : options.data) }))];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -88,8 +91,8 @@ var HTTP = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        options = __assign(__assign(__assign({}, partialOptions), this.defaultFetchOptions), { headers: __assign(__assign(__assign(__assign({}, this.defaultHeaders), { cookie: this.cookie }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
-                        finalUrl = "https://" + BASE_URL + "/" + url + "?" + new URLSearchParams(partialOptions.params);
+                        options = __assign(__assign(__assign({}, partialOptions), this.defaultFetchOptions), { headers: __assign(__assign(__assign(__assign({}, this.defaultHeaders), { cookie: this.cookie, referer: "https://" + this.baseUrl + "/" }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
+                        finalUrl = "https://" + this.baseUrl + "/" + url + "?" + new URLSearchParams(partialOptions.params);
                         return [4 /*yield*/, fetch(finalUrl, options)];
                     case 1:
                         response = _a.sent();
