@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { Channel, Client } from "../src";
+import { Channel, Client } from "../../src";
 
 const youtube = new Client();
 

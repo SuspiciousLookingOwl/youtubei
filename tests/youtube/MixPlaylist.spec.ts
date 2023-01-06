@@ -1,4 +1,4 @@
-// import { Client, MixPlaylist } from "../src";
+// import { Client, MixPlaylist } from "../../src";
 import "jest-extended";
 
 // const youtube = new Client();

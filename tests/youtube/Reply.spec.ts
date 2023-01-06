@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { Client, Reply } from "../src";
+import { Client, Reply } from "../../src";
 import commentReplyRenderer from "./data/commentReplyRenderer.json";
 
 describe("Chat", () => {

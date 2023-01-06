@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { VideoCompact } from "../src";
+import { VideoCompact } from "../../src";
 import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 type Ignore = {

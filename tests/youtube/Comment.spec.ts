@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { Client, Comment, Video } from "../src";
+import { Client, Comment, Video } from "../../src";
 
 describe("Comment", () => {
 	it("url should match", () => {

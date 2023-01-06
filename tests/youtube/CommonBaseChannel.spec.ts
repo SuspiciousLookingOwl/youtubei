@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { BaseChannel } from "../src";
+import { BaseChannel } from "../../src";
 
 type Ignore = {
 	ignoreVideoCount?: boolean;

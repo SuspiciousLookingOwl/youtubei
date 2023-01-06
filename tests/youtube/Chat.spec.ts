@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { Chat, Client } from "../src";
+import { Chat, Client } from "../../src";
 import liveChatTextMessageRenderer from "./data/liveChatTextMessageRenderer.json";
 
 describe("Chat", () => {

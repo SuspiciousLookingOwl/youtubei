@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { Client, Playlist } from "../src";
+import { Client, Playlist } from "../../src";
 import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 const youtube = new Client();

@@ -1,6 +1,6 @@
 import "jest-extended";
 
-import { Client, Video } from "../src";
+import { Client, Video } from "../../src";
 import { commonBaseChannelTest } from "./CommonBaseChannel.spec";
 
 const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
