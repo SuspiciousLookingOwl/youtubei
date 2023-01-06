@@ -21,6 +21,9 @@ type Options = {
 	params: Record<string, string>;
 } & RequestInit;
 
+/**
+ * @hidden
+ */
 export class HTTP {
 	private apiKey: string;
 	private baseUrl: string;
