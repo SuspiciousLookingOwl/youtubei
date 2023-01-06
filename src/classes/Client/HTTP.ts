@@ -2,7 +2,10 @@ import fetch, { RequestInit, Response as FetchResponse, HeadersInit } from "node
 import { URLSearchParams } from "url";
 
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION } from "../../constants";
+import * as https_proxy_agent from "https-proxy-agent";
+
 import { ClientOptions } from "./Client";
+import {HttpsProxyAgent} from "https-proxy-agent";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Response<T = any> = {
@@ -16,12 +19,14 @@ type Options = {
 
 export class HTTP {
 	private cookie: string;
+	private proxy: string;
 	private defaultHeaders: HeadersInit;
 	private defaultFetchOptions: Partial<RequestInit>;
 	private defaultClientOptions: Record<string, unknown>;
 
 	constructor(options: ClientOptions) {
 		this.cookie = options.initialCookie || "";
+		this.proxy = options.proxy || "";
 		this.defaultHeaders = {
 			"x-youtube-client-version": INNERTUBE_CLIENT_VERSION,
 			"x-youtube-client-name": "1",
@@ -69,8 +74,9 @@ export class HTTP {
 				...this.defaultFetchOptions.headers,
 			},
 			body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined,
+			agent: Boolean(this.proxy) ? new HttpsProxyAgent(this.proxy) :  undefined,
 		};
-
+		
 		const finalUrl = `https://${BASE_URL}/${url}?${new URLSearchParams(partialOptions.params)}`;
 
 		const response = await fetch(finalUrl, options);
