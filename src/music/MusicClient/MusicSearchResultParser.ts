@@ -1,4 +1,4 @@
-import { Shelf, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
+import { getDuration, Shelf, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicBaseArtist } from "../MusicBaseArtist";
@@ -57,7 +57,7 @@ export class MusicSearchResultParser {
 
 		const id = topColumn[0].navigationEndpoint.watchEndpoint.videoId;
 		const title = topColumn[0].text;
-		const duration = stripToInt(bottomColumn.at(-1).text) || undefined;
+		const duration = getDuration(bottomColumn.at(-1).text) || undefined;
 		const thumbnails = new Thumbnails().load(
 			item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails
 		);
