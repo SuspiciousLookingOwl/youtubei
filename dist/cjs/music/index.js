@@ -10,6 +10,11 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./common/shared"), exports);
-__exportStar(require("./music"), exports);
-__exportStar(require("./youtube"), exports);
+__exportStar(require("./MusicAlbumCompact"), exports);
+__exportStar(require("./MusicArtistCompact"), exports);
+__exportStar(require("./MusicBase"), exports);
+__exportStar(require("./MusicBaseChannel"), exports);
+__exportStar(require("./MusicClient"), exports);
+__exportStar(require("./MusicPlaylistCompact"), exports);
+__exportStar(require("./MusicSongCompact"), exports);
+__exportStar(require("./MusicVideoCompact"), exports);

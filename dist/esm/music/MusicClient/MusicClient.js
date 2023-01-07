@@ -45,74 +45,78 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import fetch from "node-fetch";
-import { URLSearchParams } from "url";
-/**
- * @hidden
- */
-var HTTP = /** @class */ (function () {
-    function HTTP(options) {
-        this.apiKey = options.apiKey;
-        this.baseUrl = options.baseUrl;
-        this.clientName = options.clientName;
-        this.clientVersion = options.clientVersion;
-        this.cookie = options.initialCookie || "";
-        this.defaultHeaders = {
-            "x-youtube-client-version": this.clientVersion,
-            "x-youtube-client-name": "1",
-            "content-type": "application/json",
-            "accept-encoding": "gzip, deflate, br",
-        };
-        this.defaultFetchOptions = options.fetchOptions || {};
-        this.defaultClientOptions = options.youtubeClientOptions || {};
+import { HTTP } from "../../common";
+import { MusicLyrics } from "../MusicLyrics";
+import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION, I_END_POINT } from "../constants";
+import { MusicSearchResultParser } from "./MusicSearchResultParser";
+/** Youtube Music Client */
+var MusicClient = /** @class */ (function () {
+    function MusicClient(options) {
+        if (options === void 0) { options = {}; }
+        var fullOptions = __assign(__assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
+        this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: "WEB_REMIX", clientVersion: INNERTUBE_CLIENT_VERSION }, fullOptions));
     }
-    HTTP.prototype.get = function (url, options) {
+    /**
+     * Searches for video, song, album, playlist, or artist
+     *
+     * @param query The search query
+     * @param options Search options
+     *
+     */
+    MusicClient.prototype.search = function (query) {
         return __awaiter(this, void 0, void 0, function () {
+            var response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.request(url, __assign(__assign({}, options), { params: __assign({ prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), method: "GET" }))];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    HTTP.prototype.post = function (url, options) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.request(url, __assign(__assign({}, options), { method: "POST", params: __assign({ key: this.apiKey, prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), data: __assign({ context: {
-                                    client: __assign({ clientName: this.clientName, clientVersion: this.clientVersion }, this.defaultClientOptions),
-                                } }, options === null || options === void 0 ? void 0 : options.data) }))];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    HTTP.prototype.request = function (url, partialOptions) {
-        return __awaiter(this, void 0, void 0, function () {
-            var options, finalUrl, response, data;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        options = __assign(__assign(__assign({}, partialOptions), this.defaultFetchOptions), { headers: __assign(__assign(__assign(__assign({}, this.defaultHeaders), { cookie: this.cookie, referer: "https://" + this.baseUrl + "/" }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
-                        finalUrl = "https://" + this.baseUrl + "/" + url + "?" + new URLSearchParams(partialOptions.params);
-                        return [4 /*yield*/, fetch(finalUrl, options)];
+                    case 0: return [4 /*yield*/, this.http.post(I_END_POINT + "/search", {
+                            data: { query: query },
+                        })];
                     case 1:
                         response = _a.sent();
-                        return [4 /*yield*/, response.json()];
-                    case 2:
-                        data = _a.sent();
-                        this.parseCookie(response);
-                        return [2 /*return*/, { data: data }];
+                        return [2 /*return*/, MusicSearchResultParser.parseSearchResult(response.data, this)];
                 }
             });
         });
     };
-    HTTP.prototype.parseCookie = function (response) {
-        var cookie = response.headers.get("set-cookie");
-        if (cookie)
-            this.cookie = cookie;
+    /**
+     * Get lyrics of a song
+     *
+     * @param query The search query
+     * @param options Search options
+     *
+     */
+    MusicClient.prototype.getLyrics = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var watchResponse, lyricTab, lyricsBrowseId, lyricResponse, data, content, description;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.http.post(I_END_POINT + "/next", {
+                            data: { videoId: id },
+                        })];
+                    case 1:
+                        watchResponse = _a.sent();
+                        lyricTab = watchResponse.data.contents.singleColumnMusicWatchNextResultsRenderer.tabbedRenderer
+                            .watchNextTabbedResultsRenderer.tabs[1].tabRenderer;
+                        if (lyricTab.unselectable)
+                            return [2 /*return*/, undefined];
+                        lyricsBrowseId = lyricTab.endpoint.browseEndpoint.browseId;
+                        return [4 /*yield*/, this.http.post(I_END_POINT + "/browse", {
+                                data: { browseId: lyricsBrowseId },
+                            })];
+                    case 2:
+                        lyricResponse = _a.sent();
+                        data = lyricResponse.data.contents.sectionListRenderer.contents[0]
+                            .musicDescriptionShelfRenderer;
+                        content = data.description.runs[0].text;
+                        description = data.footer.runs[0].text;
+                        return [2 /*return*/, new MusicLyrics({
+                                content: content,
+                                description: description,
+                            })];
+                }
+            });
+        });
     };
-    return HTTP;
+    return MusicClient;
 }());
-export { HTTP };
+export { MusicClient };

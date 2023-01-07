@@ -11,7 +11,9 @@
 ```
 npm i youtubei
 ```
+
 or use the dev build directly from GitHub:
+
 ```
 npm i git://github.com/suspiciouslookingowl/youtubei.git#dist
 ```
@@ -19,11 +21,12 @@ npm i git://github.com/suspiciouslookingowl/youtubei.git#dist
 ## Example
 
 ```js
-const { Client } = require("youtubei");
+const { Client, MusicClient } = require("youtubei");
 // or for TS / ES6
-import { Client } from "youtubei";
+import { Client, MusicClient } from "youtubei";
 
 const youtube = new Client();
+const music = new MusicClient();
 
 const run = async () => {
 	const videos = await youtube.search("Never gonna give you up", {
@@ -48,6 +51,9 @@ const run = async () => {
 	console.log(playlist.videos.items.length); // 200 videos;
 	await playlist.videos.next(0); // load the rest videos in the playlist
 
+	// search using music client
+	const shelves = await music.search("Never gonna give you up");
+	console.log(shelves);
 };
 
 run();

@@ -15,6 +15,9 @@ declare type Options = {
     data: Record<string, unknown>;
     params: Record<string, string>;
 } & RequestInit;
+/**
+ * @hidden
+ */
 export declare class HTTP {
     private apiKey;
     private baseUrl;

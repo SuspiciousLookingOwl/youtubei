@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTP = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const url_1 = require("url");
+/**
+ * @hidden
+ */
 class HTTP {
     constructor(options) {
         this.apiKey = options.apiKey;
