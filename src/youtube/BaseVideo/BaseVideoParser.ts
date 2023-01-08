@@ -104,8 +104,13 @@ export class BaseVideoParser {
 	}
 
 	private static parseButtonRenderer(data: YoutubeRawData): string {
-		const likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
-		const buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+		let buttonRenderer;
+		if (!data.segmentedLikeDislikeButtonRenderer) {
+			buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+		} else {
+			const likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
+			buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+		}
 
 		const accessibilityData = (
 			buttonRenderer.defaultText?.accessibility || buttonRenderer.accessibilityData
