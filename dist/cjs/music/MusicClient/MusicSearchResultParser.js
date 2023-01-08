@@ -44,7 +44,7 @@ class MusicSearchResultParser {
         const [topColumn, bottomColumn] = item.flexColumns.map((c) => c.musicResponsiveListItemFlexColumnRenderer.text.runs);
         const id = topColumn[0].navigationEndpoint.watchEndpoint.videoId;
         const title = topColumn[0].text;
-        const duration = common_1.stripToInt(bottomColumn.at(-1).text) || undefined;
+        const duration = common_1.getDuration(bottomColumn.at(-1).text) || undefined;
         const thumbnails = new common_1.Thumbnails().load(item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
         const artists = MusicSearchResultParser.parseArtists(bottomColumn, client);
         if (pageType === "MUSIC_VIDEO_TYPE_ATV") {

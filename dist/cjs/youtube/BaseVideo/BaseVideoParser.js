@@ -73,8 +73,14 @@ class BaseVideoParser {
     }
     static parseButtonRenderer(data) {
         var _a;
-        const likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
-        const buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+        let buttonRenderer;
+        if (!data.segmentedLikeDislikeButtonRenderer) {
+            buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+        }
+        else {
+            const likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
+            buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+        }
         const accessibilityData = (((_a = buttonRenderer.defaultText) === null || _a === void 0 ? void 0 : _a.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
         return accessibilityData.label;
     }

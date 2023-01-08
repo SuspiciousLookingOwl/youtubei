@@ -14,7 +14,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-import { stripToInt, Thumbnails } from "../../common";
+import { getDuration, stripToInt, Thumbnails } from "../../common";
 import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicBaseArtist } from "../MusicBaseArtist";
@@ -61,7 +61,7 @@ var MusicSearchResultParser = /** @class */ (function () {
         var _a = __read(item.flexColumns.map(function (c) { return c.musicResponsiveListItemFlexColumnRenderer.text.runs; }), 2), topColumn = _a[0], bottomColumn = _a[1];
         var id = topColumn[0].navigationEndpoint.watchEndpoint.videoId;
         var title = topColumn[0].text;
-        var duration = stripToInt(bottomColumn.at(-1).text) || undefined;
+        var duration = getDuration(bottomColumn.at(-1).text) || undefined;
         var thumbnails = new Thumbnails().load(item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
         var artists = MusicSearchResultParser.parseArtists(bottomColumn, client);
         if (pageType === "MUSIC_VIDEO_TYPE_ATV") {
