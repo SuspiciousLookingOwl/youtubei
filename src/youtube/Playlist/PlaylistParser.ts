@@ -15,6 +15,9 @@ export class PlaylistParser {
 			.find((v) => v.includes("playlist?list="))
 			?.split("=")[1] as string;
 		target.title = metadata.title;
+		target.thumbnails = new Thumbnails().load(
+			primaryRenderer.thumbnailRenderer.playlistVideoThumbnailRenderer.thumbnail.thumbnails
+		);
 
 		const { stats } = primaryRenderer;
 		if (primaryRenderer.stats.length === 3) {

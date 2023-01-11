@@ -17,6 +17,7 @@ describe("Playlist", () => {
 	it("match getPlaylist result", () => {
 		expect(playlist.id).toBe("UUXuqSBlHAE6Xw-yeJA0Tunw");
 		expect(playlist.title).toBe("Uploads from Linus Tech Tips");
+		expect(playlist.thumbnails.length).toBeGreaterThan(0);
 		expect(playlist.videoCount).toBeGreaterThan(5000);
 		expect(typeof playlist.viewCount).toBe("number");
 		expect(typeof playlist.lastUpdatedAt).toBe("string");

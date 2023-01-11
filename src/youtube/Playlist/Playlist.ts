@@ -1,4 +1,4 @@
-import { YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel, BaseChannelProperties } from "../BaseChannel";
 import { PlaylistParser } from "./PlaylistParser";
@@ -11,6 +11,7 @@ interface PlaylistProperties extends BaseProperties {
 	videoCount?: number;
 	viewCount?: number;
 	lastUpdatedAt?: string;
+	thumbnails?: Thumbnails;
 	channel?: BaseChannelProperties;
 	videos?: PlaylistVideos;
 }
@@ -26,6 +27,8 @@ export class Playlist extends Base implements PlaylistProperties {
 	viewCount!: number;
 	/** Last time this playlist is updated */
 	lastUpdatedAt!: string;
+	/** Thumbnails of this playlist */
+	thumbnails!: Thumbnails;
 	/** The channel that made this playlist */
 	channel?: BaseChannel;
 	/** Continuable of videos in this playlist */
