@@ -14,6 +14,7 @@ class PlaylistParser {
         target.id = (_a = Object.values(metadata)
             .find((v) => v.includes("playlist?list="))) === null || _a === void 0 ? void 0 : _a.split("=")[1];
         target.title = metadata.title;
+        target.thumbnails = new common_1.Thumbnails().load(primaryRenderer.thumbnailRenderer.playlistVideoThumbnailRenderer.thumbnail.thumbnails);
         const { stats } = primaryRenderer;
         if (primaryRenderer.stats.length === 3) {
             target.videoCount = PlaylistParser.parseSideBarInfo(stats[0], true);

@@ -24,6 +24,7 @@ var PlaylistParser = /** @class */ (function () {
         target.id = (_a = Object.values(metadata)
             .find(function (v) { return v.includes("playlist?list="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
         target.title = metadata.title;
+        target.thumbnails = new Thumbnails().load(primaryRenderer.thumbnailRenderer.playlistVideoThumbnailRenderer.thumbnail.thumbnails);
         var stats = primaryRenderer.stats;
         if (primaryRenderer.stats.length === 3) {
             target.videoCount = PlaylistParser.parseSideBarInfo(stats[0], true);
