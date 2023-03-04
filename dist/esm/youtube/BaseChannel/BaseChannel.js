@@ -13,7 +13,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import { Base } from "../Base";
 import { BaseChannelParser } from "./BaseChannelParser";
+import { ChannelLive } from "./ChannelLive";
 import { ChannelPlaylists } from "./ChannelPlaylists";
+import { ChannelShorts } from "./ChannelShorts";
 import { ChannelVideos } from "./ChannelVideos";
 /**  Represents a Youtube Channel */
 var BaseChannel = /** @class */ (function (_super) {
@@ -23,6 +25,8 @@ var BaseChannel = /** @class */ (function (_super) {
         var _this = _super.call(this, attr.client) || this;
         Object.assign(_this, attr);
         _this.videos = new ChannelVideos({ channel: _this, client: _this.client });
+        _this.shorts = new ChannelShorts({ channel: _this, client: _this.client });
+        _this.live = new ChannelLive({ channel: _this, client: _this.client });
         _this.playlists = new ChannelPlaylists({ channel: _this, client: _this.client });
         return _this;
     }

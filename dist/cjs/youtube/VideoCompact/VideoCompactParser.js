@@ -6,9 +6,9 @@ const BaseChannel_1 = require("../BaseChannel");
 class VideoCompactParser {
     static loadVideoCompact(target, data) {
         var _a, _b, _c;
-        const { videoId, title, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
+        const { videoId, title, headline, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
         target.id = videoId;
-        target.title = title.simpleText || ((_a = title.runs[0]) === null || _a === void 0 ? void 0 : _a.text);
+        target.title = headline ? headline.simpleText : title.simpleText || ((_a = title.runs[0]) === null || _a === void 0 ? void 0 : _a.text);
         target.thumbnails = new common_1.Thumbnails().load(thumbnail.thumbnails);
         target.uploadDate = publishedTimeText === null || publishedTimeText === void 0 ? void 0 : publishedTimeText.simpleText;
         target.description =

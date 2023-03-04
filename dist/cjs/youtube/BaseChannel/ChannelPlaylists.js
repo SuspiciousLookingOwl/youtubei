@@ -40,7 +40,7 @@ class ChannelPlaylists extends Continuable_1.Continuable {
     fetch() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const params = "EglwbGF5bGlzdHMgAQ%3D%3D";
+            const params = BaseChannelParser_1.BaseChannelParser.TAB_TYPE_PARAMS.playlists;
             const response = yield this.client.http.post(`${constants_1.I_END_POINT}/browse`, {
                 data: { browseId: (_a = this.channel) === null || _a === void 0 ? void 0 : _a.id, params, continuation: this.continuation },
             });

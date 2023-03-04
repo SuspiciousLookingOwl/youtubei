@@ -1,6 +1,8 @@
 import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
+import { ChannelLive } from "./ChannelLive";
 import { ChannelPlaylists } from "./ChannelPlaylists";
+import { ChannelShorts } from "./ChannelShorts";
 import { ChannelVideos } from "./ChannelVideos";
 /** @hidden */
 export interface BaseChannelProperties extends BaseProperties {
@@ -27,6 +29,10 @@ export declare class BaseChannel extends Base implements BaseChannelProperties {
     subscriberCount?: string;
     /** Continuable of videos */
     videos: ChannelVideos;
+    /** Continuable of shorts */
+    shorts: ChannelShorts;
+    /** Continuable of live */
+    live: ChannelLive;
     /** Continuable of playlists */
     playlists: ChannelPlaylists;
     /** @hidden */

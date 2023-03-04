@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChannelVideos = void 0;
+exports.ChannelLive = void 0;
 const common_1 = require("../../common");
 const Continuable_1 = require("../Continuable");
 const VideoCompact_1 = require("../VideoCompact");
@@ -21,17 +21,17 @@ const BaseChannelParser_1 = require("./BaseChannelParser");
  * @example
  * ```js
  * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
- * await channel.videos.next();
- * console.log(channel.videos.items) // first 30 videos
+ * await channel.live.next();
+ * console.log(channel.live.items) // first 30 live videos
  *
  * let newVideos = await channel.videos.next();
  * console.log(newVideos) // 30 loaded videos
- * console.log(channel.videos.items) // first 60 videos
+ * console.log(channel.live.items) // first 60 live videos
  *
- * await channel.videos.next(0); // load the rest of the videos in the channel
+ * await channel.live.next(0); // load the rest of the videos in the channel
  * ```
  */
-class ChannelVideos extends Continuable_1.Continuable {
+class ChannelLive extends Continuable_1.Continuable {
     /** @hidden */
     constructor({ client, channel }) {
         super({ client, strictContinuationCheck: true });
@@ -40,11 +40,11 @@ class ChannelVideos extends Continuable_1.Continuable {
     fetch() {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const params = BaseChannelParser_1.BaseChannelParser.TAB_TYPE_PARAMS.videos;
+            const params = BaseChannelParser_1.BaseChannelParser.TAB_TYPE_PARAMS.live;
             const response = yield this.client.http.post(`${constants_1.I_END_POINT}/browse`, {
                 data: { browseId: (_a = this.channel) === null || _a === void 0 ? void 0 : _a.id, params, continuation: this.continuation },
             });
-            const items = BaseChannelParser_1.BaseChannelParser.parseTabData("videos", response.data);
+            const items = BaseChannelParser_1.BaseChannelParser.parseTabData("live", response.data);
             const continuation = common_1.getContinuationFromItems(items);
             const data = common_1.mapFilter(items, "videoRenderer");
             return {
@@ -54,4 +54,4 @@ class ChannelVideos extends Continuable_1.Continuable {
         });
     }
 }
-exports.ChannelVideos = ChannelVideos;
+exports.ChannelLive = ChannelLive;

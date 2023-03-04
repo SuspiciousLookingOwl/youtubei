@@ -68,16 +68,16 @@ import { BaseChannelParser } from "./BaseChannelParser";
  * await channel.videos.next(0); // load the rest of the videos in the channel
  * ```
  */
-var ChannelVideos = /** @class */ (function (_super) {
-    __extends(ChannelVideos, _super);
+var ChannelShorts = /** @class */ (function (_super) {
+    __extends(ChannelShorts, _super);
     /** @hidden */
-    function ChannelVideos(_a) {
+    function ChannelShorts(_a) {
         var client = _a.client, channel = _a.channel;
         var _this = _super.call(this, { client: client, strictContinuationCheck: true }) || this;
         _this.channel = channel;
         return _this;
     }
-    ChannelVideos.prototype.fetch = function () {
+    ChannelShorts.prototype.fetch = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
             var params, response, items, continuation, data;
@@ -85,15 +85,15 @@ var ChannelVideos = /** @class */ (function (_super) {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        params = BaseChannelParser.TAB_TYPE_PARAMS.videos;
+                        params = BaseChannelParser.TAB_TYPE_PARAMS.shorts;
                         return [4 /*yield*/, this.client.http.post(I_END_POINT + "/browse", {
                                 data: { browseId: (_a = this.channel) === null || _a === void 0 ? void 0 : _a.id, params: params, continuation: this.continuation },
                             })];
                     case 1:
                         response = _b.sent();
-                        items = BaseChannelParser.parseTabData("videos", response.data);
+                        items = BaseChannelParser.parseTabData("shorts", response.data);
                         continuation = getContinuationFromItems(items);
-                        data = mapFilter(items, "videoRenderer");
+                        data = mapFilter(items, "reelItemRenderer");
                         return [2 /*return*/, {
                                 continuation: continuation,
                                 items: data.map(function (i) {
@@ -104,6 +104,6 @@ var ChannelVideos = /** @class */ (function (_super) {
             });
         });
     };
-    return ChannelVideos;
+    return ChannelShorts;
 }(Continuable));
-export { ChannelVideos };
+export { ChannelShorts };

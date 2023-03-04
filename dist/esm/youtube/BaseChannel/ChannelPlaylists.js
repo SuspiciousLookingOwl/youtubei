@@ -85,7 +85,7 @@ var ChannelPlaylists = /** @class */ (function (_super) {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        params = "EglwbGF5bGlzdHMgAQ%3D%3D";
+                        params = BaseChannelParser.TAB_TYPE_PARAMS.playlists;
                         return [4 /*yield*/, this.client.http.post(I_END_POINT + "/browse", {
                                 data: { browseId: (_a = this.channel) === null || _a === void 0 ? void 0 : _a.id, params: params, continuation: this.continuation },
                             })];

@@ -5,9 +5,9 @@ var VideoCompactParser = /** @class */ (function () {
     }
     VideoCompactParser.loadVideoCompact = function (target, data) {
         var _a, _b, _c;
-        var videoId = data.videoId, title = data.title, lengthText = data.lengthText, thumbnail = data.thumbnail, ownerText = data.ownerText, shortBylineText = data.shortBylineText, publishedTimeText = data.publishedTimeText, viewCountText = data.viewCountText, badges = data.badges, thumbnailOverlays = data.thumbnailOverlays, channelThumbnailSupportedRenderers = data.channelThumbnailSupportedRenderers, detailedMetadataSnippets = data.detailedMetadataSnippets;
+        var videoId = data.videoId, title = data.title, headline = data.headline, lengthText = data.lengthText, thumbnail = data.thumbnail, ownerText = data.ownerText, shortBylineText = data.shortBylineText, publishedTimeText = data.publishedTimeText, viewCountText = data.viewCountText, badges = data.badges, thumbnailOverlays = data.thumbnailOverlays, channelThumbnailSupportedRenderers = data.channelThumbnailSupportedRenderers, detailedMetadataSnippets = data.detailedMetadataSnippets;
         target.id = videoId;
-        target.title = title.simpleText || ((_a = title.runs[0]) === null || _a === void 0 ? void 0 : _a.text);
+        target.title = headline ? headline.simpleText : title.simpleText || ((_a = title.runs[0]) === null || _a === void 0 ? void 0 : _a.text);
         target.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
         target.uploadDate = publishedTimeText === null || publishedTimeText === void 0 ? void 0 : publishedTimeText.simpleText;
         target.description =

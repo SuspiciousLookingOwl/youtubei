@@ -58,26 +58,26 @@ import { BaseChannelParser } from "./BaseChannelParser";
  * @example
  * ```js
  * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
- * await channel.videos.next();
- * console.log(channel.videos.items) // first 30 videos
+ * await channel.live.next();
+ * console.log(channel.live.items) // first 30 live videos
  *
  * let newVideos = await channel.videos.next();
  * console.log(newVideos) // 30 loaded videos
- * console.log(channel.videos.items) // first 60 videos
+ * console.log(channel.live.items) // first 60 live videos
  *
- * await channel.videos.next(0); // load the rest of the videos in the channel
+ * await channel.live.next(0); // load the rest of the videos in the channel
  * ```
  */
-var ChannelVideos = /** @class */ (function (_super) {
-    __extends(ChannelVideos, _super);
+var ChannelLive = /** @class */ (function (_super) {
+    __extends(ChannelLive, _super);
     /** @hidden */
-    function ChannelVideos(_a) {
+    function ChannelLive(_a) {
         var client = _a.client, channel = _a.channel;
         var _this = _super.call(this, { client: client, strictContinuationCheck: true }) || this;
         _this.channel = channel;
         return _this;
     }
-    ChannelVideos.prototype.fetch = function () {
+    ChannelLive.prototype.fetch = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
             var params, response, items, continuation, data;
@@ -85,13 +85,13 @@ var ChannelVideos = /** @class */ (function (_super) {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        params = BaseChannelParser.TAB_TYPE_PARAMS.videos;
+                        params = BaseChannelParser.TAB_TYPE_PARAMS.live;
                         return [4 /*yield*/, this.client.http.post(I_END_POINT + "/browse", {
                                 data: { browseId: (_a = this.channel) === null || _a === void 0 ? void 0 : _a.id, params: params, continuation: this.continuation },
                             })];
                     case 1:
                         response = _b.sent();
-                        items = BaseChannelParser.parseTabData("videos", response.data);
+                        items = BaseChannelParser.parseTabData("live", response.data);
                         continuation = getContinuationFromItems(items);
                         data = mapFilter(items, "videoRenderer");
                         return [2 /*return*/, {
@@ -104,6 +104,6 @@ var ChannelVideos = /** @class */ (function (_super) {
             });
         });
     };
-    return ChannelVideos;
+    return ChannelLive;
 }(Continuable));
-export { ChannelVideos };
+export { ChannelLive };
