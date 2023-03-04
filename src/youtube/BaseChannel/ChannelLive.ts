@@ -15,17 +15,17 @@ type ConstructorParams = ContinuableConstructorParams & {
  * @example
  * ```js
  * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
- * await channel.videos.next();
- * console.log(channel.videos.items) // first 30 videos
+ * await channel.live.next();
+ * console.log(channel.live.items) // first 30 live videos
  *
  * let newVideos = await channel.videos.next();
  * console.log(newVideos) // 30 loaded videos
- * console.log(channel.videos.items) // first 60 videos
+ * console.log(channel.live.items) // first 60 live videos
  *
- * await channel.videos.next(0); // load the rest of the videos in the channel
+ * await channel.live.next(0); // load the rest of the videos in the channel
  * ```
  */
-export class ChannelVideos extends Continuable<VideoCompact> {
+export class ChannelLive extends Continuable<VideoCompact> {
 	/** The channel this videos belongs to */
 	channel?: BaseChannel;
 
@@ -36,13 +36,13 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 	}
 
 	protected async fetch(): Promise<FetchResult<VideoCompact>> {
-		const params = BaseChannelParser.TAB_TYPE_PARAMS.videos;
+		const params = BaseChannelParser.TAB_TYPE_PARAMS.live;
 
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: this.channel?.id, params, continuation: this.continuation },
 		});
 
-		const items = BaseChannelParser.parseTabData("videos", response.data);
+		const items = BaseChannelParser.parseTabData("live", response.data);
 		const continuation = getContinuationFromItems(items);
 		const data = mapFilter(items, "videoRenderer");
 

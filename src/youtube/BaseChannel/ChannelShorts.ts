@@ -25,7 +25,7 @@ type ConstructorParams = ContinuableConstructorParams & {
  * await channel.videos.next(0); // load the rest of the videos in the channel
  * ```
  */
-export class ChannelVideos extends Continuable<VideoCompact> {
+export class ChannelShorts extends Continuable<VideoCompact> {
 	/** The channel this videos belongs to */
 	channel?: BaseChannel;
 
@@ -36,15 +36,15 @@ export class ChannelVideos extends Continuable<VideoCompact> {
 	}
 
 	protected async fetch(): Promise<FetchResult<VideoCompact>> {
-		const params = BaseChannelParser.TAB_TYPE_PARAMS.videos;
+		const params = BaseChannelParser.TAB_TYPE_PARAMS.shorts;
 
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: this.channel?.id, params, continuation: this.continuation },
 		});
 
-		const items = BaseChannelParser.parseTabData("videos", response.data);
+		const items = BaseChannelParser.parseTabData("shorts", response.data);
 		const continuation = getContinuationFromItems(items);
-		const data = mapFilter(items, "videoRenderer");
+		const data = mapFilter(items, "reelItemRenderer");
 
 		return {
 			continuation,

@@ -1,10 +1,14 @@
 import { stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "./BaseChannel";
 
+type TabType = keyof typeof BaseChannelParser.TAB_TYPE_PARAMS;
+
 export class BaseChannelParser {
 	static TAB_TYPE_PARAMS = {
-		videos: "EgZ2aWRlb3M%3D",
-		playlists: "EglwbGF5bGlzdHM%3D",
+		videos: "EgZ2aWRlb3PyBgQKAjoA",
+		shorts: "EgZzaG9ydHPyBgUKA5oBAA%3D%3D",
+		live: "EgdzdHJlYW1z8gYECgJ6AA%3D%3D",
+		playlists: "EglwbGF5bGlzdHPyBgQKAkIA",
 	} as const;
 
 	static loadBaseChannel(target: BaseChannel, data: YoutubeRawData): BaseChannel {
@@ -20,7 +24,7 @@ export class BaseChannelParser {
 	}
 
 	/** Parse tab data from request, tab name is ignored if it's a continuation data */
-	static parseTabData(name: "videos" | "playlists", data: YoutubeRawData): YoutubeRawData {
+	static parseTabData(name: TabType, data: YoutubeRawData): YoutubeRawData {
 		const tab = data.contents?.twoColumnBrowseResultsRenderer.tabs.find((t: YoutubeRawData) => {
 			return (
 				t.tabRenderer?.endpoint.browseEndpoint.params ===
@@ -29,7 +33,7 @@ export class BaseChannelParser {
 		});
 
 		return (
-			tab?.tabRenderer.content.sectionListRenderer.contents?.[0].itemSectionRenderer
+			tab?.tabRenderer.content.sectionListRenderer?.contents?.[0].itemSectionRenderer
 				.contents[0].gridRenderer?.items ||
 			tab?.tabRenderer.content.richGridRenderer.contents.map(
 				(c: YoutubeRawData) => c.richItemRenderer?.content || c

@@ -36,7 +36,7 @@ export class ChannelPlaylists extends Continuable<PlaylistCompact> {
 	}
 
 	protected async fetch(): Promise<FetchResult<PlaylistCompact>> {
-		const params = "EglwbGF5bGlzdHMgAQ%3D%3D";
+		const params = BaseChannelParser.TAB_TYPE_PARAMS.playlists;
 
 		const response = await this.client.http.post(`${I_END_POINT}/browse`, {
 			data: { browseId: this.channel?.id, params, continuation: this.continuation },
