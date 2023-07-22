@@ -6,7 +6,7 @@ export type TranscriptParams = {
 	};
 };
 
-export const TranscriptParamsProto = protobuf.parse<TranscriptParams>(`
+export const TranscriptParamsProto = protobuf.parse(`
 	message TranscriptParams {
 		optional string videoId = 1;
 	}
