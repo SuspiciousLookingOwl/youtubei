@@ -1,4 +1,4 @@
-import proto from "protocol-buffers";
+import protobuf from "protobufjs";
 
 export type TranscriptParams = {
 	TranscriptParams: {
@@ -6,8 +6,8 @@ export type TranscriptParams = {
 	};
 };
 
-export const TranscriptParamsProto = proto<TranscriptParams>(`
+export const TranscriptParamsProto = protobuf.parse<TranscriptParams>(`
 	message TranscriptParams {
 		optional string videoId = 1;
 	}
-`);
+`).root.lookupType("TranscriptParams");
