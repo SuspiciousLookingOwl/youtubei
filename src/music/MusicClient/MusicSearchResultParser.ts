@@ -40,6 +40,8 @@ export class MusicSearchResultParser {
 				playEndpoint.watchEndpoint.watchEndpointMusicSupportedConfigs
 					.watchEndpointMusicConfig.musicVideoType;
 
+			if (pageType === "MUSIC_VIDEO_TYPE_PODCAST_EPISODE") return;
+
 			return MusicSearchResultParser.parseVideoItem(item, pageType, client);
 		} else if (playEndpoint?.watchPlaylistEndpoint.params) {
 			return MusicSearchResultParser.parsePlaylistItem(item, client);
@@ -87,7 +89,7 @@ export class MusicSearchResultParser {
 				thumbnails,
 				duration,
 			});
-		} else {
+		} else if (pageType === "MUSIC_VIDEO_TYPE_UGC") {
 			return new MusicVideoCompact({ client, id, title, artists, thumbnails, duration });
 		}
 	}
