@@ -17,7 +17,7 @@ var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {
     }
     BaseVideoParser.loadBaseVideo = function (target, data) {
-        var _a, _b, _c;
+        var _a, _b;
         var videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.videoDetails.videoId;
@@ -27,7 +27,7 @@ var BaseVideoParser = /** @class */ (function () {
         target.isLiveContent = videoInfo.videoDetails.isLiveContent;
         target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
         // Channel
-        var _d = videoInfo.owner.videoOwnerRenderer, title = _d.title, thumbnail = _d.thumbnail, subscriberCountText = _d.subscriberCountText;
+        var _c = videoInfo.owner.videoOwnerRenderer, title = _c.title, thumbnail = _c.thumbnail, subscriberCountText = _c.subscriberCountText;
         target.channel = new BaseChannel({
             client: target.client,
             id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
@@ -41,8 +41,7 @@ var BaseVideoParser = /** @class */ (function () {
         // Tags and description
         target.tags =
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map(function (r) { return r.text.trim(); }).filter(function (t) { return t; })) || [];
-        target.description =
-            ((_c = videoInfo.description) === null || _c === void 0 ? void 0 : _c.runs.map(function (d) { return d.text; }).join("")) || "";
+        target.description = videoInfo.shortDescription || "";
         // related videos
         var secondaryContents = data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
             .results;

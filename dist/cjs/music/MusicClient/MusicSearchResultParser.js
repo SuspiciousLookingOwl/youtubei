@@ -28,6 +28,8 @@ class MusicSearchResultParser {
         if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchEndpoint) {
             const pageType = playEndpoint.watchEndpoint.watchEndpointMusicSupportedConfigs
                 .watchEndpointMusicConfig.musicVideoType;
+            if (pageType === "MUSIC_VIDEO_TYPE_PODCAST_EPISODE")
+                return;
             return MusicSearchResultParser.parseVideoItem(item, pageType, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint.params) {
@@ -69,7 +71,7 @@ class MusicSearchResultParser {
                 duration,
             });
         }
-        else {
+        else if (pageType === "MUSIC_VIDEO_TYPE_UGC") {
             return new MusicVideoCompact_1.MusicVideoCompact({ client, id, title, artists, thumbnails, duration });
         }
     }
