@@ -100,7 +100,7 @@ class Client {
     }
     getVideoTranscript(videoId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const bufferParams = Transcript_1.TranscriptParamsProto.TranscriptParams.encode({ videoId });
+            const bufferParams = Transcript_1.TranscriptParamsProto.encode({ videoId }).finish();
             const response = yield this.http.post(`${constants_1.I_END_POINT}/get_transcript`, {
                 data: { params: Buffer.from(bufferParams).toString("base64") },
             });

@@ -16,19 +16,19 @@ const VideoCompact_1 = require("../VideoCompact");
 const constants_1 = require("../constants");
 const BaseChannelParser_1 = require("./BaseChannelParser");
 /**
- * {@link Continuable} of videos inside a {@link BaseChannel}
+ * {@link Continuable} of shorts inside a {@link BaseChannel}
  *
  * @example
  * ```js
  * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
- * await channel.videos.next();
- * console.log(channel.videos.items) // first 30 videos
+ * await channel.short.next();
+ * console.log(channel.short.items) // first 30 shorts
  *
- * let newVideos = await channel.videos.next();
- * console.log(newVideos) // 30 loaded videos
- * console.log(channel.videos.items) // first 60 videos
+ * let newShorts = await channel.short.next();
+ * console.log(newShorts) // 30 loaded shorts
+ * console.log(channel.short.items) // first 60 shorts
  *
- * await channel.videos.next(0); // load the rest of the videos in the channel
+ * await channel.short.next(0); // load the rest of the shorts in the channel
  * ```
  */
 class ChannelShorts extends Continuable_1.Continuable {

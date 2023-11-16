@@ -61,11 +61,11 @@ import { BaseChannelParser } from "./BaseChannelParser";
  * await channel.live.next();
  * console.log(channel.live.items) // first 30 live videos
  *
- * let newVideos = await channel.videos.next();
- * console.log(newVideos) // 30 loaded videos
+ * let newLives = await channel.videos.next();
+ * console.log(newLives) // 30 loaded live videos
  * console.log(channel.live.items) // first 60 live videos
  *
- * await channel.live.next(0); // load the rest of the videos in the channel
+ * await channel.live.next(0); // load the rest of the live videos in the channel
  * ```
  */
 var ChannelLive = /** @class */ (function (_super) {

@@ -178,7 +178,7 @@ var Client = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        bufferParams = TranscriptParamsProto.TranscriptParams.encode({ videoId: videoId });
+                        bufferParams = TranscriptParamsProto.encode({ videoId: videoId }).finish();
                         return [4 /*yield*/, this.http.post(I_END_POINT + "/get_transcript", {
                                 data: { params: Buffer.from(bufferParams).toString("base64") },
                             })];

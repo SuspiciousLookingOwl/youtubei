@@ -4,9 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.optionsToProto = exports.SearchProto = void 0;
-const protocol_buffers_1 = __importDefault(require("protocol-buffers"));
+const protobufjs_1 = __importDefault(require("protobufjs"));
 // TODO move this to .proto file
-exports.SearchProto = protocol_buffers_1.default(`
+exports.SearchProto = protobufjs_1.default.parse(`
 	message SearchOptions {
 		message Options {
 			optional int32 uploadDate = 1;
@@ -16,8 +16,8 @@ exports.SearchProto = protocol_buffers_1.default(`
 			optional int32 subtitles = 5;
 			optional int32 creativeCommons = 6;
 			optional int32 live = 8;
-			optional int32 4k = 14;
-			optional int32 360 = 15;
+			optional int32 _4k = 14;
+			optional int32 _360 = 15;
 			optional int32 location = 23;
 			optional int32 hdr = 25;
 			optional int32 vr180 = 26;
@@ -26,7 +26,7 @@ exports.SearchProto = protocol_buffers_1.default(`
 		optional int32 sortBy = 1;
 		optional Options options = 2;
 	}
-`);
+`).root.lookupType("SearchOptions");
 const searchUploadDateProto = {
     all: 0,
     hour: 1,

@@ -165,7 +165,7 @@ var SearchResult = /** @class */ (function (_super) {
                     case 0:
                         this.items = [];
                         this.estimatedResults = 0;
-                        bufferParams = SearchProto.SearchOptions.encode(optionsToProto(options));
+                        bufferParams = SearchProto.encode(optionsToProto(options)).finish();
                         return [4 /*yield*/, this.client.http.post(I_END_POINT + "/search", {
                                 data: {
                                     query: query,

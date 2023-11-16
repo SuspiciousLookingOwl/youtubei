@@ -101,7 +101,7 @@ class SearchResult extends Continuable_1.Continuable {
         return __awaiter(this, void 0, void 0, function* () {
             this.items = [];
             this.estimatedResults = 0;
-            const bufferParams = proto_1.SearchProto.SearchOptions.encode(proto_1.optionsToProto(options));
+            const bufferParams = proto_1.SearchProto.encode(proto_1.optionsToProto(options)).finish();
             const response = yield this.client.http.post(`${constants_1.I_END_POINT}/search`, {
                 data: {
                     query,

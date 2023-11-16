@@ -1,16 +1,7 @@
-/// <reference types="node" />
+import protobuf from "protobufjs";
 export declare type TranscriptParams = {
     TranscriptParams: {
         videoId: string;
     };
 };
-export declare const TranscriptParamsProto: {
-    TranscriptParams: {
-        encode: (obj: {
-            videoId: string;
-        }) => Buffer;
-        decode: (buf: Buffer) => {
-            videoId: string;
-        };
-    };
-};
+export declare const TranscriptParamsProto: protobuf.Type;

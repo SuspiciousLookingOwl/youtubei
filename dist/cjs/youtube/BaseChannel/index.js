@@ -12,5 +12,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./BaseChannel"), exports);
 __exportStar(require("./BaseChannelParser"), exports);
+__exportStar(require("./ChannelLive"), exports);
 __exportStar(require("./ChannelPlaylists"), exports);
+__exportStar(require("./ChannelShorts"), exports);
 __exportStar(require("./ChannelVideos"), exports);
