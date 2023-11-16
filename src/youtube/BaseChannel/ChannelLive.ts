@@ -1,4 +1,4 @@
-import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
+import { YoutubeRawData, getContinuationFromItems, mapFilter } from "../../common";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { I_END_POINT } from "../constants";
@@ -18,15 +18,15 @@ type ConstructorParams = ContinuableConstructorParams & {
  * await channel.live.next();
  * console.log(channel.live.items) // first 30 live videos
  *
- * let newVideos = await channel.videos.next();
- * console.log(newVideos) // 30 loaded videos
+ * let newLives = await channel.videos.next();
+ * console.log(newLives) // 30 loaded live videos
  * console.log(channel.live.items) // first 60 live videos
  *
- * await channel.live.next(0); // load the rest of the videos in the channel
+ * await channel.live.next(0); // load the rest of the live videos in the channel
  * ```
  */
 export class ChannelLive extends Continuable<VideoCompact> {
-	/** The channel this videos belongs to */
+	/** The channel this live videos belongs to */
 	channel?: BaseChannel;
 
 	/** @hidden */

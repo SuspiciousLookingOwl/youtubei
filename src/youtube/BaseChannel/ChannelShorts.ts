@@ -1,4 +1,4 @@
-import { getContinuationFromItems, mapFilter, YoutubeRawData } from "../../common";
+import { YoutubeRawData, getContinuationFromItems, mapFilter } from "../../common";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { I_END_POINT } from "../constants";
@@ -10,23 +10,23 @@ type ConstructorParams = ContinuableConstructorParams & {
 };
 
 /**
- * {@link Continuable} of videos inside a {@link BaseChannel}
+ * {@link Continuable} of shorts inside a {@link BaseChannel}
  *
  * @example
  * ```js
  * const channel = await youtube.findOne(CHANNEL_NAME, {type: "channel"});
- * await channel.videos.next();
- * console.log(channel.videos.items) // first 30 videos
+ * await channel.short.next();
+ * console.log(channel.short.items) // first 30 shorts
  *
- * let newVideos = await channel.videos.next();
- * console.log(newVideos) // 30 loaded videos
- * console.log(channel.videos.items) // first 60 videos
+ * let newShorts = await channel.short.next();
+ * console.log(newShorts) // 30 loaded shorts
+ * console.log(channel.short.items) // first 60 shorts
  *
- * await channel.videos.next(0); // load the rest of the videos in the channel
+ * await channel.short.next(0); // load the rest of the shorts in the channel
  * ```
  */
 export class ChannelShorts extends Continuable<VideoCompact> {
-	/** The channel this videos belongs to */
+	/** The channel this shorts belongs to */
 	channel?: BaseChannel;
 
 	/** @hidden */
