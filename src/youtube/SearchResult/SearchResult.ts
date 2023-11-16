@@ -138,7 +138,7 @@ export class SearchResult<T extends SearchType | undefined = "all"> extends Cont
 		this.items = [];
 		this.estimatedResults = 0;
 
-		const bufferParams = SearchProto.SearchOptions.encode(optionsToProto(options));
+		const bufferParams = SearchProto.encode(optionsToProto(options)).finish();
 
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: {

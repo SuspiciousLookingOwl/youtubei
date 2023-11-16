@@ -130,7 +130,7 @@ export class Client {
 	}
 
 	async getVideoTranscript(videoId: string): Promise<Transcript[] | undefined> {
-		const bufferParams = TranscriptParamsProto.TranscriptParams.encode({ videoId });
+		const bufferParams = TranscriptParamsProto.encode({ videoId }).finish();
 		const response = await this.http.post(`${I_END_POINT}/get_transcript`, {
 			data: { params: Buffer.from(bufferParams).toString("base64") },
 		});

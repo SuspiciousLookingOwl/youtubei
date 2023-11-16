@@ -1,4 +1,4 @@
-import proto from "protocol-buffers";
+import protobuf from "protobufjs";
 
 import {
 	SearchDuration,
@@ -11,7 +11,7 @@ import {
 import { SearchProto as ProtoType } from "./SearchProto";
 
 // TODO move this to .proto file
-export const SearchProto = proto<ProtoType>(`
+export const SearchProto = protobuf.parse(`
 	message SearchOptions {
 		message Options {
 			optional int32 uploadDate = 1;
@@ -21,8 +21,8 @@ export const SearchProto = proto<ProtoType>(`
 			optional int32 subtitles = 5;
 			optional int32 creativeCommons = 6;
 			optional int32 live = 8;
-			optional int32 4k = 14;
-			optional int32 360 = 15;
+			optional int32 _4k = 14;
+			optional int32 _360 = 15;
 			optional int32 location = 23;
 			optional int32 hdr = 25;
 			optional int32 vr180 = 26;
@@ -31,7 +31,7 @@ export const SearchProto = proto<ProtoType>(`
 		optional int32 sortBy = 1;
 		optional Options options = 2;
 	}
-`);
+`).root.lookupType("SearchOptions");
 
 const searchUploadDateProto: Record<SearchUploadDate, number> = {
 	all: 0,
