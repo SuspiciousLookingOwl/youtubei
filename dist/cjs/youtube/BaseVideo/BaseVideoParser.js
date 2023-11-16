@@ -31,7 +31,7 @@ class BaseVideoParser {
         // Tags and description
         target.tags =
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text.trim()).filter((t) => t)) || [];
-        target.description = videoInfo.shortDescription || "";
+        target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
         const secondaryContents = data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
             .results;
