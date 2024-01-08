@@ -20,6 +20,10 @@ export type MusicSearchResultItem<T = "song"> = T extends "song"
 	? MusicSongCompact
 	: MusicVideoCompact;
 
+type MusicLyricsProperties = MusicContinuableConstructorParams & {
+	type?: MusicSearchType;
+};
+
 /**
  * Represents search result, usually returned from `client.search();`.
  *
@@ -48,8 +52,9 @@ export class MusicSearchResult<
 	private type!: MusicSearchType;
 
 	/** @hidden */
-	constructor({ client }: MusicContinuableConstructorParams) {
+	constructor({ client, type }: MusicLyricsProperties) {
 		super({ client });
+		if (type) this.type = type;
 	}
 
 	/**
@@ -62,6 +67,7 @@ export class MusicSearchResult<
 	 */
 	async search(query: string, type: MusicSearchType): Promise<MusicSearchResult<T>> {
 		this.items = [];
+		this.type = type;
 
 		const bufferParams = MusicSearchProto.encode(optionsToProto(type)).finish();
 
