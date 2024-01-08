@@ -7,7 +7,7 @@ export interface MusicBaseArtistProperties extends MusicBaseProperties {
 }
 
 export class MusicBaseArtist extends MusicBase implements MusicBaseArtistProperties {
-	id!: string;
+	id?: string;
 	/** The name of this artist */
 	name!: string;
 

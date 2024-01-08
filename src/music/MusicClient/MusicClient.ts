@@ -5,9 +5,13 @@ import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicLyrics } from "../MusicLyrics";
 import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
+import {
+	MusicAllSearchResultParser,
+	MusicSearchResult,
+	MusicSearchType,
+} from "../MusicSearchResult";
 import { MusicVideoCompact } from "../MusicVideoCompact";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION, I_END_POINT } from "../constants";
-import { MusicSearchResultParser } from "./MusicSearchResultParser";
 
 export type MusicClientOptions = {
 	initialCookie: string;
@@ -59,12 +63,31 @@ export class MusicClient {
 			| MusicPlaylistCompact[]
 			| MusicArtistCompact[]
 		>[]
+	>;
+	async search<T extends MusicSearchType>(query: string, type: T): Promise<MusicSearchResult<T>>;
+	async search<T extends MusicSearchType>(
+		query: string,
+		type?: T
+	): Promise<
+		| Shelf<
+				| MusicVideoCompact[]
+				| MusicAlbumCompact[]
+				| MusicPlaylistCompact[]
+				| MusicArtistCompact[]
+		  >[]
+		| MusicSearchResult<T>
 	> {
-		const response = await this.http.post(`${I_END_POINT}/search`, {
-			data: { query },
-		});
+		if (!type) {
+			const response = await this.http.post(`${I_END_POINT}/search`, {
+				data: { query },
+			});
 
-		return MusicSearchResultParser.parseSearchResult(response.data, this);
+			return MusicAllSearchResultParser.parseSearchResult(response.data, this);
+		} else {
+			const result = new MusicSearchResult<T>({ client: this });
+			await result.search(query, type);
+			return result;
+		}
 	}
 
 	/**
