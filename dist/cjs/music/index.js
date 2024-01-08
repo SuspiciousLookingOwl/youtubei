@@ -19,5 +19,6 @@ __exportStar(require("./MusicBaseChannel"), exports);
 __exportStar(require("./MusicClient"), exports);
 __exportStar(require("./MusicLyrics"), exports);
 __exportStar(require("./MusicPlaylistCompact"), exports);
+__exportStar(require("./MusicSearchResult"), exports);
 __exportStar(require("./MusicSongCompact"), exports);
 __exportStar(require("./MusicVideoCompact"), exports);

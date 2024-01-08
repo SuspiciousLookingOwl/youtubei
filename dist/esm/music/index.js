@@ -7,5 +7,6 @@ export * from "./MusicBaseChannel";
 export * from "./MusicClient";
 export * from "./MusicLyrics";
 export * from "./MusicPlaylistCompact";
+export * from "./MusicSearchResult";
 export * from "./MusicSongCompact";
 export * from "./MusicVideoCompact";

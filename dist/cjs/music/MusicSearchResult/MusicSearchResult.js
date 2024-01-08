@@ -43,8 +43,10 @@ var MusicSearchTypeEnum;
  */
 class MusicSearchResult extends MusicContinuable_1.MusicContinuable {
     /** @hidden */
-    constructor({ client }) {
+    constructor({ client, type }) {
         super({ client });
+        if (type)
+            this.type = type;
     }
     /**
      * Initialize data from search
@@ -57,6 +59,7 @@ class MusicSearchResult extends MusicContinuable_1.MusicContinuable {
     search(query, type) {
         return __awaiter(this, void 0, void 0, function* () {
             this.items = [];
+            this.type = type;
             const bufferParams = proto_1.MusicSearchProto.encode(proto_1.optionsToProto(type)).finish();
             const response = yield this.client.http.post(`${constants_1.I_END_POINT}/search`, {
                 data: {

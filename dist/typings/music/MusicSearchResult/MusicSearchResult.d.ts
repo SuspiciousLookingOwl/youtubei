@@ -7,6 +7,9 @@ export declare enum MusicSearchTypeEnum {
 }
 export declare type MusicSearchType = "song" | "video" | MusicSearchTypeEnum;
 export declare type MusicSearchResultItem<T = "song"> = T extends "song" ? MusicSongCompact : MusicVideoCompact;
+declare type MusicLyricsProperties = MusicContinuableConstructorParams & {
+    type?: MusicSearchType;
+};
 /**
  * Represents search result, usually returned from `client.search();`.
  *
@@ -32,7 +35,7 @@ export declare type MusicSearchResultItem<T = "song"> = T extends "song" ? Music
 export declare class MusicSearchResult<T extends MusicSearchType | undefined = "song"> extends MusicContinuable<MusicSearchResultItem<T>> {
     private type;
     /** @hidden */
-    constructor({ client }: MusicContinuableConstructorParams);
+    constructor({ client, type }: MusicLyricsProperties);
     /**
      * Initialize data from search
      *
@@ -44,3 +47,4 @@ export declare class MusicSearchResult<T extends MusicSearchType | undefined = "
     search(query: string, type: MusicSearchType): Promise<MusicSearchResult<T>>;
     protected fetch(): Promise<FetchResult<MusicSearchResultItem<T>>>;
 }
+export {};

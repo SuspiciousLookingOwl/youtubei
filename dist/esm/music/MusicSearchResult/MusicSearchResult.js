@@ -102,8 +102,11 @@ var MusicSearchResult = /** @class */ (function (_super) {
     __extends(MusicSearchResult, _super);
     /** @hidden */
     function MusicSearchResult(_a) {
-        var client = _a.client;
-        return _super.call(this, { client: client }) || this;
+        var client = _a.client, type = _a.type;
+        var _this = _super.call(this, { client: client }) || this;
+        if (type)
+            _this.type = type;
+        return _this;
     }
     /**
      * Initialize data from search
@@ -121,6 +124,7 @@ var MusicSearchResult = /** @class */ (function (_super) {
                 switch (_c.label) {
                     case 0:
                         this.items = [];
+                        this.type = type;
                         bufferParams = MusicSearchProto.encode(optionsToProto(type)).finish();
                         return [4 /*yield*/, this.client.http.post(I_END_POINT + "/search", {
                                 data: {
