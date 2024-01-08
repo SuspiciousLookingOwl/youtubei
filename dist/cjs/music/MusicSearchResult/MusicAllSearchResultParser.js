@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MusicSearchResultParser = void 0;
+exports.MusicAllSearchResultParser = void 0;
 const common_1 = require("../../common");
 const MusicAlbumCompact_1 = require("../MusicAlbumCompact");
 const MusicArtistCompact_1 = require("../MusicArtistCompact");
@@ -9,7 +9,7 @@ const MusicBaseChannel_1 = require("../MusicBaseChannel");
 const MusicPlaylistCompact_1 = require("../MusicPlaylistCompact");
 const MusicSongCompact_1 = require("../MusicSongCompact");
 const MusicVideoCompact_1 = require("../MusicVideoCompact");
-class MusicSearchResultParser {
+class MusicAllSearchResultParser {
     static parseSearchResult(data, client) {
         const sectionListContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
             .sectionListRenderer.contents;
@@ -18,7 +18,7 @@ class MusicSearchResultParser {
             .map((m) => m.musicShelfRenderer);
         return shelves.map((m) => ({
             title: m.title.runs.map((r) => r.text).join(),
-            items: m.contents.map((c) => MusicSearchResultParser.parseSearchItem(c, client)),
+            items: m.contents.map((c) => MusicAllSearchResultParser.parseSearchItem(c, client)),
         }));
     }
     static parseSearchItem(content, client) {
@@ -30,16 +30,16 @@ class MusicSearchResultParser {
                 .watchEndpointMusicConfig.musicVideoType;
             if (pageType === "MUSIC_VIDEO_TYPE_PODCAST_EPISODE")
                 return;
-            return MusicSearchResultParser.parseVideoItem(item, pageType, client);
+            return MusicAllSearchResultParser.parseVideoItem(item, pageType, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint.params) {
-            return MusicSearchResultParser.parsePlaylistItem(item, client);
+            return MusicAllSearchResultParser.parsePlaylistItem(item, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint) {
-            return MusicSearchResultParser.parseAlbumItem(item, client);
+            return MusicAllSearchResultParser.parseAlbumItem(item, client);
         }
         else {
-            return MusicSearchResultParser.parseArtistItem(item, client);
+            return MusicAllSearchResultParser.parseArtistItem(item, client);
         }
     }
     static parseVideoItem(item, pageType, client) {
@@ -48,7 +48,7 @@ class MusicSearchResultParser {
         const title = topColumn[0].text;
         const duration = common_1.getDuration(bottomColumn.at(-1).text) || undefined;
         const thumbnails = new common_1.Thumbnails().load(item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
-        const artists = MusicSearchResultParser.parseArtists(bottomColumn, client);
+        const artists = MusicAllSearchResultParser.parseArtists(bottomColumn, client);
         if (pageType === "MUSIC_VIDEO_TYPE_ATV") {
             const rawAlbum = bottomColumn.find((r) => {
                 var _a;
@@ -82,7 +82,7 @@ class MusicSearchResultParser {
         const title = topColumn[0].text;
         const songCount = common_1.stripToInt(bottomColumn.at(-1).text) || undefined;
         const thumbnails = new common_1.Thumbnails().load(item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
-        const channel = MusicSearchResultParser.parseChannel(bottomColumn, client);
+        const channel = MusicAllSearchResultParser.parseChannel(bottomColumn, client);
         return new MusicPlaylistCompact_1.MusicPlaylistCompact({ client, id, title, thumbnails, songCount, channel });
     }
     static parseAlbumItem(item, client) {
@@ -92,7 +92,7 @@ class MusicSearchResultParser {
         const title = topColumn[0].text;
         const year = common_1.stripToInt(bottomColumn.at(-1).text) || undefined;
         const thumbnails = new common_1.Thumbnails().load(item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails);
-        const artists = MusicSearchResultParser.parseArtists(bottomColumn, client);
+        const artists = MusicAllSearchResultParser.parseArtists(bottomColumn, client);
         return new MusicAlbumCompact_1.MusicAlbumCompact({ client, id, title, thumbnails, artists, year });
     }
     static parseArtistItem(item, client) {
@@ -103,26 +103,33 @@ class MusicSearchResultParser {
         return new MusicArtistCompact_1.MusicArtistCompact({ client, id, name, thumbnails });
     }
     static parseArtists(items, client) {
-        return this.parseArtistOrChannel(items).map((r) => new MusicBaseArtist_1.MusicBaseArtist({
-            client,
-            name: r.text,
-            id: r.navigationEndpoint.browseEndpoint.browseId,
-        }));
+        return this.parseArtistOrChannel(items).map((r) => {
+            var _a;
+            return new MusicBaseArtist_1.MusicBaseArtist({
+                client,
+                name: r.text,
+                id: (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseId,
+            });
+        });
     }
     static parseChannel(items, client) {
-        const [channel] = this.parseArtistOrChannel(items).map((r) => new MusicBaseChannel_1.MusicBaseChannel({
-            client,
-            name: r.text,
-            id: r.navigationEndpoint.browseEndpoint.browseId,
-        }));
+        const [channel] = this.parseArtistOrChannel(items).map((r) => {
+            var _a;
+            return new MusicBaseChannel_1.MusicBaseChannel({
+                client,
+                name: r.text,
+                id: (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseId,
+            });
+        });
         return channel;
     }
     static parseArtistOrChannel(items) {
-        return items.filter((r) => {
+        const contents = items.filter((r) => {
             var _a;
             const pageType = (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
             return (pageType === "MUSIC_PAGE_TYPE_ARTIST" || pageType === "MUSIC_PAGE_TYPE_USER_CHANNEL");
         });
+        return !contents.length && items[0] ? [items[0]] : contents;
     }
 }
-exports.MusicSearchResultParser = MusicSearchResultParser;
+exports.MusicAllSearchResultParser = MusicAllSearchResultParser;

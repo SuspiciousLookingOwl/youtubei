@@ -12,27 +12,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MusicClient = void 0;
 const common_1 = require("../../common");
 const MusicLyrics_1 = require("../MusicLyrics");
+const MusicSearchResult_1 = require("../MusicSearchResult");
 const constants_1 = require("../constants");
-const MusicSearchResultParser_1 = require("./MusicSearchResultParser");
 /** Youtube Music Client */
 class MusicClient {
     constructor(options = {}) {
         const fullOptions = Object.assign(Object.assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
         this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: "WEB_REMIX", clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, fullOptions));
     }
-    /**
-     * Searches for video, song, album, playlist, or artist
-     *
-     * @param query The search query
-     * @param options Search options
-     *
-     */
-    search(query) {
+    search(query, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.http.post(`${constants_1.I_END_POINT}/search`, {
-                data: { query },
-            });
-            return MusicSearchResultParser_1.MusicSearchResultParser.parseSearchResult(response.data, this);
+            if (!type) {
+                const response = yield this.http.post(`${constants_1.I_END_POINT}/search`, {
+                    data: { query },
+                });
+                return MusicSearchResult_1.MusicAllSearchResultParser.parseSearchResult(response.data, this);
+            }
+            else {
+                const result = new MusicSearchResult_1.MusicSearchResult({ client: this });
+                yield result.search(query, type);
+                return result;
+            }
         });
     }
     /**

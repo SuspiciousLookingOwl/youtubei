@@ -24,7 +24,8 @@ var PlaylistParser = /** @class */ (function () {
         target.id = (_a = Object.values(metadata)
             .find(function (v) { return v.includes("playlist?list="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
         target.title = metadata.title;
-        target.thumbnails = new Thumbnails().load(primaryRenderer.thumbnailRenderer.playlistVideoThumbnailRenderer.thumbnail.thumbnails);
+        var _d = primaryRenderer.thumbnailRenderer, playlistVideoThumbnailRenderer = _d.playlistVideoThumbnailRenderer, playlistCustomThumbnailRenderer = _d.playlistCustomThumbnailRenderer;
+        target.thumbnails = new Thumbnails().load((playlistVideoThumbnailRenderer || playlistCustomThumbnailRenderer).thumbnail.thumbnails);
         var stats = primaryRenderer.stats;
         if (primaryRenderer.stats.length === 3) {
             target.videoCount = PlaylistParser.parseSideBarInfo(stats[0], true);
@@ -41,7 +42,7 @@ var PlaylistParser = /** @class */ (function () {
         // Channel
         var videoOwner = (_c = sidebarRenderer[1]) === null || _c === void 0 ? void 0 : _c.playlistSidebarSecondaryInfoRenderer.videoOwner;
         if (videoOwner) {
-            var _d = videoOwner.videoOwnerRenderer, title = _d.title, thumbnail = _d.thumbnail;
+            var _e = videoOwner.videoOwnerRenderer, title = _e.title, thumbnail = _e.thumbnail;
             target.channel = new BaseChannel({
                 id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
                 name: title.runs[0].text,
