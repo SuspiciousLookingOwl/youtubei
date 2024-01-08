@@ -166,7 +166,7 @@ export class MusicAllSearchResultParser {
 				new MusicBaseChannel({
 					client,
 					name: r.text,
-					id: r.navigationEndpoint.browseEndpoint.browseId,
+					id: r.navigationEndpoint?.browseEndpoint.browseId,
 				})
 		);
 		return channel;
@@ -183,6 +183,6 @@ export class MusicAllSearchResultParser {
 			);
 		});
 
-		return !contents.length ? [items[0]] : contents;
+		return !contents.length && items[0] ? [items[0]] : contents;
 	}
 }
