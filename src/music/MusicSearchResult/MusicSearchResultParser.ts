@@ -14,10 +14,19 @@ export class MusicSearchResultParser {
 		type: MusicSearchType,
 		client: MusicClient
 	): ParseReturnType {
-		const {
-			contents,
-			continuations,
-		} = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].musicShelfRenderer;
+		const contentSection = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(
+			(c: YoutubeRawData) => "musicShelfRenderer" in c
+		);
+
+		if (!contentSection) {
+			// no results
+			return {
+				data: [],
+				continuation: undefined,
+			};
+		}
+
+		const { contents, continuations } = contentSection.musicShelfRenderer;
 
 		return {
 			data: MusicSearchResultParser.parseSearchResult(contents, type, client),
