@@ -5,7 +5,15 @@ const MusicAllSearchResultParser_1 = require("./MusicAllSearchResultParser");
 class MusicSearchResultParser {
     static parseInitialSearchResult(data, type, client) {
         var _a, _b;
-        const { contents, continuations, } = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].musicShelfRenderer;
+        const contentSection = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find((c) => "musicShelfRenderer" in c);
+        if (!contentSection) {
+            // no results
+            return {
+                data: [],
+                continuation: undefined,
+            };
+        }
+        const { contents, continuations } = contentSection.musicShelfRenderer;
         return {
             data: MusicSearchResultParser.parseSearchResult(contents, type, client),
             continuation: (_b = (_a = continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,

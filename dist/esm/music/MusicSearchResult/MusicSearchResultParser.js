@@ -15,7 +15,15 @@ var MusicSearchResultParser = /** @class */ (function () {
     }
     MusicSearchResultParser.parseInitialSearchResult = function (data, type, client) {
         var _a, _b;
-        var _c = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents[0].musicShelfRenderer, contents = _c.contents, continuations = _c.continuations;
+        var contentSection = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(function (c) { return "musicShelfRenderer" in c; });
+        if (!contentSection) {
+            // no results
+            return {
+                data: [],
+                continuation: undefined,
+            };
+        }
+        var _c = contentSection.musicShelfRenderer, contents = _c.contents, continuations = _c.continuations;
         return {
             data: MusicSearchResultParser.parseSearchResult(contents, type, client),
             continuation: (_b = (_a = continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
