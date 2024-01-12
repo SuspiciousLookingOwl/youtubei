@@ -30,7 +30,7 @@ export class MusicSearchResultParser {
 
 		return {
 			data: MusicSearchResultParser.parseSearchResult(contents, type, client),
-			continuation: continuations[0]?.nextContinuationData?.continuation,
+			continuation: continuations?.[0]?.nextContinuationData?.continuation,
 		};
 	}
 
