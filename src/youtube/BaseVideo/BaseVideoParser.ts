@@ -41,7 +41,7 @@ export class BaseVideoParser {
 
 		// related videos
 		const secondaryContents =
-			data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
+			data[3].response.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults
 				.results;
 
 		if (secondaryContents) {
@@ -103,18 +103,25 @@ export class BaseVideoParser {
 	}
 
 	private static parseButtonRenderer(data: YoutubeRawData): string {
-		let buttonRenderer;
-		if (!data.segmentedLikeDislikeButtonRenderer) {
-			buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
-		} else {
+		let likeCount;
+		if (data.toggleButtonRenderer || data.buttonRenderer) {
+			const buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+			likeCount = (
+				buttonRenderer.defaultText?.accessibility || buttonRenderer.accessibilityData
+			).accessibilityData;
+		} else if (data.segmentedLikeDislikeButtonRenderer) {
 			const likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
-			buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+			const buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+			likeCount = (
+				buttonRenderer.defaultText?.accessibility || buttonRenderer.accessibilityData
+			).accessibilityData;
+		} else if (data.segmentedLikeDislikeButtonViewModel) {
+			likeCount =
+				data.segmentedLikeDislikeButtonViewModel.likeButtonViewModel.likeButtonViewModel
+					.toggleButtonViewModel.toggleButtonViewModel.defaultButtonViewModel
+					.buttonViewModel.accessibilityText;
 		}
 
-		const accessibilityData = (
-			buttonRenderer.defaultText?.accessibility || buttonRenderer.accessibilityData
-		).accessibilityData;
-
-		return accessibilityData.label;
+		return likeCount;
 	}
 }
