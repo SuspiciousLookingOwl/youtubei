@@ -7,7 +7,7 @@ const PlaylistCompact_1 = require("../PlaylistCompact");
 const VideoCompact_1 = require("../VideoCompact");
 class BaseVideoParser {
     static loadBaseVideo(target, data) {
-        var _a, _b;
+        var _a, _b, _c;
         const videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.videoDetails.videoId;
@@ -33,8 +33,7 @@ class BaseVideoParser {
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text.trim()).filter((t) => t)) || [];
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
-        const secondaryContents = data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
-            .results;
+        const secondaryContents = (_c = data[3].response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
         if (secondaryContents) {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = common_1.getContinuationFromItems(secondaryContents);
@@ -71,17 +70,24 @@ class BaseVideoParser {
             .filter((c) => c !== undefined);
     }
     static parseButtonRenderer(data) {
-        var _a;
-        let buttonRenderer;
-        if (!data.segmentedLikeDislikeButtonRenderer) {
-            buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+        var _a, _b;
+        let likeCount;
+        if (data.toggleButtonRenderer || data.buttonRenderer) {
+            const buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+            likeCount = (((_a = buttonRenderer.defaultText) === null || _a === void 0 ? void 0 : _a.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
         }
-        else {
+        else if (data.segmentedLikeDislikeButtonRenderer) {
             const likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
-            buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+            const buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+            likeCount = (((_b = buttonRenderer.defaultText) === null || _b === void 0 ? void 0 : _b.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
         }
-        const accessibilityData = (((_a = buttonRenderer.defaultText) === null || _a === void 0 ? void 0 : _a.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
-        return accessibilityData.label;
+        else if (data.segmentedLikeDislikeButtonViewModel) {
+            likeCount =
+                data.segmentedLikeDislikeButtonViewModel.likeButtonViewModel.likeButtonViewModel
+                    .toggleButtonViewModel.toggleButtonViewModel.defaultButtonViewModel
+                    .buttonViewModel.accessibilityText;
+        }
+        return likeCount;
     }
 }
 exports.BaseVideoParser = BaseVideoParser;

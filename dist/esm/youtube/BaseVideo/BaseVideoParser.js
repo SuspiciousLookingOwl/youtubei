@@ -17,7 +17,7 @@ var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {
     }
     BaseVideoParser.loadBaseVideo = function (target, data) {
-        var _a, _b;
+        var _a, _b, _c;
         var videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.videoDetails.videoId;
@@ -27,7 +27,7 @@ var BaseVideoParser = /** @class */ (function () {
         target.isLiveContent = videoInfo.videoDetails.isLiveContent;
         target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
         // Channel
-        var _c = videoInfo.owner.videoOwnerRenderer, title = _c.title, thumbnail = _c.thumbnail, subscriberCountText = _c.subscriberCountText;
+        var _d = videoInfo.owner.videoOwnerRenderer, title = _d.title, thumbnail = _d.thumbnail, subscriberCountText = _d.subscriberCountText;
         target.channel = new BaseChannel({
             client: target.client,
             id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
@@ -43,8 +43,7 @@ var BaseVideoParser = /** @class */ (function () {
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map(function (r) { return r.text.trim(); }).filter(function (t) { return t; })) || [];
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
-        var secondaryContents = data[3].response.contents.twoColumnWatchNextResults.secondaryResults.secondaryResults
-            .results;
+        var secondaryContents = (_c = data[3].response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
         if (secondaryContents) {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = getContinuationFromItems(secondaryContents);
@@ -81,17 +80,24 @@ var BaseVideoParser = /** @class */ (function () {
             .filter(function (c) { return c !== undefined; });
     };
     BaseVideoParser.parseButtonRenderer = function (data) {
-        var _a;
-        var buttonRenderer;
-        if (!data.segmentedLikeDislikeButtonRenderer) {
-            buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+        var _a, _b;
+        var likeCount;
+        if (data.toggleButtonRenderer || data.buttonRenderer) {
+            var buttonRenderer = data.toggleButtonRenderer || data.buttonRenderer;
+            likeCount = (((_a = buttonRenderer.defaultText) === null || _a === void 0 ? void 0 : _a.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
         }
-        else {
+        else if (data.segmentedLikeDislikeButtonRenderer) {
             var likeButton = data.segmentedLikeDislikeButtonRenderer.likeButton;
-            buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+            var buttonRenderer = likeButton.toggleButtonRenderer || likeButton.buttonRenderer;
+            likeCount = (((_b = buttonRenderer.defaultText) === null || _b === void 0 ? void 0 : _b.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
         }
-        var accessibilityData = (((_a = buttonRenderer.defaultText) === null || _a === void 0 ? void 0 : _a.accessibility) || buttonRenderer.accessibilityData).accessibilityData;
-        return accessibilityData.label;
+        else if (data.segmentedLikeDislikeButtonViewModel) {
+            likeCount =
+                data.segmentedLikeDislikeButtonViewModel.likeButtonViewModel.likeButtonViewModel
+                    .toggleButtonViewModel.toggleButtonViewModel.defaultButtonViewModel
+                    .buttonViewModel.accessibilityText;
+        }
+        return likeCount;
     };
     return BaseVideoParser;
 }());
