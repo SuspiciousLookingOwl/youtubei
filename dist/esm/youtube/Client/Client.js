@@ -143,8 +143,10 @@ var Client = /** @class */ (function () {
                         })];
                     case 1:
                         response = _a.sent();
-                        if (!response.data[3].response.contents)
+                        if (!response.data[3].response.contents ||
+                            response.data[2].playerResponse.playabilityStatus.status === "ERROR") {
                             return [2 /*return*/, undefined];
+                        }
                         return [2 /*return*/, (!response.data[2].playerResponse.playabilityStatus.liveStreamability
                                 ? new Video({ client: this }).load(response.data)
                                 : new LiveVideo({ client: this }).load(response.data))];
