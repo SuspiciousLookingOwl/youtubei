@@ -74,11 +74,12 @@ class Client {
     }
     /** Get video information by video id or URL */
     getVideo(videoId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.http.get(`${constants_1.WATCH_END_POINT}`, {
                 params: { v: videoId, pbj: "1" },
             });
-            if (!response.data[3].response.contents ||
+            if (!((_a = response.data[3]) === null || _a === void 0 ? void 0 : _a.response.contents) ||
                 response.data[2].playerResponse.playabilityStatus.status === "ERROR") {
                 return undefined;
             }

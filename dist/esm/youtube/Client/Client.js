@@ -134,16 +134,17 @@ var Client = /** @class */ (function () {
     };
     /** Get video information by video id or URL */
     Client.prototype.getVideo = function (videoId) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
             var response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: return [4 /*yield*/, this.http.get("" + WATCH_END_POINT, {
                             params: { v: videoId, pbj: "1" },
                         })];
                     case 1:
-                        response = _a.sent();
-                        if (!response.data[3].response.contents ||
+                        response = _b.sent();
+                        if (!((_a = response.data[3]) === null || _a === void 0 ? void 0 : _a.response.contents) ||
                             response.data[2].playerResponse.playabilityStatus.status === "ERROR") {
                             return [2 /*return*/, undefined];
                         }
