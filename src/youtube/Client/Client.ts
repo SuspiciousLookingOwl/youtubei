@@ -112,7 +112,7 @@ export class Client {
 		});
 
 		if (
-			!response.data[3].response.contents ||
+			!response.data[3]?.response.contents ||
 			response.data[2].playerResponse.playabilityStatus.status === "ERROR"
 		) {
 			return undefined as T;
