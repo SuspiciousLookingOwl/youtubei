@@ -21,7 +21,9 @@ export class VideoCompactParser {
 		} = data;
 
 		target.id = videoId;
-		target.title = headline ? headline.simpleText : title.simpleText || title.runs?.[0]?.text;
+		target.title = headline
+			? headline.simpleText
+			: title.simpleText || title.runs?.[0]?.text || "";
 		target.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
 		target.uploadDate = publishedTimeText?.simpleText;
 		target.description =
