@@ -5,16 +5,18 @@ const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 class VideoCompactParser {
     static loadVideoCompact(target, data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         const { videoId, title, headline, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
         target.id = videoId;
-        target.title = headline ? headline.simpleText : title.simpleText || ((_a = title.runs[0]) === null || _a === void 0 ? void 0 : _a.text);
+        target.title = headline
+            ? headline.simpleText
+            : title.simpleText || ((_b = (_a = title.runs) === null || _a === void 0 ? void 0 : _a[0]) === null || _b === void 0 ? void 0 : _b.text) || "";
         target.thumbnails = new common_1.Thumbnails().load(thumbnail.thumbnails);
         target.uploadDate = publishedTimeText === null || publishedTimeText === void 0 ? void 0 : publishedTimeText.simpleText;
         target.description =
-            ((_b = detailedMetadataSnippets === null || detailedMetadataSnippets === void 0 ? void 0 : detailedMetadataSnippets[0].snippetText.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text).join("")) || "";
+            ((_c = detailedMetadataSnippets === null || detailedMetadataSnippets === void 0 ? void 0 : detailedMetadataSnippets[0].snippetText.runs) === null || _c === void 0 ? void 0 : _c.map((r) => r.text).join("")) || "";
         target.duration =
-            common_1.getDuration((lengthText === null || lengthText === void 0 ? void 0 : lengthText.simpleText) || ((_c = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _c === void 0 ? void 0 : _c.text.simpleText) ||
+            common_1.getDuration((lengthText === null || lengthText === void 0 ? void 0 : lengthText.simpleText) || ((_d = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _d === void 0 ? void 0 : _d.text.simpleText) ||
                 "") || null;
         target.isLive = !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW");
         // Channel
