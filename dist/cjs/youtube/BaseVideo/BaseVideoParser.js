@@ -33,7 +33,7 @@ class BaseVideoParser {
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text.trim()).filter((t) => t)) || [];
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
-        const secondaryContents = (_c = data[3].response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
+        const secondaryContents = (_c = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
         if (secondaryContents) {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = common_1.getContinuationFromItems(secondaryContents);
@@ -49,11 +49,11 @@ class BaseVideoParser {
         return common_1.getContinuationFromItems(secondaryContents);
     }
     static parseRawData(data) {
-        const contents = data[3].response.contents.twoColumnWatchNextResults.results.results.contents;
+        const contents = data.response.contents.twoColumnWatchNextResults.results.results.contents;
         const primaryInfo = contents.find((c) => "videoPrimaryInfoRenderer" in c)
             .videoPrimaryInfoRenderer;
         const secondaryInfo = contents.find((c) => "videoSecondaryInfoRenderer" in c).videoSecondaryInfoRenderer;
-        const videoDetails = data[2].playerResponse.videoDetails;
+        const videoDetails = data.playerResponse.videoDetails;
         return Object.assign(Object.assign(Object.assign({}, secondaryInfo), primaryInfo), { videoDetails });
     }
     static parseCompactRenderer(data, client) {

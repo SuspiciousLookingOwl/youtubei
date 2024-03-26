@@ -79,13 +79,15 @@ class Client {
             const response = yield this.http.get(`${constants_1.WATCH_END_POINT}`, {
                 params: { v: videoId, pbj: "1" },
             });
-            if (!((_a = response.data[3]) === null || _a === void 0 ? void 0 : _a.response.contents) ||
-                response.data[2].playerResponse.playabilityStatus.status === "ERROR") {
+            const data = Array.isArray(response.data)
+                ? response.data.reduce((prev, curr) => (Object.assign(Object.assign({}, prev), curr)), {})
+                : response.data;
+            if (!((_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) || data.playerResponse.playabilityStatus.status === "ERROR") {
                 return undefined;
             }
-            return (!response.data[2].playerResponse.playabilityStatus.liveStreamability
-                ? new Video_1.Video({ client: this }).load(response.data)
-                : new LiveVideo_1.LiveVideo({ client: this }).load(response.data));
+            return (!data.playerResponse.playabilityStatus.liveStreamability
+                ? new Video_1.Video({ client: this }).load(data)
+                : new LiveVideo_1.LiveVideo({ client: this }).load(data));
         });
     }
     /** Get channel information by channel id+ */

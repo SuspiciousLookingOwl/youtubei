@@ -136,7 +136,7 @@ var Client = /** @class */ (function () {
     Client.prototype.getVideo = function (videoId) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var response;
+            var response, data;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.http.get("" + WATCH_END_POINT, {
@@ -144,13 +144,15 @@ var Client = /** @class */ (function () {
                         })];
                     case 1:
                         response = _b.sent();
-                        if (!((_a = response.data[3]) === null || _a === void 0 ? void 0 : _a.response.contents) ||
-                            response.data[2].playerResponse.playabilityStatus.status === "ERROR") {
+                        data = Array.isArray(response.data)
+                            ? response.data.reduce(function (prev, curr) { return (__assign(__assign({}, prev), curr)); }, {})
+                            : response.data;
+                        if (!((_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) || data.playerResponse.playabilityStatus.status === "ERROR") {
                             return [2 /*return*/, undefined];
                         }
-                        return [2 /*return*/, (!response.data[2].playerResponse.playabilityStatus.liveStreamability
-                                ? new Video({ client: this }).load(response.data)
-                                : new LiveVideo({ client: this }).load(response.data))];
+                        return [2 /*return*/, (!data.playerResponse.playabilityStatus.liveStreamability
+                                ? new Video({ client: this }).load(data)
+                                : new LiveVideo({ client: this }).load(data))];
                 }
             });
         });

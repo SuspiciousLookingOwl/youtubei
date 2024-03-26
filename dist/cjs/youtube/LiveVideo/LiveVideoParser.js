@@ -10,7 +10,7 @@ class LiveVideoParser {
             .map((r) => r.text)
             .join(" ")
             .replace(/[^0-9]/g, "");
-        target.chatContinuation = (_a = data[3].response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer) === null || _a === void 0 ? void 0 : _a.continuations[0].reloadContinuationData.continuation;
+        target.chatContinuation = (_a = data.response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer) === null || _a === void 0 ? void 0 : _a.continuations[0].reloadContinuationData.continuation;
         return target;
     }
     static parseChats(data) {

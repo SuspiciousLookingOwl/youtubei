@@ -43,7 +43,7 @@ var BaseVideoParser = /** @class */ (function () {
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map(function (r) { return r.text.trim(); }).filter(function (t) { return t; })) || [];
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
-        var secondaryContents = (_c = data[3].response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
+        var secondaryContents = (_c = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
         if (secondaryContents) {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = getContinuationFromItems(secondaryContents);
@@ -59,11 +59,11 @@ var BaseVideoParser = /** @class */ (function () {
         return getContinuationFromItems(secondaryContents);
     };
     BaseVideoParser.parseRawData = function (data) {
-        var contents = data[3].response.contents.twoColumnWatchNextResults.results.results.contents;
+        var contents = data.response.contents.twoColumnWatchNextResults.results.results.contents;
         var primaryInfo = contents.find(function (c) { return "videoPrimaryInfoRenderer" in c; })
             .videoPrimaryInfoRenderer;
         var secondaryInfo = contents.find(function (c) { return "videoSecondaryInfoRenderer" in c; }).videoSecondaryInfoRenderer;
-        var videoDetails = data[2].playerResponse.videoDetails;
+        var videoDetails = data.playerResponse.videoDetails;
         return __assign(__assign(__assign({}, secondaryInfo), primaryInfo), { videoDetails: videoDetails });
     };
     BaseVideoParser.parseCompactRenderer = function (data, client) {

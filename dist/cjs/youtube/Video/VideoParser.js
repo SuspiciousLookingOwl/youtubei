@@ -9,11 +9,11 @@ class VideoParser {
         var _a, _b, _c;
         const videoInfo = BaseVideo_1.BaseVideoParser.parseRawData(data);
         target.duration = +videoInfo.videoDetails.lengthSeconds;
-        const itemSectionRenderer = (_a = data[3].response.contents.twoColumnWatchNextResults.results.results.contents
+        const itemSectionRenderer = (_a = data.response.contents.twoColumnWatchNextResults.results.results.contents
             .reverse()
             .find((c) => c.itemSectionRenderer)) === null || _a === void 0 ? void 0 : _a.itemSectionRenderer;
         target.comments.continuation = common_1.getContinuationFromItems((itemSectionRenderer === null || itemSectionRenderer === void 0 ? void 0 : itemSectionRenderer.contents) || []);
-        const chapters = (_c = (_b = data[3].response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer) === null || _b === void 0 ? void 0 : _b.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap) === null || _c === void 0 ? void 0 : _c[0].value.chapters;
+        const chapters = (_c = (_b = data.response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer) === null || _b === void 0 ? void 0 : _b.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap) === null || _c === void 0 ? void 0 : _c[0].value.chapters;
         target.chapters =
             (chapters === null || chapters === void 0 ? void 0 : chapters.map(({ chapterRenderer: c }) => ({
                 title: c.title.simpleText,
