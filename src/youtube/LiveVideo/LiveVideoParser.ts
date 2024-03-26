@@ -12,7 +12,7 @@ export class LiveVideoParser {
 			.replace(/[^0-9]/g, "");
 
 		target.chatContinuation =
-			data[3].response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer?.continuations[0].reloadContinuationData.continuation;
+			data.response.contents.twoColumnWatchNextResults.conversationBar.liveChatRenderer?.continuations[0].reloadContinuationData.continuation;
 
 		return target;
 	}

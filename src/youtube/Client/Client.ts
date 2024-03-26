@@ -111,16 +111,17 @@ export class Client {
 			params: { v: videoId, pbj: "1" },
 		});
 
-		if (
-			!response.data[3]?.response.contents ||
-			response.data[2].playerResponse.playabilityStatus.status === "ERROR"
-		) {
+		const data = Array.isArray(response.data)
+			? response.data.reduce<YoutubeRawData>((prev, curr) => ({ ...prev, ...curr }), {})
+			: response.data;
+
+		if (!data.response?.contents || data.playerResponse.playabilityStatus.status === "ERROR") {
 			return undefined as T;
 		}
 
-		return (!response.data[2].playerResponse.playabilityStatus.liveStreamability
-			? new Video({ client: this }).load(response.data)
-			: new LiveVideo({ client: this }).load(response.data)) as T;
+		return (!data.playerResponse.playabilityStatus.liveStreamability
+			? new Video({ client: this }).load(data)
+			: new LiveVideo({ client: this }).load(data)) as T;
 	}
 
 	/** Get channel information by channel id+ */

@@ -8,7 +8,7 @@ export class VideoParser {
 		const videoInfo = BaseVideoParser.parseRawData(data);
 		target.duration = +videoInfo.videoDetails.lengthSeconds;
 
-		const itemSectionRenderer = data[3].response.contents.twoColumnWatchNextResults.results.results.contents
+		const itemSectionRenderer = data.response.contents.twoColumnWatchNextResults.results.results.contents
 			.reverse()
 			.find((c: YoutubeRawData) => c.itemSectionRenderer)?.itemSectionRenderer;
 
@@ -17,7 +17,7 @@ export class VideoParser {
 		);
 
 		const chapters =
-			data[3].response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer
+			data.response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer
 				?.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap?.[0]
 				.value.chapters;
 
