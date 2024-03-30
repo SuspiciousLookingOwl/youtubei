@@ -33,11 +33,10 @@ export class ChannelParser {
 		const shelves: ChannelShelf[] = [];
 
 		const rawShelves =
-			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
-				.sectionListRenderer.contents;
+			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content?.sectionListRenderer.contents || [];
 
 		for (const rawShelf of rawShelves) {
-			const shelfRenderer = rawShelf.itemSectionRenderer.contents[0].shelfRenderer;
+			const shelfRenderer = rawShelf.itemSectionRenderer?.contents[0].shelfRenderer;
 			if (!shelfRenderer) continue;
 
 			const { title, content, subtitle } = shelfRenderer;

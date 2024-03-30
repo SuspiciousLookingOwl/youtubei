@@ -18,7 +18,7 @@ export const getDuration = (s: string): number => {
 
 export const stripToInt = (string: string): number | null => {
 	if (!string) return null;
-	return +string.replace(/[^0-9]/g, "");
+	return Number(string.replace(/[^0-9]/g, ""))  * (string.includes('K')  ? 1000 : 1);
 };
 
 export const getContinuationFromItems = (
