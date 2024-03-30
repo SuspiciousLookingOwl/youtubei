@@ -35,7 +35,7 @@
 		"clean": "rimraf ./dist",
 		"lint:check": "eslint src && prettier -c src tests",
 		"lint:fix": "eslint --fix && prettier --write src tests",
-		"postinstall": "build"
+		"postinstall": "pnpm clean && pnpm build:cjs && pnpm build:esm && pnpm build:types"
 	},
 	"repository": {
 		"type": "git",
