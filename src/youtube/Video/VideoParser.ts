@@ -1,4 +1,4 @@
-import { getContinuationFromItems, mapFilter, Thumbnails, YoutubeRawData } from "../../common";
+import { getContinuationFromItems, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseVideoParser } from "../BaseVideo";
 import { Comment } from "../Comment";
 import { Video } from "./Video";
@@ -32,13 +32,10 @@ export class VideoParser {
 	}
 
 	static parseComments(data: YoutubeRawData, video: Video): Comment[] {
-		const endpoints = data.onResponseReceivedEndpoints.at(-1);
+		const comments = data.frameworkUpdates.entityBatchUpdate.mutations
+			.filter((m: YoutubeRawData) => m.payload.commentEntityPayload)
+			.map((m: YoutubeRawData) => m.payload.commentEntityPayload);
 
-		const continuationItems = (
-			endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction
-		).continuationItems;
-
-		const comments = mapFilter(continuationItems, "commentThreadRenderer");
 		return comments.map((c: YoutubeRawData) =>
 			new Comment({ video, client: video.client }).load(c)
 		);

@@ -5,27 +5,16 @@ import { Comment } from "./Comment";
 
 export class CommentParser {
 	static loadComment(target: Comment, data: YoutubeRawData): Comment {
-		const {
-			authorText,
-			authorThumbnail,
-			authorEndpoint,
-			contentText,
-			publishedTimeText,
-			commentId,
-			voteCount,
-			authorIsChannelOwner,
-			pinnedCommentBadge,
-			replyCount,
-		} = data.comment.commentRenderer;
+		const { properties, toolbar, author, avatar } = data;
 
 		// Basic information
-		target.id = commentId;
-		target.content = contentText.runs.map((r: YoutubeRawData) => r.text).join("");
-		target.publishDate = publishedTimeText.runs.shift().text;
-		target.likeCount = +(voteCount?.simpleText || 0);
-		target.isAuthorChannelOwner = authorIsChannelOwner;
-		target.isPinned = !!pinnedCommentBadge;
-		target.replyCount = replyCount;
+		target.id = properties.commentId;
+		target.content = properties.content.content;
+		target.publishDate = properties.publishedTime;
+		target.likeCount = +toolbar.likeCountLiked; // probably broken
+		target.isAuthorChannelOwner = !!author.isCreator;
+		target.isPinned = false; // TODO fix this
+		target.replyCount = +toolbar.replyCount;
 
 		// Reply Continuation
 		target.replies.continuation = data.replies
@@ -33,11 +22,10 @@ export class CommentParser {
 			: undefined;
 
 		// Author
-		const { browseId } = authorEndpoint.browseEndpoint;
 		target.author = new BaseChannel({
-			id: browseId,
-			name: authorText.simpleText,
-			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
+			id: author.id,
+			name: author.displayName,
+			thumbnails: new Thumbnails().load(avatar.image.sources),
 			client: target.client,
 		});
 
