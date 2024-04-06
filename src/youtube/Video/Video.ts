@@ -48,10 +48,7 @@ export class Video extends BaseVideo implements VideoProperties {
 	/**
 	 * Get Video transcript (if exists)
 	 *
-	 * Equivalent to
-	 * ```js
-	 * video.captions.get();
-	 * ```
+	 * @deprecated use `video.captions.get()` instead
 	 */
 	async getTranscript(languageCode?: string): Promise<Caption[] | undefined> {
 		return this.captions?.get(languageCode);
