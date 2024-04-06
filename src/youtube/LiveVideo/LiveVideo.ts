@@ -35,11 +35,11 @@ class LiveVideo extends BaseVideo implements LiveVideoProperties {
 	/** Current continuation token to load next chat  */
 	chatContinuation!: string;
 
-	private _delay = 0;
-	private _chatRequestPoolingTimeout!: NodeJS.Timeout;
-	private _timeoutMs = 0;
-	private _isChatPlaying = false;
-	private _chatQueue: Chat[] = [];
+	private delay = 0;
+	private chatRequestPoolingTimeout!: NodeJS.Timeout;
+	private timeoutMs = 0;
+	private isChatPlaying = false;
+	private chatQueue: Chat[] = [];
 
 	/** @hidden */
 	constructor(attr: LiveVideoProperties) {
@@ -64,17 +64,17 @@ class LiveVideo extends BaseVideo implements LiveVideoProperties {
 	 * @param delay chat delay in millisecond
 	 */
 	playChat(delay = 0): void {
-		if (this._isChatPlaying) return;
-		this._delay = delay;
-		this._isChatPlaying = true;
+		if (this.isChatPlaying) return;
+		this.delay = delay;
+		this.isChatPlaying = true;
 		this.pollChatContinuation();
 	}
 
 	/** Stop request polling for live chat */
 	stopChat(): void {
-		if (!this._chatRequestPoolingTimeout) return;
-		this._isChatPlaying = false;
-		clearTimeout(this._chatRequestPoolingTimeout);
+		if (!this.chatRequestPoolingTimeout) return;
+		this.isChatPlaying = false;
+		clearTimeout(this.chatRequestPoolingTimeout);
 	}
 
 	/** Start request polling */
@@ -88,20 +88,20 @@ class LiveVideo extends BaseVideo implements LiveVideoProperties {
 
 		for (const c of chats) {
 			const chat = new Chat({ client: this.client }).load(c);
-			if (this._chatQueue.find((c) => c.id === chat.id)) continue;
-			this._chatQueue.push(chat);
+			if (this.chatQueue.find((c) => c.id === chat.id)) continue;
+			this.chatQueue.push(chat);
 
-			const timeout = chat.timestamp / 1000 - (new Date().getTime() - this._delay);
+			const timeout = chat.timestamp / 1000 - (new Date().getTime() - this.delay);
 			setTimeout(() => this.emit("chat", chat), timeout);
 		}
 
 		const { timeout, continuation } = LiveVideoParser.parseContinuation(response.data);
 
-		this._timeoutMs = timeout;
+		this.timeoutMs = timeout;
 		this.chatContinuation = continuation;
-		this._chatRequestPoolingTimeout = setTimeout(
+		this.chatRequestPoolingTimeout = setTimeout(
 			() => this.pollChatContinuation(),
-			this._timeoutMs
+			this.timeoutMs
 		);
 	}
 
