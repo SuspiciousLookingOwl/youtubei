@@ -1,5 +1,5 @@
+import { VideoCaptions } from "../BaseVideo";
 import { Caption } from "./Caption";
-import { VideoCaptions } from "./VideoCaptions";
 
 /** @hidden */
 interface CaptionLanguageProperties {

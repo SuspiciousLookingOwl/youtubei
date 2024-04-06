@@ -1,10 +1,10 @@
 import { getContinuationFromItems, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { VideoCaptions } from "../Caption/VideoCaptions";
 import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { BaseVideo } from "./BaseVideo";
+import { VideoCaptions } from "./VideoCaptions";
 
 export class BaseVideoParser {
 	static loadBaseVideo(target: BaseVideo, data: YoutubeRawData): BaseVideo {

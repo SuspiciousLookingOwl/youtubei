@@ -1,10 +1,10 @@
 import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
-import { VideoCaptions } from "../Caption";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { BaseVideoParser } from "./BaseVideoParser";
+import { VideoCaptions } from "./VideoCaptions";
 import { VideoRelated } from "./VideoRelated";
 
 /** @hidden */

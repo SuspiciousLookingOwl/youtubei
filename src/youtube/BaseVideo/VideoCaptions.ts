@@ -1,9 +1,8 @@
 import { YoutubeRawData } from "../../common";
 import { Base } from "../Base";
 import { BaseVideo } from "../BaseVideo";
+import { Caption, CaptionLanguage } from "../Caption";
 import { Client } from "../Client";
-import { Caption } from "./Caption";
-import { CaptionLanguage } from "./CaptionLanguage";
 
 /** @hidden */
 interface ConstructorParams {
