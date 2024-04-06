@@ -1,6 +1,7 @@
 import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
+import { VideoCaptions } from "../Caption";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
 import { BaseVideoParser } from "./BaseVideoParser";
@@ -43,6 +44,8 @@ export class BaseVideo extends Base implements BaseVideoProperties {
 	tags!: string[];
 	/** Continuable of videos / playlists related to this video  */
 	related: VideoRelated;
+	/** Captions helper class of this video (if caption exists in this video) */
+	captions!: VideoCaptions | null;
 
 	/** @hidden */
 	constructor(attr: BaseVideoProperties) {

@@ -1,12 +1,12 @@
 import { RequestInit } from "node-fetch";
 
 import { HTTP, YoutubeRawData } from "../../common";
+import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
-import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
 import {
 	BASE_URL,
@@ -22,16 +22,18 @@ export type ClientOptions = {
 	/** Optional options for http client */
 	fetchOptions: Partial<RequestInit>;
 	/** Optional options passed when sending a request to youtube (context.client) */
-	youtubeClientOptions: Record<string, unknown>;
+	youtubeClientOptions: Record<string, string>;
 };
 
 /** Youtube Client */
 export class Client {
 	/** @hidden */
 	http: HTTP;
+	/** @hidden */
+	options: ClientOptions;
 
 	constructor(options: Partial<ClientOptions> = {}) {
-		const fullOptions: ClientOptions = {
+		this.options = {
 			initialCookie: "",
 			fetchOptions: {},
 			...options,
@@ -47,7 +49,7 @@ export class Client {
 			baseUrl: BASE_URL,
 			clientName: INNERTUBE_CLIENT_NAME,
 			clientVersion: INNERTUBE_CLIENT_VERSION,
-			...fullOptions,
+			...this.options,
 		});
 	}
 
@@ -136,15 +138,14 @@ export class Client {
 		return new Channel({ client: this }).load(response.data);
 	}
 
-	async getVideoTranscript(videoId: string): Promise<Transcript[] | undefined> {
-		const bufferParams = TranscriptParamsProto.encode({ videoId }).finish();
-		const response = await this.http.post(`${I_END_POINT}/get_transcript`, {
-			data: { params: Buffer.from(bufferParams).toString("base64") },
-		});
-
-		if (!response.data.actions) return undefined;
-		return response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups
-			.map((t: YoutubeRawData) => t.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer)
-			.map((t: YoutubeRawData) => new Transcript().load(t));
+	/**
+	 * Get video transcript / caption by video id
+	 */
+	async getVideoTranscript(
+		videoId: string,
+		languageCode?: string
+	): Promise<Caption[] | undefined> {
+		const video = await this.getVideo(videoId);
+		return video?.captions?.get(languageCode);
 	}
 }

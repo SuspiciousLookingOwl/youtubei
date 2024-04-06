@@ -1,5 +1,6 @@
 import { getContinuationFromItems, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
+import { VideoCaptions } from "../Caption/VideoCaptions";
 import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
@@ -52,6 +53,13 @@ export class BaseVideoParser {
 			target.related.continuation = getContinuationFromItems(secondaryContents);
 		}
 
+		// captions
+		if (videoInfo.captions) {
+			target.captions = new VideoCaptions({ client: target.client, video: target }).load(
+				videoInfo.captions.playerCaptionsTracklistRenderer
+			);
+		}
+
 		return target;
 	}
 
@@ -77,8 +85,8 @@ export class BaseVideoParser {
 		const secondaryInfo = contents.find(
 			(c: YoutubeRawData) => "videoSecondaryInfoRenderer" in c
 		).videoSecondaryInfoRenderer;
-		const videoDetails = data.playerResponse.videoDetails;
-		return { ...secondaryInfo, ...primaryInfo, videoDetails };
+		const { videoDetails, captions } = data.playerResponse;
+		return { ...secondaryInfo, ...primaryInfo, videoDetails, captions };
 	}
 
 	private static parseCompactRenderer(

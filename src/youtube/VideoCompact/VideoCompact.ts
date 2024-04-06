@@ -1,8 +1,8 @@
 import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
+import { Caption } from "../Caption";
 import { LiveVideo } from "../LiveVideo";
-import { Transcript } from "../Transcript";
 import { Video } from "../Video";
 import { VideoCompactParser } from "./VideoCompactParser";
 
@@ -79,7 +79,7 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	 * client.getVideoTranscript(video.id);
 	 * ```
 	 */
-	async getTranscript(): Promise<Transcript[] | undefined> {
-		return this.client.getVideoTranscript(this.id);
+	async getTranscript(languageCode?: string): Promise<Caption[] | undefined> {
+		return this.client.getVideoTranscript(this.id, languageCode);
 	}
 }

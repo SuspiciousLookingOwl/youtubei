@@ -1,6 +1,6 @@
 import { Thumbnails, YoutubeRawData } from "../../common";
 import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
-import { Transcript } from "../Transcript";
+import { Caption } from "../Caption";
 import { VideoComments } from "./VideoComments";
 import { VideoParser } from "./VideoParser";
 
@@ -50,10 +50,10 @@ export class Video extends BaseVideo implements VideoProperties {
 	 *
 	 * Equivalent to
 	 * ```js
-	 * client.getVideoTranscript(video.id);
+	 * video.captions.get();
 	 * ```
 	 */
-	async getTranscript(): Promise<Transcript[] | undefined> {
-		return this.client.getVideoTranscript(this.id);
+	async getTranscript(languageCode?: string): Promise<Caption[] | undefined> {
+		return this.captions?.get(languageCode);
 	}
 }
