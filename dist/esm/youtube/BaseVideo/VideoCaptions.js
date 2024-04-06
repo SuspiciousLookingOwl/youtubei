@@ -47,17 +47,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { BaseVideo } from "../BaseVideo";
-import { VideoComments } from "./VideoComments";
-import { VideoParser } from "./VideoParser";
-/** Represents a Video, usually returned from `client.getVideo()`  */
-var Video = /** @class */ (function (_super) {
-    __extends(Video, _super);
+import { Base } from "../Base";
+import { Caption, CaptionLanguage } from "../Caption";
+/**
+ * Captions of a video
+ *
+ * @example
+ * ```js
+ *
+ * console.log(result.captions.languages.map((l) => `${l.code} - ${l.name}`)); // printing out available languages for captions
+ *
+ * console.log(await result.captions.get("en")); // printing out captions of a specific language using language code
+ * ```
+ */
+var VideoCaptions = /** @class */ (function (_super) {
+    __extends(VideoCaptions, _super);
     /** @hidden */
-    function Video(attr) {
-        var _this = _super.call(this, attr) || this;
-        Object.assign(_this, attr);
-        _this.comments = new VideoComments({ client: attr.client, video: _this });
+    function VideoCaptions(_a) {
+        var video = _a.video, client = _a.client;
+        var _this = _super.call(this, client) || this;
+        _this.video = video;
+        _this.languages = [];
         return _this;
     }
     /**
@@ -65,24 +75,59 @@ var Video = /** @class */ (function (_super) {
      *
      * @hidden
      */
-    Video.prototype.load = function (data) {
-        _super.prototype.load.call(this, data);
-        VideoParser.loadVideo(this, data);
+    VideoCaptions.prototype.load = function (data) {
+        var _this = this;
+        var captionTracks = data.captionTracks;
+        if (captionTracks) {
+            this.languages = captionTracks.map(function (track) {
+                return new CaptionLanguage({
+                    captions: _this,
+                    name: track.name.simpleText,
+                    code: track.languageCode,
+                    isTranslatable: !!track.isTranslatable,
+                    url: track.baseUrl,
+                });
+            });
+        }
         return this;
     };
     /**
-     * Get Video transcript (if exists)
-     *
-     * @deprecated use `video.captions.get()` instead
+     * Get captions of a specific language or a translation of a specific language
      */
-    Video.prototype.getTranscript = function (languageCode) {
-        var _a;
+    VideoCaptions.prototype.get = function (languageCode, translationLanguageCode) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_b) {
-                return [2 /*return*/, (_a = this.captions) === null || _a === void 0 ? void 0 : _a.get(languageCode)];
+            var url, params, response, captions;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        if (!languageCode)
+                            languageCode = this.client.options.youtubeClientOptions.hl;
+                        url = (_a = this.languages.find(function (l) { return l.code.toUpperCase() === (languageCode === null || languageCode === void 0 ? void 0 : languageCode.toUpperCase()); })) === null || _a === void 0 ? void 0 : _a.url;
+                        if (!url)
+                            return [2 /*return*/, undefined];
+                        params = { fmt: "json3" };
+                        if (translationLanguageCode)
+                            params["tlang"] = translationLanguageCode;
+                        return [4 /*yield*/, this.client.http.get(url, { params: params })];
+                    case 1:
+                        response = _c.sent();
+                        captions = (_b = response.data.events) === null || _b === void 0 ? void 0 : _b.reduce(function (curr, e) {
+                            var _a;
+                            if (e.segs === undefined)
+                                return curr;
+                            curr.push(new Caption({
+                                duration: e.dDurationMs,
+                                start: e.tStartMs,
+                                text: (_a = e.segs) === null || _a === void 0 ? void 0 : _a.map(function (s) { return Object.values(s).join(""); }).join(" "),
+                            }));
+                            return curr;
+                        }, []);
+                        return [2 /*return*/, captions];
+                }
             });
         });
     };
-    return Video;
-}(BaseVideo));
-export { Video };
+    return VideoCaptions;
+}(Base));
+export { VideoCaptions };

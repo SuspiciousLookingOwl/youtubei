@@ -70,10 +70,10 @@ var LiveVideo = /** @class */ (function (_super) {
     /** @hidden */
     function LiveVideo(attr) {
         var _this = _super.call(this, attr) || this;
-        _this._delay = 0;
-        _this._timeoutMs = 0;
-        _this._isChatPlaying = false;
-        _this._chatQueue = [];
+        _this.delay = 0;
+        _this.timeoutMs = 0;
+        _this.isChatPlaying = false;
+        _this.chatQueue = [];
         Object.assign(_this, attr);
         return _this;
     }
@@ -94,18 +94,18 @@ var LiveVideo = /** @class */ (function (_super) {
      */
     LiveVideo.prototype.playChat = function (delay) {
         if (delay === void 0) { delay = 0; }
-        if (this._isChatPlaying)
+        if (this.isChatPlaying)
             return;
-        this._delay = delay;
-        this._isChatPlaying = true;
+        this.delay = delay;
+        this.isChatPlaying = true;
         this.pollChatContinuation();
     };
     /** Stop request polling for live chat */
     LiveVideo.prototype.stopChat = function () {
-        if (!this._chatRequestPoolingTimeout)
+        if (!this.chatRequestPoolingTimeout)
             return;
-        this._isChatPlaying = false;
-        clearTimeout(this._chatRequestPoolingTimeout);
+        this.isChatPlaying = false;
+        clearTimeout(this.chatRequestPoolingTimeout);
     };
     /** Start request polling */
     LiveVideo.prototype.pollChatContinuation = function () {
@@ -125,10 +125,10 @@ var LiveVideo = /** @class */ (function (_super) {
                         chats = LiveVideoParser.parseChats(response.data);
                         _loop_1 = function (c) {
                             var chat = new Chat({ client: this_1.client }).load(c);
-                            if (this_1._chatQueue.find(function (c) { return c.id === chat.id; }))
+                            if (this_1.chatQueue.find(function (c) { return c.id === chat.id; }))
                                 return "continue";
-                            this_1._chatQueue.push(chat);
-                            var timeout_1 = chat.timestamp / 1000 - (new Date().getTime() - this_1._delay);
+                            this_1.chatQueue.push(chat);
+                            var timeout_1 = chat.timestamp / 1000 - (new Date().getTime() - this_1.delay);
                             setTimeout(function () { return _this.emit("chat", chat); }, timeout_1);
                         };
                         this_1 = this;
@@ -146,9 +146,9 @@ var LiveVideo = /** @class */ (function (_super) {
                             finally { if (e_1) throw e_1.error; }
                         }
                         _a = LiveVideoParser.parseContinuation(response.data), timeout = _a.timeout, continuation = _a.continuation;
-                        this._timeoutMs = timeout;
+                        this.timeoutMs = timeout;
                         this.chatContinuation = continuation;
-                        this._chatRequestPoolingTimeout = setTimeout(function () { return _this.pollChatContinuation(); }, this._timeoutMs);
+                        this.chatRequestPoolingTimeout = setTimeout(function () { return _this.pollChatContinuation(); }, this.timeoutMs);
                         return [2 /*return*/];
                 }
             });

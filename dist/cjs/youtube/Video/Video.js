@@ -34,14 +34,12 @@ class Video extends BaseVideo_1.BaseVideo {
     /**
      * Get Video transcript (if exists)
      *
-     * Equivalent to
-     * ```js
-     * client.getVideoTranscript(video.id);
-     * ```
+     * @deprecated use `video.captions.get()` instead
      */
-    getTranscript() {
+    getTranscript(languageCode) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            return this.client.getVideoTranscript(this.id);
+            return (_a = this.captions) === null || _a === void 0 ? void 0 : _a.get(languageCode);
         });
     }
 }

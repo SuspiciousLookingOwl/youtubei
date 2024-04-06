@@ -3,6 +3,7 @@ import { Base, BaseProperties } from "../Base";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
+import { VideoCaptions } from "./VideoCaptions";
 import { VideoRelated } from "./VideoRelated";
 /** @hidden */
 export interface BaseVideoProperties extends BaseProperties {
@@ -40,6 +41,8 @@ export declare class BaseVideo extends Base implements BaseVideoProperties {
     tags: string[];
     /** Continuable of videos / playlists related to this video  */
     related: VideoRelated;
+    /** Captions helper class of this video (if caption exists in this video) */
+    captions: VideoCaptions | null;
     /** @hidden */
     constructor(attr: BaseVideoProperties);
     /**

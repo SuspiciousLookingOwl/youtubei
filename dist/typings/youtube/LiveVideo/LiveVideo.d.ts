@@ -19,11 +19,11 @@ declare class LiveVideo extends BaseVideo implements LiveVideoProperties {
     watchingCount: number;
     /** Current continuation token to load next chat  */
     chatContinuation: string;
-    private _delay;
-    private _chatRequestPoolingTimeout;
-    private _timeoutMs;
-    private _isChatPlaying;
-    private _chatQueue;
+    private delay;
+    private chatRequestPoolingTimeout;
+    private timeoutMs;
+    private isChatPlaying;
+    private chatQueue;
     /** @hidden */
     constructor(attr: LiveVideoProperties);
     /**

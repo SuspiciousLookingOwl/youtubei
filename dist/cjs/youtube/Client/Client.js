@@ -16,14 +16,13 @@ const LiveVideo_1 = require("../LiveVideo");
 const MixPlaylist_1 = require("../MixPlaylist");
 const Playlist_1 = require("../Playlist");
 const SearchResult_1 = require("../SearchResult");
-const Transcript_1 = require("../Transcript");
 const Video_1 = require("../Video");
 const constants_1 = require("../constants");
 /** Youtube Client */
 class Client {
     constructor(options = {}) {
-        const fullOptions = Object.assign(Object.assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
-        this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: constants_1.INNERTUBE_CLIENT_NAME, clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, fullOptions));
+        this.options = Object.assign(Object.assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
+        this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: constants_1.INNERTUBE_CLIENT_NAME, clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, this.options));
     }
     /**
      * Searches for videos / playlists / channels
@@ -103,17 +102,14 @@ class Client {
             return new Channel_1.Channel({ client: this }).load(response.data);
         });
     }
-    getVideoTranscript(videoId) {
+    /**
+     * Get video transcript / caption by video id
+     */
+    getVideoTranscript(videoId, languageCode) {
+        var _a;
         return __awaiter(this, void 0, void 0, function* () {
-            const bufferParams = Transcript_1.TranscriptParamsProto.encode({ videoId }).finish();
-            const response = yield this.http.post(`${constants_1.I_END_POINT}/get_transcript`, {
-                data: { params: Buffer.from(bufferParams).toString("base64") },
-            });
-            if (!response.data.actions)
-                return undefined;
-            return response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups
-                .map((t) => t.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer)
-                .map((t) => new Transcript_1.Transcript().load(t));
+            const video = yield this.getVideo(videoId);
+            return (_a = video === null || video === void 0 ? void 0 : video.captions) === null || _a === void 0 ? void 0 : _a.get(languageCode);
         });
     }
 }

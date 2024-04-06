@@ -4,7 +4,7 @@ var VideoCompactParser = /** @class */ (function () {
     function VideoCompactParser() {
     }
     VideoCompactParser.loadVideoCompact = function (target, data) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         var videoId = data.videoId, title = data.title, headline = data.headline, lengthText = data.lengthText, thumbnail = data.thumbnail, ownerText = data.ownerText, shortBylineText = data.shortBylineText, publishedTimeText = data.publishedTimeText, viewCountText = data.viewCountText, badges = data.badges, thumbnailOverlays = data.thumbnailOverlays, channelThumbnailSupportedRenderers = data.channelThumbnailSupportedRenderers, detailedMetadataSnippets = data.detailedMetadataSnippets;
         target.id = videoId;
         target.title = headline
@@ -17,7 +17,9 @@ var VideoCompactParser = /** @class */ (function () {
         target.duration =
             getDuration((lengthText === null || lengthText === void 0 ? void 0 : lengthText.simpleText) || ((_d = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _d === void 0 ? void 0 : _d.text.simpleText) ||
                 "") || null;
-        target.isLive = !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW");
+        target.isLive =
+            !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW") ||
+                ((_e = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _e === void 0 ? void 0 : _e.style) === "LIVE";
         // Channel
         if (ownerText || shortBylineText) {
             var browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint

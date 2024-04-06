@@ -51,15 +51,14 @@ import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchResult } from "../SearchResult";
-import { Transcript, TranscriptParamsProto } from "../Transcript";
 import { Video } from "../Video";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_NAME, INNERTUBE_CLIENT_VERSION, I_END_POINT, WATCH_END_POINT, } from "../constants";
 /** Youtube Client */
 var Client = /** @class */ (function () {
     function Client(options) {
         if (options === void 0) { options = {}; }
-        var fullOptions = __assign(__assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
-        this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: INNERTUBE_CLIENT_NAME, clientVersion: INNERTUBE_CLIENT_VERSION }, fullOptions));
+        this.options = __assign(__assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
+        this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: INNERTUBE_CLIENT_NAME, clientVersion: INNERTUBE_CLIENT_VERSION }, this.options));
     }
     /**
      * Searches for videos / playlists / channels
@@ -177,23 +176,19 @@ var Client = /** @class */ (function () {
             });
         });
     };
-    Client.prototype.getVideoTranscript = function (videoId) {
+    /**
+     * Get video transcript / caption by video id
+     */
+    Client.prototype.getVideoTranscript = function (videoId, languageCode) {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var bufferParams, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        bufferParams = TranscriptParamsProto.encode({ videoId: videoId }).finish();
-                        return [4 /*yield*/, this.http.post(I_END_POINT + "/get_transcript", {
-                                data: { params: Buffer.from(bufferParams).toString("base64") },
-                            })];
+            var video;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.getVideo(videoId)];
                     case 1:
-                        response = _a.sent();
-                        if (!response.data.actions)
-                            return [2 /*return*/, undefined];
-                        return [2 /*return*/, response.data.actions[0].updateEngagementPanelAction.content.transcriptRenderer.body.transcriptBodyRenderer.cueGroups
-                                .map(function (t) { return t.transcriptCueGroupRenderer.cues[0].transcriptCueRenderer; })
-                                .map(function (t) { return new Transcript().load(t); })];
+                        video = _b.sent();
+                        return [2 /*return*/, (_a = video === null || video === void 0 ? void 0 : video.captions) === null || _a === void 0 ? void 0 : _a.get(languageCode)];
                 }
             });
         });

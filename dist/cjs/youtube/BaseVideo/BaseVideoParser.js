@@ -5,6 +5,7 @@ const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 const PlaylistCompact_1 = require("../PlaylistCompact");
 const VideoCompact_1 = require("../VideoCompact");
+const VideoCaptions_1 = require("./VideoCaptions");
 class BaseVideoParser {
     static loadBaseVideo(target, data) {
         var _a, _b, _c;
@@ -38,6 +39,10 @@ class BaseVideoParser {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = common_1.getContinuationFromItems(secondaryContents);
         }
+        // captions
+        if (videoInfo.captions) {
+            target.captions = new VideoCaptions_1.VideoCaptions({ client: target.client, video: target }).load(videoInfo.captions.playerCaptionsTracklistRenderer);
+        }
         return target;
     }
     static parseRelated(data, client) {
@@ -53,8 +58,8 @@ class BaseVideoParser {
         const primaryInfo = contents.find((c) => "videoPrimaryInfoRenderer" in c)
             .videoPrimaryInfoRenderer;
         const secondaryInfo = contents.find((c) => "videoSecondaryInfoRenderer" in c).videoSecondaryInfoRenderer;
-        const videoDetails = data.playerResponse.videoDetails;
-        return Object.assign(Object.assign(Object.assign({}, secondaryInfo), primaryInfo), { videoDetails });
+        const { videoDetails, captions } = data.playerResponse;
+        return Object.assign(Object.assign(Object.assign({}, secondaryInfo), primaryInfo), { videoDetails, captions });
     }
     static parseCompactRenderer(data, client) {
         if ("compactVideoRenderer" in data) {

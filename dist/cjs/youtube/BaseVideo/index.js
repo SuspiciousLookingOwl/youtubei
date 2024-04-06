@@ -12,4 +12,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./BaseVideo"), exports);
 __exportStar(require("./BaseVideoParser"), exports);
+__exportStar(require("./VideoCaptions"), exports);
 __exportStar(require("./VideoRelated"), exports);

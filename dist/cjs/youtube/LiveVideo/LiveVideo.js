@@ -21,10 +21,10 @@ class LiveVideo extends BaseVideo_1.BaseVideo {
     /** @hidden */
     constructor(attr) {
         super(attr);
-        this._delay = 0;
-        this._timeoutMs = 0;
-        this._isChatPlaying = false;
-        this._chatQueue = [];
+        this.delay = 0;
+        this.timeoutMs = 0;
+        this.isChatPlaying = false;
+        this.chatQueue = [];
         Object.assign(this, attr);
     }
     /**
@@ -43,18 +43,18 @@ class LiveVideo extends BaseVideo_1.BaseVideo {
      * @param delay chat delay in millisecond
      */
     playChat(delay = 0) {
-        if (this._isChatPlaying)
+        if (this.isChatPlaying)
             return;
-        this._delay = delay;
-        this._isChatPlaying = true;
+        this.delay = delay;
+        this.isChatPlaying = true;
         this.pollChatContinuation();
     }
     /** Stop request polling for live chat */
     stopChat() {
-        if (!this._chatRequestPoolingTimeout)
+        if (!this.chatRequestPoolingTimeout)
             return;
-        this._isChatPlaying = false;
-        clearTimeout(this._chatRequestPoolingTimeout);
+        this.isChatPlaying = false;
+        clearTimeout(this.chatRequestPoolingTimeout);
     }
     /** Start request polling */
     pollChatContinuation() {
@@ -67,16 +67,16 @@ class LiveVideo extends BaseVideo_1.BaseVideo {
             const chats = LiveVideoParser_1.LiveVideoParser.parseChats(response.data);
             for (const c of chats) {
                 const chat = new Chat_1.Chat({ client: this.client }).load(c);
-                if (this._chatQueue.find((c) => c.id === chat.id))
+                if (this.chatQueue.find((c) => c.id === chat.id))
                     continue;
-                this._chatQueue.push(chat);
-                const timeout = chat.timestamp / 1000 - (new Date().getTime() - this._delay);
+                this.chatQueue.push(chat);
+                const timeout = chat.timestamp / 1000 - (new Date().getTime() - this.delay);
                 setTimeout(() => this.emit("chat", chat), timeout);
             }
             const { timeout, continuation } = LiveVideoParser_1.LiveVideoParser.parseContinuation(response.data);
-            this._timeoutMs = timeout;
+            this.timeoutMs = timeout;
             this.chatContinuation = continuation;
-            this._chatRequestPoolingTimeout = setTimeout(() => this.pollChatContinuation(), this._timeoutMs);
+            this.chatRequestPoolingTimeout = setTimeout(() => this.pollChatContinuation(), this.timeoutMs);
         });
     }
 }

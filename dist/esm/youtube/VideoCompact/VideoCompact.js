@@ -101,10 +101,10 @@ var VideoCompact = /** @class */ (function (_super) {
      * client.getVideoTranscript(video.id);
      * ```
      */
-    VideoCompact.prototype.getTranscript = function () {
+    VideoCompact.prototype.getTranscript = function (languageCode) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                return [2 /*return*/, this.client.getVideoTranscript(this.id)];
+                return [2 /*return*/, this.client.getVideoTranscript(this.id, languageCode)];
             });
         });
     };

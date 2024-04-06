@@ -5,25 +5,24 @@ var CommentParser = /** @class */ (function () {
     function CommentParser() {
     }
     CommentParser.loadComment = function (target, data) {
-        var _a = data.comment.commentRenderer, authorText = _a.authorText, authorThumbnail = _a.authorThumbnail, authorEndpoint = _a.authorEndpoint, contentText = _a.contentText, publishedTimeText = _a.publishedTimeText, commentId = _a.commentId, voteCount = _a.voteCount, authorIsChannelOwner = _a.authorIsChannelOwner, pinnedCommentBadge = _a.pinnedCommentBadge, replyCount = _a.replyCount;
+        var properties = data.properties, toolbar = data.toolbar, author = data.author, avatar = data.avatar;
         // Basic information
-        target.id = commentId;
-        target.content = contentText.runs.map(function (r) { return r.text; }).join("");
-        target.publishDate = publishedTimeText.runs.shift().text;
-        target.likeCount = +((voteCount === null || voteCount === void 0 ? void 0 : voteCount.simpleText) || 0);
-        target.isAuthorChannelOwner = authorIsChannelOwner;
-        target.isPinned = !!pinnedCommentBadge;
-        target.replyCount = replyCount;
+        target.id = properties.commentId;
+        target.content = properties.content.content;
+        target.publishDate = properties.publishedTime;
+        target.likeCount = +toolbar.likeCountLiked; // probably broken
+        target.isAuthorChannelOwner = !!author.isCreator;
+        target.isPinned = false; // TODO fix this
+        target.replyCount = +toolbar.replyCount;
         // Reply Continuation
         target.replies.continuation = data.replies
             ? getContinuationFromItems(data.replies.commentRepliesRenderer.contents)
             : undefined;
         // Author
-        var browseId = authorEndpoint.browseEndpoint.browseId;
         target.author = new BaseChannel({
-            id: browseId,
-            name: authorText.simpleText,
-            thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
+            id: author.id,
+            name: author.displayName,
+            thumbnails: new Thumbnails().load(avatar.image.sources),
             client: target.client,
         });
         return target;

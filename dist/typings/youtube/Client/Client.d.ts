@@ -1,23 +1,25 @@
 import { RequestInit } from "node-fetch";
 import { HTTP } from "../../common";
+import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
 import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
-import { Transcript } from "../Transcript";
 import { Video } from "../Video";
 export declare type ClientOptions = {
     initialCookie: string;
     /** Optional options for http client */
     fetchOptions: Partial<RequestInit>;
     /** Optional options passed when sending a request to youtube (context.client) */
-    youtubeClientOptions: Record<string, unknown>;
+    youtubeClientOptions: Record<string, string>;
 };
 /** Youtube Client */
 export declare class Client {
     /** @hidden */
     http: HTTP;
+    /** @hidden */
+    options: ClientOptions;
     constructor(options?: Partial<ClientOptions>);
     /**
      * Searches for videos / playlists / channels
@@ -39,5 +41,8 @@ export declare class Client {
     getVideo<T extends Video | LiveVideo | undefined>(videoId: string): Promise<T>;
     /** Get channel information by channel id+ */
     getChannel(channelId: string): Promise<Channel | undefined>;
-    getVideoTranscript(videoId: string): Promise<Transcript[] | undefined>;
+    /**
+     * Get video transcript / caption by video id
+     */
+    getVideoTranscript(videoId: string, languageCode?: string): Promise<Caption[] | undefined>;
 }

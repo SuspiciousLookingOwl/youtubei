@@ -23,9 +23,9 @@ class VideoParser {
         return target;
     }
     static parseComments(data, video) {
-        const endpoints = data.onResponseReceivedEndpoints.at(-1);
-        const continuationItems = (endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction).continuationItems;
-        const comments = common_1.mapFilter(continuationItems, "commentThreadRenderer");
+        const comments = data.frameworkUpdates.entityBatchUpdate.mutations
+            .filter((m) => m.payload.commentEntityPayload)
+            .map((m) => m.payload.commentEntityPayload);
         return comments.map((c) => new Comment_1.Comment({ video, client: video.client }).load(c));
     }
     static parseCommentContinuation(data) {

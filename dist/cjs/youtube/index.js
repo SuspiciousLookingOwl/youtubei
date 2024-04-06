@@ -24,6 +24,5 @@ __exportStar(require("./Playlist"), exports);
 __exportStar(require("./PlaylistCompact"), exports);
 __exportStar(require("./Reply"), exports);
 __exportStar(require("./SearchResult"), exports);
-__exportStar(require("./Transcript"), exports);
 __exportStar(require("./Video"), exports);
 __exportStar(require("./VideoCompact"), exports);

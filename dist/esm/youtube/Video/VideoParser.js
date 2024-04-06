@@ -1,4 +1,4 @@
-import { getContinuationFromItems, mapFilter, Thumbnails } from "../../common";
+import { getContinuationFromItems, Thumbnails } from "../../common";
 import { BaseVideoParser } from "../BaseVideo";
 import { Comment } from "../Comment";
 var VideoParser = /** @class */ (function () {
@@ -25,9 +25,9 @@ var VideoParser = /** @class */ (function () {
         return target;
     };
     VideoParser.parseComments = function (data, video) {
-        var endpoints = data.onResponseReceivedEndpoints.at(-1);
-        var continuationItems = (endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction).continuationItems;
-        var comments = mapFilter(continuationItems, "commentThreadRenderer");
+        var comments = data.frameworkUpdates.entityBatchUpdate.mutations
+            .filter(function (m) { return m.payload.commentEntityPayload; })
+            .map(function (m) { return m.payload.commentEntityPayload; });
         return comments.map(function (c) {
             return new Comment({ video: video, client: video.client }).load(c);
         });

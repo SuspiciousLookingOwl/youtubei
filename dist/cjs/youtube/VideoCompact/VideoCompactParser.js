@@ -5,7 +5,7 @@ const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 class VideoCompactParser {
     static loadVideoCompact(target, data) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         const { videoId, title, headline, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
         target.id = videoId;
         target.title = headline
@@ -18,7 +18,9 @@ class VideoCompactParser {
         target.duration =
             common_1.getDuration((lengthText === null || lengthText === void 0 ? void 0 : lengthText.simpleText) || ((_d = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _d === void 0 ? void 0 : _d.text.simpleText) ||
                 "") || null;
-        target.isLive = !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW");
+        target.isLive =
+            !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW") ||
+                ((_e = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _e === void 0 ? void 0 : _e.style) === "LIVE";
         // Channel
         if (ownerText || shortBylineText) {
             const browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint

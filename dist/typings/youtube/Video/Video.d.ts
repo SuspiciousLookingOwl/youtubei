@@ -1,6 +1,6 @@
 import { Thumbnails, YoutubeRawData } from "../../common";
 import { BaseVideo, BaseVideoProperties } from "../BaseVideo";
-import { Transcript } from "../Transcript";
+import { Caption } from "../Caption";
 import { VideoComments } from "./VideoComments";
 export declare type Chapter = {
     title: string;
@@ -32,11 +32,8 @@ export declare class Video extends BaseVideo implements VideoProperties {
     /**
      * Get Video transcript (if exists)
      *
-     * Equivalent to
-     * ```js
-     * client.getVideoTranscript(video.id);
-     * ```
+     * @deprecated use `video.captions.get()` instead
      */
-    getTranscript(): Promise<Transcript[] | undefined>;
+    getTranscript(languageCode?: string): Promise<Caption[] | undefined>;
 }
 export {};

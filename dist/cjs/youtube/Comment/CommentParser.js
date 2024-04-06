@@ -6,25 +6,24 @@ const BaseChannel_1 = require("../BaseChannel");
 const Reply_1 = require("../Reply");
 class CommentParser {
     static loadComment(target, data) {
-        const { authorText, authorThumbnail, authorEndpoint, contentText, publishedTimeText, commentId, voteCount, authorIsChannelOwner, pinnedCommentBadge, replyCount, } = data.comment.commentRenderer;
+        const { properties, toolbar, author, avatar } = data;
         // Basic information
-        target.id = commentId;
-        target.content = contentText.runs.map((r) => r.text).join("");
-        target.publishDate = publishedTimeText.runs.shift().text;
-        target.likeCount = +((voteCount === null || voteCount === void 0 ? void 0 : voteCount.simpleText) || 0);
-        target.isAuthorChannelOwner = authorIsChannelOwner;
-        target.isPinned = !!pinnedCommentBadge;
-        target.replyCount = replyCount;
+        target.id = properties.commentId;
+        target.content = properties.content.content;
+        target.publishDate = properties.publishedTime;
+        target.likeCount = +toolbar.likeCountLiked; // probably broken
+        target.isAuthorChannelOwner = !!author.isCreator;
+        target.isPinned = false; // TODO fix this
+        target.replyCount = +toolbar.replyCount;
         // Reply Continuation
         target.replies.continuation = data.replies
             ? common_1.getContinuationFromItems(data.replies.commentRepliesRenderer.contents)
             : undefined;
         // Author
-        const { browseId } = authorEndpoint.browseEndpoint;
         target.author = new BaseChannel_1.BaseChannel({
-            id: browseId,
-            name: authorText.simpleText,
-            thumbnails: new common_1.Thumbnails().load(authorThumbnail.thumbnails),
+            id: author.id,
+            name: author.displayName,
+            thumbnails: new common_1.Thumbnails().load(avatar.image.sources),
             client: target.client,
         });
         return target;

@@ -13,6 +13,7 @@ import { getContinuationFromItems, stripToInt, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
+import { VideoCaptions } from "./VideoCaptions";
 var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {
     }
@@ -48,6 +49,10 @@ var BaseVideoParser = /** @class */ (function () {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = getContinuationFromItems(secondaryContents);
         }
+        // captions
+        if (videoInfo.captions) {
+            target.captions = new VideoCaptions({ client: target.client, video: target }).load(videoInfo.captions.playerCaptionsTracklistRenderer);
+        }
         return target;
     };
     BaseVideoParser.parseRelated = function (data, client) {
@@ -63,8 +68,8 @@ var BaseVideoParser = /** @class */ (function () {
         var primaryInfo = contents.find(function (c) { return "videoPrimaryInfoRenderer" in c; })
             .videoPrimaryInfoRenderer;
         var secondaryInfo = contents.find(function (c) { return "videoSecondaryInfoRenderer" in c; }).videoSecondaryInfoRenderer;
-        var videoDetails = data.playerResponse.videoDetails;
-        return __assign(__assign(__assign({}, secondaryInfo), primaryInfo), { videoDetails: videoDetails });
+        var _a = data.playerResponse, videoDetails = _a.videoDetails, captions = _a.captions;
+        return __assign(__assign(__assign({}, secondaryInfo), primaryInfo), { videoDetails: videoDetails, captions: captions });
     };
     BaseVideoParser.parseCompactRenderer = function (data, client) {
         if ("compactVideoRenderer" in data) {
