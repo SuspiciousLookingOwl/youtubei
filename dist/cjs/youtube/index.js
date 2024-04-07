@@ -13,6 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Base"), exports);
 __exportStar(require("./BaseChannel"), exports);
 __exportStar(require("./BaseVideo"), exports);
+__exportStar(require("./Caption"), exports);
 __exportStar(require("./Channel"), exports);
 __exportStar(require("./Chat"), exports);
 __exportStar(require("./Client"), exports);

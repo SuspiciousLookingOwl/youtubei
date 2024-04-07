@@ -55,9 +55,9 @@ import { Caption, CaptionLanguage } from "../Caption";
  * @example
  * ```js
  *
- * console.log(result.captions.languages.map((l) => `${l.code} - ${l.name}`)); // printing out available languages for captions
+ * console.log(video.captions.languages.map((l) => `${l.code} - ${l.name}`)); // printing out available languages for captions
  *
- * console.log(await result.captions.get("en")); // printing out captions of a specific language using language code
+ * console.log(await video.captions.get("en")); // printing out captions of a specific language using language code
  * ```
  */
 var VideoCaptions = /** @class */ (function (_super) {
