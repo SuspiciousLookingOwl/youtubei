@@ -1,6 +1,7 @@
 export * from "./Base";
 export * from "./BaseChannel";
 export * from "./BaseVideo";
+export * from "./Caption";
 export * from "./Channel";
 export * from "./Chat";
 export * from "./Client";
