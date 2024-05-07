@@ -63,6 +63,6 @@
 	"homepage": "https://suspiciouslookingowl.github.io/youtubei",
 	"dependencies": {
 		"node-fetch": "2.6.7",
-		"protobufjs": "7.2.4"
+		"protobufjs": "7.2.6"
 	}
 }
