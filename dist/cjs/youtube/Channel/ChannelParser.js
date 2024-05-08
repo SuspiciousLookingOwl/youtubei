@@ -7,16 +7,37 @@ const PlaylistCompact_1 = require("../PlaylistCompact");
 const VideoCompact_1 = require("../VideoCompact");
 class ChannelParser {
     static loadChannel(target, data) {
-        const { channelId, title, avatar, subscriberCountText, } = data.header.c4TabbedHeaderRenderer;
+        var _a, _b, _c;
+        let channelId, title, avatar, subscriberCountText, tvBanner, mobileBanner, banner;
+        const { c4TabbedHeaderRenderer, pageHeaderRenderer } = data.header;
+        if (c4TabbedHeaderRenderer) {
+            channelId = c4TabbedHeaderRenderer.channelId;
+            title = c4TabbedHeaderRenderer.title;
+            subscriberCountText = (_a = c4TabbedHeaderRenderer.subscriberCountText) === null || _a === void 0 ? void 0 : _a.simpleText;
+            avatar = (_b = c4TabbedHeaderRenderer.avatar) === null || _b === void 0 ? void 0 : _b.thumbnails;
+            tvBanner = (_c = c4TabbedHeaderRenderer.tvBanner) === null || _c === void 0 ? void 0 : _c.thumbnails;
+            mobileBanner = c4TabbedHeaderRenderer.mobileBanner.thumbnails;
+            banner = c4TabbedHeaderRenderer.banner.thumbnails;
+        }
+        else {
+            channelId =
+                data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
+                    .browseEndpoint.browseId;
+            title = pageHeaderRenderer.pageTitle;
+            const { metadata, image: imageModel, banner: bannerModel, } = pageHeaderRenderer.content.pageHeaderViewModel;
+            subscriberCountText =
+                metadata.contentMetadataViewModel.metadataRows[1].metadataParts[0].text.content;
+            avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
+            banner = bannerModel.imageBannerViewModel.image.sources;
+        }
         target.id = channelId;
         target.name = title;
-        target.thumbnails = new common_1.Thumbnails().load(avatar.thumbnails);
+        target.thumbnails = new common_1.Thumbnails().load(avatar);
         target.videoCount = 0; // data not available
-        target.subscriberCount = subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText;
-        const { tvBanner, mobileBanner, banner } = data.header.c4TabbedHeaderRenderer;
-        target.banner = new common_1.Thumbnails().load((banner === null || banner === void 0 ? void 0 : banner.thumbnails) || []);
-        target.tvBanner = new common_1.Thumbnails().load((tvBanner === null || tvBanner === void 0 ? void 0 : tvBanner.thumbnails) || []);
-        target.mobileBanner = new common_1.Thumbnails().load((mobileBanner === null || mobileBanner === void 0 ? void 0 : mobileBanner.thumbnails) || []);
+        target.subscriberCount = subscriberCountText;
+        target.banner = new common_1.Thumbnails().load(banner || []);
+        target.tvBanner = new common_1.Thumbnails().load(tvBanner || []);
+        target.mobileBanner = new common_1.Thumbnails().load(mobileBanner || []);
         target.shelves = ChannelParser.parseShelves(target, data);
         return target;
     }

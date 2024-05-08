@@ -1,6 +1,6 @@
 {
 	"name": "youtubei",
-	"version": "1.4.0",
+	"version": "1.4.1",
 	"description": "Simple package to get information from youtube such as videos, playlists, channels, video information & comments, related videos, up next video, and more!",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
@@ -63,6 +63,6 @@
 	"homepage": "https://suspiciouslookingowl.github.io/youtubei",
 	"dependencies": {
 		"node-fetch": "2.6.7",
-		"protobufjs": "7.2.4"
+		"protobufjs": "7.2.6"
 	}
 }

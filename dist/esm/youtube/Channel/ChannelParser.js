@@ -17,16 +17,37 @@ var ChannelParser = /** @class */ (function () {
     function ChannelParser() {
     }
     ChannelParser.loadChannel = function (target, data) {
-        var _a = data.header.c4TabbedHeaderRenderer, channelId = _a.channelId, title = _a.title, avatar = _a.avatar, subscriberCountText = _a.subscriberCountText;
+        var _a, _b, _c;
+        var channelId, title, avatar, subscriberCountText, tvBanner, mobileBanner, banner;
+        var _d = data.header, c4TabbedHeaderRenderer = _d.c4TabbedHeaderRenderer, pageHeaderRenderer = _d.pageHeaderRenderer;
+        if (c4TabbedHeaderRenderer) {
+            channelId = c4TabbedHeaderRenderer.channelId;
+            title = c4TabbedHeaderRenderer.title;
+            subscriberCountText = (_a = c4TabbedHeaderRenderer.subscriberCountText) === null || _a === void 0 ? void 0 : _a.simpleText;
+            avatar = (_b = c4TabbedHeaderRenderer.avatar) === null || _b === void 0 ? void 0 : _b.thumbnails;
+            tvBanner = (_c = c4TabbedHeaderRenderer.tvBanner) === null || _c === void 0 ? void 0 : _c.thumbnails;
+            mobileBanner = c4TabbedHeaderRenderer.mobileBanner.thumbnails;
+            banner = c4TabbedHeaderRenderer.banner.thumbnails;
+        }
+        else {
+            channelId =
+                data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
+                    .browseEndpoint.browseId;
+            title = pageHeaderRenderer.pageTitle;
+            var _e = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _e.metadata, imageModel = _e.image, bannerModel = _e.banner;
+            subscriberCountText =
+                metadata.contentMetadataViewModel.metadataRows[1].metadataParts[0].text.content;
+            avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
+            banner = bannerModel.imageBannerViewModel.image.sources;
+        }
         target.id = channelId;
         target.name = title;
-        target.thumbnails = new Thumbnails().load(avatar.thumbnails);
+        target.thumbnails = new Thumbnails().load(avatar);
         target.videoCount = 0; // data not available
-        target.subscriberCount = subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText;
-        var _b = data.header.c4TabbedHeaderRenderer, tvBanner = _b.tvBanner, mobileBanner = _b.mobileBanner, banner = _b.banner;
-        target.banner = new Thumbnails().load((banner === null || banner === void 0 ? void 0 : banner.thumbnails) || []);
-        target.tvBanner = new Thumbnails().load((tvBanner === null || tvBanner === void 0 ? void 0 : tvBanner.thumbnails) || []);
-        target.mobileBanner = new Thumbnails().load((mobileBanner === null || mobileBanner === void 0 ? void 0 : mobileBanner.thumbnails) || []);
+        target.subscriberCount = subscriberCountText;
+        target.banner = new Thumbnails().load(banner || []);
+        target.tvBanner = new Thumbnails().load(tvBanner || []);
+        target.mobileBanner = new Thumbnails().load(mobileBanner || []);
         target.shelves = ChannelParser.parseShelves(target, data);
         return target;
     };
