@@ -46,7 +46,7 @@ export class ChannelParser {
 		target.id = channelId;
 		target.name = title;
 		target.thumbnails = new Thumbnails().load(avatar);
-		target.videoCount = +videoCountText ?? 0;
+		target.videoCount = videoCountText ?? 0;
 		target.subscriberCount = subscriberCountText;
 
 		target.banner = new Thumbnails().load(banner || []);

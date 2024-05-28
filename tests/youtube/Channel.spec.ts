@@ -15,6 +15,5 @@ describe("BaseChannel", () => {
 		expect(channel.id).toBe("UC6nSFpj9HTCZ5t-N3Rm3-HA");
 		expect(channel.name).toBe("Vsauce");
 		expect(channel.url).toBe("https://www.youtube.com/channel/UC6nSFpj9HTCZ5t-N3Rm3-HA");
-		expect(channel.videoCount).toBeTypeOf("number");
 	});
 });
