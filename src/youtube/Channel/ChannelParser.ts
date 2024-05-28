@@ -14,9 +14,9 @@ export class ChannelParser {
 			title = c4TabbedHeaderRenderer.title;
 			subscriberCountText = c4TabbedHeaderRenderer.subscriberCountText?.simpleText;
 			avatar = c4TabbedHeaderRenderer.avatar?.thumbnails;
-			tvBanner = c4TabbedHeaderRenderer.tvBanner?.thumbnails;
-			mobileBanner = c4TabbedHeaderRenderer.mobileBanner.thumbnails;
-			banner = c4TabbedHeaderRenderer.banner.thumbnails;
+			tvBanner = c4TabbedHeaderRenderer?.tvBanner?.thumbnails;
+			mobileBanner = c4TabbedHeaderRenderer?.mobileBanner?.thumbnails;
+			banner = c4TabbedHeaderRenderer?.banner?.thumbnails;
 		} else {
 			channelId =
 				data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
