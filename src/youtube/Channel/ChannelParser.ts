@@ -6,13 +6,21 @@ import { Channel, ChannelShelf } from "./Channel";
 
 export class ChannelParser {
 	static loadChannel(target: Channel, data: YoutubeRawData): Channel {
-		let channelId, title, avatar, subscriberCountText, tvBanner, mobileBanner, banner;
+		let channelId,
+			title,
+			avatar,
+			subscriberCountText,
+			tvBanner,
+			mobileBanner,
+			banner,
+			videoCountText;
 		const { c4TabbedHeaderRenderer, pageHeaderRenderer } = data.header;
 
 		if (c4TabbedHeaderRenderer) {
 			channelId = c4TabbedHeaderRenderer.channelId;
 			title = c4TabbedHeaderRenderer.title;
 			subscriberCountText = c4TabbedHeaderRenderer.subscriberCountText?.simpleText;
+			videoCountText = c4TabbedHeaderRenderer?.videosCountText?.runs?.[0]?.text;
 			avatar = c4TabbedHeaderRenderer.avatar?.thumbnails;
 			tvBanner = c4TabbedHeaderRenderer.tvBanner?.thumbnails;
 			mobileBanner = c4TabbedHeaderRenderer.mobileBanner.thumbnails;
@@ -38,7 +46,7 @@ export class ChannelParser {
 		target.id = channelId;
 		target.name = title;
 		target.thumbnails = new Thumbnails().load(avatar);
-		target.videoCount = 0; // data not available
+		target.videoCount = +videoCountText ?? 0;
 		target.subscriberCount = subscriberCountText;
 
 		target.banner = new Thumbnails().load(banner || []);
