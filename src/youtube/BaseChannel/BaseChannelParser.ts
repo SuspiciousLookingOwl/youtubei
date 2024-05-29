@@ -1,4 +1,4 @@
-import { stripToInt, Thumbnails, YoutubeRawData } from "../../common";
+import { Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "./BaseChannel";
 
 type TabType = keyof typeof BaseChannelParser.TAB_TYPE_PARAMS;
@@ -12,12 +12,11 @@ export class BaseChannelParser {
 	} as const;
 
 	static loadBaseChannel(target: BaseChannel, data: YoutubeRawData): BaseChannel {
-		const { channelId, title, thumbnail, videoCountText, subscriberCountText } = data;
+		const { channelId, title, thumbnail, subscriberCountText } = data;
 
 		target.id = channelId;
 		target.name = title.simpleText;
 		target.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
-		target.videoCount = stripToInt(videoCountText?.runs?.[0].text) || 0; // TODO this sometimes contains subscriber count for some reason
 		target.subscriberCount = subscriberCountText?.simpleText;
 
 		return target;

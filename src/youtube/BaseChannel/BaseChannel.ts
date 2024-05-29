@@ -11,7 +11,6 @@ export interface BaseChannelProperties extends BaseProperties {
 	id?: string;
 	name?: string;
 	thumbnails?: Thumbnails;
-	videoCount?: number;
 	subscriberCount?: string;
 }
 
@@ -22,8 +21,6 @@ export class BaseChannel extends Base implements BaseChannelProperties {
 	name!: string;
 	/** Thumbnails of this Channel */
 	thumbnails?: Thumbnails;
-	/** How many video does this channel have */
-	videoCount?: number;
 	/**
 	 * How many subscriber does this channel have,
 	 *
