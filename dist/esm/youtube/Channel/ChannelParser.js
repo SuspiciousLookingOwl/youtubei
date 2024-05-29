@@ -17,24 +17,24 @@ var ChannelParser = /** @class */ (function () {
     function ChannelParser() {
     }
     ChannelParser.loadChannel = function (target, data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         var channelId, title, avatar, subscriberCountText, tvBanner, mobileBanner, banner;
-        var _d = data.header, c4TabbedHeaderRenderer = _d.c4TabbedHeaderRenderer, pageHeaderRenderer = _d.pageHeaderRenderer;
+        var _f = data.header, c4TabbedHeaderRenderer = _f.c4TabbedHeaderRenderer, pageHeaderRenderer = _f.pageHeaderRenderer;
         if (c4TabbedHeaderRenderer) {
             channelId = c4TabbedHeaderRenderer.channelId;
             title = c4TabbedHeaderRenderer.title;
             subscriberCountText = (_a = c4TabbedHeaderRenderer.subscriberCountText) === null || _a === void 0 ? void 0 : _a.simpleText;
             avatar = (_b = c4TabbedHeaderRenderer.avatar) === null || _b === void 0 ? void 0 : _b.thumbnails;
-            tvBanner = (_c = c4TabbedHeaderRenderer.tvBanner) === null || _c === void 0 ? void 0 : _c.thumbnails;
-            mobileBanner = c4TabbedHeaderRenderer.mobileBanner.thumbnails;
-            banner = c4TabbedHeaderRenderer.banner.thumbnails;
+            tvBanner = (_c = c4TabbedHeaderRenderer === null || c4TabbedHeaderRenderer === void 0 ? void 0 : c4TabbedHeaderRenderer.tvBanner) === null || _c === void 0 ? void 0 : _c.thumbnails;
+            mobileBanner = (_d = c4TabbedHeaderRenderer === null || c4TabbedHeaderRenderer === void 0 ? void 0 : c4TabbedHeaderRenderer.mobileBanner) === null || _d === void 0 ? void 0 : _d.thumbnails;
+            banner = (_e = c4TabbedHeaderRenderer === null || c4TabbedHeaderRenderer === void 0 ? void 0 : c4TabbedHeaderRenderer.banner) === null || _e === void 0 ? void 0 : _e.thumbnails;
         }
         else {
             channelId =
                 data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
-            var _e = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _e.metadata, imageModel = _e.image, bannerModel = _e.banner;
+            var _g = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _g.metadata, imageModel = _g.image, bannerModel = _g.banner;
             subscriberCountText =
                 metadata.contentMetadataViewModel.metadataRows[1].metadataParts[0].text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;

@@ -7,7 +7,7 @@ const PlaylistCompact_1 = require("../PlaylistCompact");
 const VideoCompact_1 = require("../VideoCompact");
 class ChannelParser {
     static loadChannel(target, data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         let channelId, title, avatar, subscriberCountText, tvBanner, mobileBanner, banner;
         const { c4TabbedHeaderRenderer, pageHeaderRenderer } = data.header;
         if (c4TabbedHeaderRenderer) {
@@ -15,9 +15,9 @@ class ChannelParser {
             title = c4TabbedHeaderRenderer.title;
             subscriberCountText = (_a = c4TabbedHeaderRenderer.subscriberCountText) === null || _a === void 0 ? void 0 : _a.simpleText;
             avatar = (_b = c4TabbedHeaderRenderer.avatar) === null || _b === void 0 ? void 0 : _b.thumbnails;
-            tvBanner = (_c = c4TabbedHeaderRenderer.tvBanner) === null || _c === void 0 ? void 0 : _c.thumbnails;
-            mobileBanner = c4TabbedHeaderRenderer.mobileBanner.thumbnails;
-            banner = c4TabbedHeaderRenderer.banner.thumbnails;
+            tvBanner = (_c = c4TabbedHeaderRenderer === null || c4TabbedHeaderRenderer === void 0 ? void 0 : c4TabbedHeaderRenderer.tvBanner) === null || _c === void 0 ? void 0 : _c.thumbnails;
+            mobileBanner = (_d = c4TabbedHeaderRenderer === null || c4TabbedHeaderRenderer === void 0 ? void 0 : c4TabbedHeaderRenderer.mobileBanner) === null || _d === void 0 ? void 0 : _d.thumbnails;
+            banner = (_e = c4TabbedHeaderRenderer === null || c4TabbedHeaderRenderer === void 0 ? void 0 : c4TabbedHeaderRenderer.banner) === null || _e === void 0 ? void 0 : _e.thumbnails;
         }
         else {
             channelId =
