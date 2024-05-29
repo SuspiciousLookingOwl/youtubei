@@ -1,14 +1,12 @@
-import { stripToInt, Thumbnails } from "../../common";
+import { Thumbnails } from "../../common";
 var BaseChannelParser = /** @class */ (function () {
     function BaseChannelParser() {
     }
     BaseChannelParser.loadBaseChannel = function (target, data) {
-        var _a;
-        var channelId = data.channelId, title = data.title, thumbnail = data.thumbnail, videoCountText = data.videoCountText, subscriberCountText = data.subscriberCountText;
+        var channelId = data.channelId, title = data.title, thumbnail = data.thumbnail, subscriberCountText = data.subscriberCountText;
         target.id = channelId;
         target.name = title.simpleText;
         target.thumbnails = new Thumbnails().load(thumbnail.thumbnails);
-        target.videoCount = stripToInt((_a = videoCountText === null || videoCountText === void 0 ? void 0 : videoCountText.runs) === null || _a === void 0 ? void 0 : _a[0].text) || 0; // TODO this sometimes contains subscriber count for some reason
         target.subscriberCount = subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText;
         return target;
     };
