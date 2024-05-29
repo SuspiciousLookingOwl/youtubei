@@ -27,13 +27,12 @@ export class ChannelParser {
 			const {
 				metadata,
 				image: imageModel,
-				banner: bannerModel,
 			} = pageHeaderRenderer.content.pageHeaderViewModel;
 
 			subscriberCountText =
 				metadata.contentMetadataViewModel.metadataRows[1].metadataParts[0].text.content;
 			avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
-			banner = bannerModel.imageBannerViewModel.image.sources;
+			banner = pageHeaderRenderer.content.pageHeaderViewModel?.bannerModel?.imageBannerViewModel?.image?.sources;
 		}
 
 		target.id = channelId;
