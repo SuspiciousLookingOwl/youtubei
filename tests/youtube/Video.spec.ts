@@ -25,7 +25,7 @@ describe("Video", () => {
 		);
 		expect(video.duration).toBe(2172);
 		expect(typeof video.description).toBe("string");
-		commonBaseChannelTest(video.channel!, { ignoreVideoCount: true });
+		commonBaseChannelTest(video.channel!);
 		expect(typeof video.uploadDate).toBe("string");
 		expect(video.viewCount).toBeGreaterThan(8000000);
 		expect(video.likeCount).toBeGreaterThan(245000);

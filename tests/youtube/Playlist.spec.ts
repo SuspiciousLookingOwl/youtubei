@@ -22,7 +22,6 @@ describe("Playlist", () => {
 		expect(typeof playlist.viewCount).toBe("number");
 		expect(typeof playlist.lastUpdatedAt).toBe("string");
 		commonBaseChannelTest(playlist.channel!, {
-			ignoreVideoCount: true,
 			ignoreThumbnails: true,
 		});
 		expect(playlist.videos.items.length).toBe(100);
@@ -40,7 +39,6 @@ describe("Playlist", () => {
 		expect(newVideos.length).toBe(200);
 		expect(playlist.videos.items.length).toBe(400);
 		commonBaseChannelTest(playlist.videos.items[0].channel!, {
-			ignoreVideoCount: true,
 			ignoreThumbnails: true,
 		});
 	});

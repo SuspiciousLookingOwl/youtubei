@@ -11,7 +11,7 @@ type Ignore = {
 
 export const commonVideoCompactTest = (
 	video: VideoCompact,
-	{ ignoreChannelVideoCount = false, ignoreUploadDate = false, ignoreViewCount = false }: Ignore
+	{ ignoreUploadDate = false, ignoreViewCount = false }: Ignore
 ): void => {
 	expect(video.id).toBe("PziYflu8cB8");
 	expect(video.title).toBe("Kubernetes Explained in 100 Seconds");
@@ -19,7 +19,7 @@ export const commonVideoCompactTest = (
 	expect(video.duration).toBeGreaterThan(126);
 	expect(video.isLive).toBe(false);
 	expect(video.isPrivateOrDeleted).toBe(false);
-	commonBaseChannelTest(video.channel!, { ignoreVideoCount: ignoreChannelVideoCount });
+	commonBaseChannelTest(video.channel!);
 	if (!ignoreUploadDate) expect(typeof video.uploadDate).toBe("string");
 	if (!ignoreViewCount) expect(video.viewCount).toBeGreaterThan(135000);
 };
