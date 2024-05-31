@@ -26,10 +26,11 @@ class ChannelParser {
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
             const { metadata, image: imageModel, banner: bannerModel, } = pageHeaderRenderer.content.pageHeaderViewModel;
-            subscriberCountText =
-                metadata.contentMetadataViewModel.metadataRows[1].metadataParts[0].text.content;
+            const metadataRow = metadata.contentMetadataViewModel.metadataRows[1];
+            subscriberCountText = metadataRow.metadataParts[0].text.content;
+            videoCountText = metadataRow.metadataParts[1].text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
-            banner = bannerModel.imageBannerViewModel.image.sources;
+            banner = bannerModel === null || bannerModel === void 0 ? void 0 : bannerModel.imageBannerViewModel.image.sources;
         }
         target.id = channelId;
         target.name = title;
