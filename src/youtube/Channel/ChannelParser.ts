@@ -67,7 +67,7 @@ export class ChannelParser {
 				.sectionListRenderer.contents;
 
 		for (const rawShelf of rawShelves) {
-			const shelfRenderer = rawShelf.itemSectionRenderer.contents[0].shelfRenderer;
+			const shelfRenderer = rawShelf.itemSectionRenderer?.contents[0].shelfRenderer;
 			if (!shelfRenderer) continue;
 
 			const { title, content, subtitle } = shelfRenderer;
