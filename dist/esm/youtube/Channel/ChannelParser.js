@@ -55,13 +55,14 @@ var ChannelParser = /** @class */ (function () {
     };
     ChannelParser.parseShelves = function (target, data) {
         var e_1, _a;
+        var _b;
         var shelves = [];
         var rawShelves = data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
             .sectionListRenderer.contents;
         try {
             for (var rawShelves_1 = __values(rawShelves), rawShelves_1_1 = rawShelves_1.next(); !rawShelves_1_1.done; rawShelves_1_1 = rawShelves_1.next()) {
                 var rawShelf = rawShelves_1_1.value;
-                var shelfRenderer = rawShelf.itemSectionRenderer.contents[0].shelfRenderer;
+                var shelfRenderer = (_b = rawShelf.itemSectionRenderer) === null || _b === void 0 ? void 0 : _b.contents[0].shelfRenderer;
                 if (!shelfRenderer)
                     continue;
                 var title = shelfRenderer.title, content = shelfRenderer.content, subtitle = shelfRenderer.subtitle;
