@@ -73,7 +73,7 @@ class Client {
     }
     /** Get video information by video id or URL */
     getVideo(videoId) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             const response = yield this.http.get(`${constants_1.WATCH_END_POINT}`, {
                 params: { v: videoId, pbj: "1" },
@@ -81,7 +81,8 @@ class Client {
             const data = Array.isArray(response.data)
                 ? response.data.reduce((prev, curr) => (Object.assign(Object.assign({}, prev), curr)), {})
                 : response.data;
-            if (!((_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) || data.playerResponse.playabilityStatus.status === "ERROR") {
+            if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
+                data.playerResponse.playabilityStatus.status === "ERROR") {
                 return undefined;
             }
             return (!data.playerResponse.playabilityStatus.liveStreamability

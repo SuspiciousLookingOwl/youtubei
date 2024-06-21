@@ -133,20 +133,21 @@ var Client = /** @class */ (function () {
     };
     /** Get video information by video id or URL */
     Client.prototype.getVideo = function (videoId) {
-        var _a;
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
             var response, data;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, this.http.get("" + WATCH_END_POINT, {
                             params: { v: videoId, pbj: "1" },
                         })];
                     case 1:
-                        response = _b.sent();
+                        response = _c.sent();
                         data = Array.isArray(response.data)
                             ? response.data.reduce(function (prev, curr) { return (__assign(__assign({}, prev), curr)); }, {})
                             : response.data;
-                        if (!((_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) || data.playerResponse.playabilityStatus.status === "ERROR") {
+                        if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
+                            data.playerResponse.playabilityStatus.status === "ERROR") {
                             return [2 /*return*/, undefined];
                         }
                         return [2 /*return*/, (!data.playerResponse.playabilityStatus.liveStreamability
