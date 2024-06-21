@@ -117,7 +117,10 @@ export class Client {
 			? response.data.reduce<YoutubeRawData>((prev, curr) => ({ ...prev, ...curr }), {})
 			: response.data;
 
-		if (!data.response?.contents || data.playerResponse.playabilityStatus.status === "ERROR") {
+		if (
+			!data.response?.contents?.twoColumnWatchNextResults.results.results.contents ||
+			data.playerResponse.playabilityStatus.status === "ERROR"
+		) {
 			return undefined as T;
 		}
 
