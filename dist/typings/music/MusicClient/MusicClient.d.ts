@@ -6,6 +6,10 @@ import { MusicLyrics } from "../MusicLyrics";
 import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
 import { MusicSearchResult, MusicSearchType } from "../MusicSearchResult";
 import { MusicVideoCompact } from "../MusicVideoCompact";
+export declare type MusicTopShelf = {
+    item: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
+    more?: (MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact)[];
+};
 export declare type MusicClientOptions = {
     initialCookie: string;
     /** Optional options for http client */
@@ -22,11 +26,20 @@ export declare class MusicClient {
      * Searches for video, song, album, playlist, or artist
      *
      * @param query The search query
-     * @param options Search options
+     * @param type Search type
      *
      */
     search(query: string): Promise<Shelf<MusicVideoCompact[] | MusicAlbumCompact[] | MusicPlaylistCompact[] | MusicArtistCompact[]>[]>;
     search<T extends MusicSearchType>(query: string, type: T): Promise<MusicSearchResult<T>>;
+    /**
+     * Searches for all video, song, album, playlist, or artist
+     *
+     * @param query The search query
+     */
+    searchAll(query: string): Promise<{
+        top?: MusicTopShelf;
+        shelves: Shelf<MusicVideoCompact[] | MusicAlbumCompact[] | MusicPlaylistCompact[] | MusicArtistCompact[]>[];
+    }>;
     /**
      * Get lyrics of a song
      *

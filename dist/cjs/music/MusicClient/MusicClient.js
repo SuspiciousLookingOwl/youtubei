@@ -36,6 +36,22 @@ class MusicClient {
         });
     }
     /**
+     * Searches for all video, song, album, playlist, or artist
+     *
+     * @param query The search query
+     */
+    searchAll(query) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.http.post(`${constants_1.I_END_POINT}/search`, {
+                data: { query },
+            });
+            return {
+                top: MusicSearchResult_1.MusicAllSearchResultParser.parseTopResult(response.data, this),
+                shelves: MusicSearchResult_1.MusicAllSearchResultParser.parseSearchResult(response.data, this),
+            };
+        });
+    }
+    /**
      * Get lyrics of a song
      *
      * @param query The search query

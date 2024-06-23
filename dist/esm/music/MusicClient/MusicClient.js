@@ -80,6 +80,29 @@ var MusicClient = /** @class */ (function () {
         });
     };
     /**
+     * Searches for all video, song, album, playlist, or artist
+     *
+     * @param query The search query
+     */
+    MusicClient.prototype.searchAll = function (query) {
+        return __awaiter(this, void 0, void 0, function () {
+            var response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.http.post(I_END_POINT + "/search", {
+                            data: { query: query },
+                        })];
+                    case 1:
+                        response = _a.sent();
+                        return [2 /*return*/, {
+                                top: MusicAllSearchResultParser.parseTopResult(response.data, this),
+                                shelves: MusicAllSearchResultParser.parseSearchResult(response.data, this),
+                            }];
+                }
+            });
+        });
+    };
+    /**
      * Get lyrics of a song
      *
      * @param query The search query
