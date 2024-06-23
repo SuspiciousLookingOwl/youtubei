@@ -40,6 +40,7 @@ export class MusicAllSearchResultParser {
 				client,
 				id,
 				title,
+				duration: getDuration(top.subtitle.runs.at(-1).text),
 				artists: MusicAllSearchResultParser.parseArtists(top.subtitle.runs, client),
 				album: MusicAllSearchResultParser.parseAlbum(top.subtitle.runs, client),
 				thumbnails: new Thumbnails().load(thumbnail),
@@ -49,6 +50,7 @@ export class MusicAllSearchResultParser {
 				client,
 				id,
 				title,
+				duration: getDuration(top.subtitle.runs.at(-1).text),
 				artists: MusicAllSearchResultParser.parseArtists(top.subtitle.runs, client),
 				thumbnails: new Thumbnails().load(thumbnail),
 			});
