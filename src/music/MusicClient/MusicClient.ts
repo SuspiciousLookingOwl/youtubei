@@ -13,6 +13,11 @@ import {
 import { MusicVideoCompact } from "../MusicVideoCompact";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION, I_END_POINT } from "../constants";
 
+export type MusicTopShelf = {
+	item: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
+	more?: (MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact)[];
+};
+
 export type MusicClientOptions = {
 	initialCookie: string;
 	/** Optional options for http client */
@@ -51,7 +56,7 @@ export class MusicClient {
 	 * Searches for video, song, album, playlist, or artist
 	 *
 	 * @param query The search query
-	 * @param options Search options
+	 * @param type Search type
 	 *
 	 */
 	async search(
@@ -88,6 +93,32 @@ export class MusicClient {
 			await result.search(query, type);
 			return result;
 		}
+	}
+
+	/**
+	 * Searches for all video, song, album, playlist, or artist
+	 *
+	 * @param query The search query
+	 */
+	async searchAll(
+		query: string
+	): Promise<{
+		top?: MusicTopShelf;
+		shelves: Shelf<
+			| MusicVideoCompact[]
+			| MusicAlbumCompact[]
+			| MusicPlaylistCompact[]
+			| MusicArtistCompact[]
+		>[];
+	}> {
+		const response = await this.http.post(`${I_END_POINT}/search`, {
+			data: { query },
+		});
+
+		return {
+			top: MusicAllSearchResultParser.parseTopResult(response.data, this),
+			shelves: MusicAllSearchResultParser.parseSearchResult(response.data, this),
+		};
 	}
 
 	/**
