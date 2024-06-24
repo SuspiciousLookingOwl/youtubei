@@ -7,7 +7,7 @@ import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
 import { MusicSearchResult, MusicSearchType } from "../MusicSearchResult";
 import { MusicVideoCompact } from "../MusicVideoCompact";
 export declare type MusicTopShelf = {
-    item: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
+    item?: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
     more?: (MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact)[];
 };
 export declare type MusicClientOptions = {

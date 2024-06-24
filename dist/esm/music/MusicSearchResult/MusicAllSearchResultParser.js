@@ -43,6 +43,7 @@ var MusicAllSearchResultParser = /** @class */ (function () {
                 client: client,
                 id: id,
                 title: title,
+                duration: getDuration(top.subtitle.runs.at(-1).text),
                 artists: MusicAllSearchResultParser.parseArtists(top.subtitle.runs, client),
                 album: MusicAllSearchResultParser.parseAlbum(top.subtitle.runs, client),
                 thumbnails: new Thumbnails().load(thumbnail),
@@ -53,6 +54,7 @@ var MusicAllSearchResultParser = /** @class */ (function () {
                 client: client,
                 id: id,
                 title: title,
+                duration: getDuration(top.subtitle.runs.at(-1).text),
                 artists: MusicAllSearchResultParser.parseArtists(top.subtitle.runs, client),
                 thumbnails: new Thumbnails().load(thumbnail),
             });
@@ -79,7 +81,7 @@ var MusicAllSearchResultParser = /** @class */ (function () {
                 client: client,
                 id: id,
                 title: title,
-                channel: MusicAllSearchResultParser.parseChannel(top.subtitle.run, client),
+                channel: MusicAllSearchResultParser.parseChannel(top.subtitle.runs, client),
                 thumbnails: new Thumbnails().load(thumbnail),
             });
         }
@@ -102,9 +104,9 @@ var MusicAllSearchResultParser = /** @class */ (function () {
             .map(function (m) { return m.musicShelfRenderer; });
         return shelves.map(function (m) { return ({
             title: m.title.runs.map(function (r) { return r.text; }).join(),
-            items: m.contents.map(function (c) {
-                return MusicAllSearchResultParser.parseSearchItem(c, client);
-            }),
+            items: m.contents
+                .map(function (c) { return MusicAllSearchResultParser.parseSearchItem(c, client); })
+                .filter(function (i) { return i; }),
         }); });
     };
     MusicAllSearchResultParser.parseSearchItem = function (content, client) {
@@ -114,21 +116,26 @@ var MusicAllSearchResultParser = /** @class */ (function () {
         if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchEndpoint) {
             var pageType = playEndpoint.watchEndpoint.watchEndpointMusicSupportedConfigs
                 .watchEndpointMusicConfig.musicVideoType;
-            if (pageType === "MUSIC_VIDEO_TYPE_PODCAST_EPISODE")
-                return;
             return MusicAllSearchResultParser.parseVideoItem(item, pageType, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint.params) {
             return MusicAllSearchResultParser.parsePlaylistItem(item, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint) {
-            return MusicAllSearchResultParser.parseAlbumItem(item, client);
+            // TODO add podcast support, id starts with PL
+            if (playEndpoint.watchPlaylistEndpoint.playlistId.startsWith("OL")) {
+                return MusicAllSearchResultParser.parseAlbumItem(item, client);
+            }
         }
         else {
             return MusicAllSearchResultParser.parseArtistItem(item, client);
         }
     };
     MusicAllSearchResultParser.parseVideoItem = function (item, pageType, client) {
+        // TODO support other types
+        if (!["MUSIC_VIDEO_TYPE_ATV", "MUSIC_VIDEO_TYPE_UGC", "MUSIC_VIDEO_TYPE_OMV"].includes(pageType)) {
+            return;
+        }
         var _a = __read(item.flexColumns.map(function (c) { return c.musicResponsiveListItemFlexColumnRenderer.text.runs; }), 2), topColumn = _a[0], bottomColumn = _a[1];
         var id = topColumn[0].navigationEndpoint.watchEndpoint.videoId;
         var title = topColumn[0].text;

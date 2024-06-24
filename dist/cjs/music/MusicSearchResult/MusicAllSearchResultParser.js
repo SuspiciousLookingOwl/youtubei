@@ -28,6 +28,7 @@ class MusicAllSearchResultParser {
                 client,
                 id,
                 title,
+                duration: common_1.getDuration(top.subtitle.runs.at(-1).text),
                 artists: MusicAllSearchResultParser.parseArtists(top.subtitle.runs, client),
                 album: MusicAllSearchResultParser.parseAlbum(top.subtitle.runs, client),
                 thumbnails: new common_1.Thumbnails().load(thumbnail),
@@ -38,6 +39,7 @@ class MusicAllSearchResultParser {
                 client,
                 id,
                 title,
+                duration: common_1.getDuration(top.subtitle.runs.at(-1).text),
                 artists: MusicAllSearchResultParser.parseArtists(top.subtitle.runs, client),
                 thumbnails: new common_1.Thumbnails().load(thumbnail),
             });
@@ -64,7 +66,7 @@ class MusicAllSearchResultParser {
                 client,
                 id,
                 title,
-                channel: MusicAllSearchResultParser.parseChannel(top.subtitle.run, client),
+                channel: MusicAllSearchResultParser.parseChannel(top.subtitle.runs, client),
                 thumbnails: new common_1.Thumbnails().load(thumbnail),
             });
         }
@@ -87,7 +89,9 @@ class MusicAllSearchResultParser {
             .map((m) => m.musicShelfRenderer);
         return shelves.map((m) => ({
             title: m.title.runs.map((r) => r.text).join(),
-            items: m.contents.map((c) => MusicAllSearchResultParser.parseSearchItem(c, client)),
+            items: m.contents
+                .map((c) => MusicAllSearchResultParser.parseSearchItem(c, client))
+                .filter((i) => i),
         }));
     }
     static parseSearchItem(content, client) {
@@ -97,21 +101,26 @@ class MusicAllSearchResultParser {
         if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchEndpoint) {
             const pageType = playEndpoint.watchEndpoint.watchEndpointMusicSupportedConfigs
                 .watchEndpointMusicConfig.musicVideoType;
-            if (pageType === "MUSIC_VIDEO_TYPE_PODCAST_EPISODE")
-                return;
             return MusicAllSearchResultParser.parseVideoItem(item, pageType, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint.params) {
             return MusicAllSearchResultParser.parsePlaylistItem(item, client);
         }
         else if (playEndpoint === null || playEndpoint === void 0 ? void 0 : playEndpoint.watchPlaylistEndpoint) {
-            return MusicAllSearchResultParser.parseAlbumItem(item, client);
+            // TODO add podcast support, id starts with PL
+            if (playEndpoint.watchPlaylistEndpoint.playlistId.startsWith("OL")) {
+                return MusicAllSearchResultParser.parseAlbumItem(item, client);
+            }
         }
         else {
             return MusicAllSearchResultParser.parseArtistItem(item, client);
         }
     }
     static parseVideoItem(item, pageType, client) {
+        // TODO support other types
+        if (!["MUSIC_VIDEO_TYPE_ATV", "MUSIC_VIDEO_TYPE_UGC", "MUSIC_VIDEO_TYPE_OMV"].includes(pageType)) {
+            return;
+        }
         const [topColumn, bottomColumn] = item.flexColumns.map((c) => c.musicResponsiveListItemFlexColumnRenderer.text.runs);
         const id = topColumn[0].navigationEndpoint.watchEndpoint.videoId;
         const title = topColumn[0].text;
