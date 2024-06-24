@@ -131,7 +131,10 @@ export class MusicAllSearchResultParser {
 		} else if (playEndpoint?.watchPlaylistEndpoint.params) {
 			return MusicAllSearchResultParser.parsePlaylistItem(item, client);
 		} else if (playEndpoint?.watchPlaylistEndpoint) {
-			return MusicAllSearchResultParser.parseAlbumItem(item, client);
+			// TODO add podcast support, id starts with PL
+			if (playEndpoint.watchPlaylistEndpoint.playlistId.startsWith("OL")) {
+				return MusicAllSearchResultParser.parseAlbumItem(item, client);
+			}
 		} else {
 			return MusicAllSearchResultParser.parseArtistItem(item, client);
 		}
