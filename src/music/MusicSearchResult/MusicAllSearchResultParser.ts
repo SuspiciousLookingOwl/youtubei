@@ -74,7 +74,7 @@ export class MusicAllSearchResultParser {
 				client,
 				id,
 				title,
-				channel: MusicAllSearchResultParser.parseChannel(top.subtitle.run, client),
+				channel: MusicAllSearchResultParser.parseChannel(top.subtitle.runs, client),
 				thumbnails: new Thumbnails().load(thumbnail),
 			});
 		}
@@ -125,8 +125,6 @@ export class MusicAllSearchResultParser {
 			const pageType =
 				playEndpoint.watchEndpoint.watchEndpointMusicSupportedConfigs
 					.watchEndpointMusicConfig.musicVideoType;
-
-			if (pageType === "MUSIC_VIDEO_TYPE_PODCAST_EPISODE") return;
 
 			return MusicAllSearchResultParser.parseVideoItem(item, pageType, client);
 		} else if (playEndpoint?.watchPlaylistEndpoint.params) {
