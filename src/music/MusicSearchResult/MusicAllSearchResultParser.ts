@@ -33,7 +33,8 @@ export class MusicAllSearchResultParser {
 			| MusicVideoCompact
 			| MusicAlbumCompact
 			| MusicArtistCompact
-			| MusicPlaylistCompact;
+			| MusicPlaylistCompact
+			| undefined;
 
 		if (type === "MUSIC_VIDEO_TYPE_ATV") {
 			topResult = new MusicSongCompact({
@@ -109,9 +110,9 @@ export class MusicAllSearchResultParser {
 
 		return shelves.map((m: YoutubeRawData) => ({
 			title: m.title.runs.map((r: YoutubeRawData) => r.text).join(),
-			items: m.contents.map((c: YoutubeRawData) =>
-				MusicAllSearchResultParser.parseSearchItem(c, client)
-			),
+			items: m.contents
+				.map((c: YoutubeRawData) => MusicAllSearchResultParser.parseSearchItem(c, client))
+				.filter((i: unknown) => i),
 		}));
 	}
 
@@ -141,6 +142,15 @@ export class MusicAllSearchResultParser {
 		pageType: string,
 		client: MusicClient
 	): MusicSongCompact | MusicVideoCompact | undefined {
+		// TODO support other types
+		if (
+			!["MUSIC_VIDEO_TYPE_ATV", "MUSIC_VIDEO_TYPE_UGC", "MUSIC_VIDEO_TYPE_OMV"].includes(
+				pageType
+			)
+		) {
+			return;
+		}
+
 		const [topColumn, bottomColumn] = item.flexColumns.map(
 			(c: YoutubeRawData) => c.musicResponsiveListItemFlexColumnRenderer.text.runs
 		);
