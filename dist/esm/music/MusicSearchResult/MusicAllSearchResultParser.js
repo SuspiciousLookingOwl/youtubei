@@ -201,13 +201,7 @@ var MusicAllSearchResultParser = /** @class */ (function () {
         return album;
     };
     MusicAllSearchResultParser.parseArtists = function (items, client) {
-        return items
-            .filter(function (r) {
-            var _a;
-            var pageType = (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
-            return pageType === "MUSIC_PAGE_TYPE_ARTIST";
-        })
-            .map(function (r) {
+        return this.parseArtistsOrChannel(items).map(function (r) {
             var _a;
             return new MusicBaseArtist({
                 client: client,
@@ -218,11 +212,7 @@ var MusicAllSearchResultParser = /** @class */ (function () {
     };
     MusicAllSearchResultParser.parseChannel = function (items, client) {
         var _a;
-        var channelRaw = items.find(function (r) {
-            var _a;
-            var pageType = (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
-            return pageType === "MUSIC_PAGE_TYPE_USER_CHANNEL";
-        });
+        var _b = __read(this.parseArtistsOrChannel(items), 1), channelRaw = _b[0];
         if (!channelRaw)
             return;
         var channel = new MusicBaseChannel({
@@ -231,6 +221,13 @@ var MusicAllSearchResultParser = /** @class */ (function () {
             id: (_a = channelRaw.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseId,
         });
         return channel;
+    };
+    MusicAllSearchResultParser.parseArtistsOrChannel = function (items) {
+        return items.filter(function (i) {
+            var _a;
+            var pageType = (_a = i.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
+            return (pageType === "MUSIC_PAGE_TYPE_ARTIST" || pageType == "MUSIC_PAGE_TYPE_USER_CHANNEL");
+        });
     };
     return MusicAllSearchResultParser;
 }());

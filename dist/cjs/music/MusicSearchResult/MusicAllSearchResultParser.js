@@ -186,13 +186,7 @@ class MusicAllSearchResultParser {
         return album;
     }
     static parseArtists(items, client) {
-        return items
-            .filter((r) => {
-            var _a;
-            const pageType = (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
-            return pageType === "MUSIC_PAGE_TYPE_ARTIST";
-        })
-            .map((r) => {
+        return this.parseArtistsOrChannel(items).map((r) => {
             var _a;
             return new MusicBaseArtist_1.MusicBaseArtist({
                 client,
@@ -203,11 +197,7 @@ class MusicAllSearchResultParser {
     }
     static parseChannel(items, client) {
         var _a;
-        const channelRaw = items.find((r) => {
-            var _a;
-            const pageType = (_a = r.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
-            return pageType === "MUSIC_PAGE_TYPE_USER_CHANNEL";
-        });
+        const [channelRaw] = this.parseArtistsOrChannel(items);
         if (!channelRaw)
             return;
         const channel = new MusicBaseChannel_1.MusicBaseChannel({
@@ -216,6 +206,13 @@ class MusicAllSearchResultParser {
             id: (_a = channelRaw.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseId,
         });
         return channel;
+    }
+    static parseArtistsOrChannel(items) {
+        return items.filter((i) => {
+            var _a;
+            const pageType = (_a = i.navigationEndpoint) === null || _a === void 0 ? void 0 : _a.browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType;
+            return (pageType === "MUSIC_PAGE_TYPE_ARTIST" || pageType == "MUSIC_PAGE_TYPE_USER_CHANNEL");
+        });
     }
 }
 exports.MusicAllSearchResultParser = MusicAllSearchResultParser;

@@ -15,4 +15,5 @@ export declare class MusicAllSearchResultParser {
     private static parseAlbum;
     private static parseArtists;
     private static parseChannel;
+    private static parseArtistsOrChannel;
 }
