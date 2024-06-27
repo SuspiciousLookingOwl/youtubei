@@ -81,7 +81,8 @@ export class VideoCaptions extends Base {
 				new Caption({
 					duration: e.dDurationMs,
 					start: e.tStartMs,
-					text: e.segs?.map((s: YoutubeRawData) => Object.values(s).join("")).join(" "),
+					text: e.segs?.map((s: YoutubeRawData) => s.utf8).join(),
+					segments: e.segs,
 				})
 			);
 			return curr;
