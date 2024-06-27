@@ -119,7 +119,8 @@ var VideoCaptions = /** @class */ (function (_super) {
                             curr.push(new Caption({
                                 duration: e.dDurationMs,
                                 start: e.tStartMs,
-                                text: (_a = e.segs) === null || _a === void 0 ? void 0 : _a.map(function (s) { return Object.values(s).join(""); }).join(" "),
+                                text: (_a = e.segs) === null || _a === void 0 ? void 0 : _a.map(function (s) { return s.utf8; }).join(),
+                                segments: e.segs,
                             }));
                             return curr;
                         }, []);
