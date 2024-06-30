@@ -1,4 +1,4 @@
-import { getDuration, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
+import { getDuration, parseNumberRepresentation, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { VideoCompact } from "./VideoCompact";
 
@@ -62,7 +62,9 @@ export class VideoCompactParser {
 			}
 		}
 
-		target.viewCount = stripToInt(viewCountText?.simpleText || viewCountText?.runs[0].text);
+		target.viewCount = parseNumberRepresentation(
+			viewCountText?.simpleText || viewCountText?.runs[0].text
+		);
 
 		return target;
 	}
