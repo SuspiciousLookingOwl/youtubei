@@ -17,9 +17,9 @@ var ChannelParser = /** @class */ (function () {
     function ChannelParser() {
     }
     ChannelParser.loadChannel = function (target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         var channelId, title, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
-        var _j = data.header, c4TabbedHeaderRenderer = _j.c4TabbedHeaderRenderer, pageHeaderRenderer = _j.pageHeaderRenderer;
+        var _k = data.header, c4TabbedHeaderRenderer = _k.c4TabbedHeaderRenderer, pageHeaderRenderer = _k.pageHeaderRenderer;
         if (c4TabbedHeaderRenderer) {
             channelId = c4TabbedHeaderRenderer.channelId;
             title = c4TabbedHeaderRenderer.title;
@@ -35,10 +35,10 @@ var ChannelParser = /** @class */ (function () {
                 data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
-            var _k = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _k.metadata, imageModel = _k.image, bannerModel = _k.banner;
+            var _l = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _l.metadata, imageModel = _l.image, bannerModel = _l.banner;
             var metadataRow = metadata.contentMetadataViewModel.metadataRows[1];
-            subscriberCountText = metadataRow.metadataParts[0].text.content;
-            videoCountText = metadataRow.metadataParts[1].text.content;
+            subscriberCountText = metadataRow.metadataParts.find(function (m) { return !m.text.styeRuns; }).text.content;
+            videoCountText = (_j = metadataRow.metadataParts.find(function (m) { return m.text.styeRuns; })) === null || _j === void 0 ? void 0 : _j.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
             banner = bannerModel === null || bannerModel === void 0 ? void 0 : bannerModel.imageBannerViewModel.image.sources;
         }
