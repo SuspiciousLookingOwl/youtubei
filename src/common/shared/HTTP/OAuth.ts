@@ -77,7 +77,6 @@ export class OAuth {
 			while (!authenticateResponse) {
 				try {
 					authenticateResponse = await this.authenticate(data.device_code);
-					if (!authenticateResponse) await new Promise((r) => setTimeout(r, 5000)); // sleep for 5 seconds
 				} catch (err) {
 					const message = (err as Error).message;
 					if (message === "authorization_pending") {
@@ -96,7 +95,7 @@ export class OAuth {
 		throw new Error("Authorization failed");
 	}
 
-	static async authenticate(code: string): Promise<AuthenticateResponse> {
+	private static async authenticate(code: string): Promise<AuthenticateResponse> {
 		const body = {
 			client_id: this.CLIENT_ID,
 			client_secret: this.CLIENT_SECRET,
@@ -132,12 +131,12 @@ export class OAuth {
 		}
 	}
 
-	static async refreshToken(refreshToken: string): Promise<RefreshResponse | null> {
+	static async refreshToken(refreshToken: string): Promise<RefreshResponse> {
 		const body = {
 			client_id: this.CLIENT_ID,
 			client_secret: this.CLIENT_SECRET,
 			refresh_token: refreshToken,
-			grant_type: "http://oauth.net/grant_type/device/1.0",
+			grant_type: "refresh_token",
 		};
 
 		const response = await fetch("https://www.youtube.com/o/oauth2/token", {
@@ -150,15 +149,16 @@ export class OAuth {
 		});
 
 		if (response.ok) {
-			const json: RefreshRawResponse = await response.json();
+			const data: RefreshRawResponse | ErrorResponse = await response.json();
+			if ("error" in data) return this.authorize();
 			return {
-				accessToken: json.access_token,
-				expiresIn: json.expires_in,
-				scope: json.scope,
-				tokenType: json.token_type,
+				accessToken: data.access_token,
+				expiresIn: data.expires_in,
+				scope: data.scope,
+				tokenType: data.token_type,
 			};
 		} else {
-			return null;
+			return this.authorize();
 		}
 	}
 }
