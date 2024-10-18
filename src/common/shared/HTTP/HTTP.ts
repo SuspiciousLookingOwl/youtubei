@@ -1,6 +1,18 @@
 import fetch, { Response as FetchResponse, HeadersInit, RequestInit } from "node-fetch";
 import { URLSearchParams } from "url";
 
+import { OAuth } from "./OAuth";
+
+export type OAuthOptions = {
+	enabled: boolean;
+	refreshToken?: string;
+};
+
+type OAuthProps = {
+	token: string | null;
+	expiresAt: Date | null;
+};
+
 type HTTPOptions = {
 	apiKey: string;
 	baseUrl: string;
@@ -9,6 +21,7 @@ type HTTPOptions = {
 	fetchOptions?: Partial<RequestInit>;
 	youtubeClientOptions?: Record<string, unknown>;
 	initialCookie?: string;
+	oauth?: OAuthOptions;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,6 +46,8 @@ export class HTTP {
 	private defaultHeaders: HeadersInit;
 	private defaultFetchOptions: Partial<RequestInit>;
 	private defaultClientOptions: Record<string, unknown>;
+	private authorizationPromise: Promise<void> | null;
+	public oauth: OAuthOptions & OAuthProps;
 
 	constructor(options: HTTPOptions) {
 		this.apiKey = options.apiKey;
@@ -46,6 +61,13 @@ export class HTTP {
 			"content-type": "application/json",
 			"accept-encoding": "gzip, deflate, br",
 		};
+		this.oauth = {
+			enabled: false,
+			token: null,
+			expiresAt: null,
+			...options.oauth,
+		};
+		this.authorizationPromise = null;
 		this.defaultFetchOptions = options.fetchOptions || {};
 		this.defaultClientOptions = options.youtubeClientOptions || {};
 	}
@@ -81,6 +103,8 @@ export class HTTP {
 	}
 
 	private async request(path: string, partialOptions: Partial<Options>): Promise<Response> {
+		if (this.authorizationPromise) await this.authorizationPromise;
+
 		const options: RequestInit = {
 			...partialOptions,
 			...this.defaultFetchOptions,
@@ -93,6 +117,17 @@ export class HTTP {
 			},
 			body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined,
 		};
+
+		if (this.oauth.enabled) {
+			this.authorizationPromise = this.authorize();
+			await this.authorizationPromise;
+
+			if (this.oauth.token) {
+				options.headers = {
+					Authorization: `Bearer ${this.oauth.token}`,
+				};
+			}
+		}
 
 		// if URL is a full URL, ignore baseUrl
 		let urlString: string;
@@ -118,5 +153,21 @@ export class HTTP {
 	private parseCookie(response: FetchResponse) {
 		const cookie = response.headers.get("set-cookie");
 		if (cookie) this.cookie = cookie;
+	}
+
+	private async authorize() {
+		const isExpired =
+			!this.oauth.expiresAt || this.oauth.expiresAt.getTime() - 5 * 60 * 1000 < Date.now();
+
+		if (this.oauth.refreshToken && (isExpired || !this.oauth.token)) {
+			const response = await OAuth.refreshToken(this.oauth.refreshToken);
+			this.oauth.token = response.accessToken;
+			this.oauth.expiresAt = new Date(Date.now() + response.expiresIn * 1000);
+		} else if (isExpired || !this.oauth.token) {
+			const response = await OAuth.authorize();
+			this.oauth.token = response.accessToken;
+			this.oauth.refreshToken = response.refreshToken;
+			this.oauth.expiresAt = new Date(Date.now() + response.expiresIn * 1000);
+		}
 	}
 }
