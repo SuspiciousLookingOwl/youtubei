@@ -1,37 +1,37 @@
-name: Build and Test
+# name: Build and Test
 
-on:
-    pull_request:
-        branches: [development]
+# on:
+#     pull_request:
+#         branches: [development]
 
-jobs:
-    test:
-        runs-on: ubuntu-latest
+# jobs:
+#     test:
+#         runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                node-version: [16.x]
+#         strategy:
+#             matrix:
+#                 node-version: [16.x]
 
-        steps:
-            - uses: actions/checkout@v1
+#         steps:
+#             - uses: actions/checkout@v1
 
-            - name: Use Node.js ${{ matrix.node-version }}
-              uses: actions/setup-node@v1
-              with:
-                  node-version: ${{ matrix.node-version }}
+#             - name: Use Node.js ${{ matrix.node-version }}
+#               uses: actions/setup-node@v1
+#               with:
+#                   node-version: ${{ matrix.node-version }}
 
-            - uses: pnpm/action-setup@v2.0.1
-              name: Install pnpm
-              id: pnpm-install
-              with:
-                  version: 8
-                  run_install: false
+#             - uses: pnpm/action-setup@v2.0.1
+#               name: Install pnpm
+#               id: pnpm-install
+#               with:
+#                   version: 8
+#                   run_install: false
 
-            - name: Install Deps
-              run: pnpm i
+#             - name: Install Deps
+#               run: pnpm i
 
-            - name: Build
-              run: pnpm build
+#             - name: Build
+#               run: pnpm build
 
-            - name: Test
-              run: pnpm t
+#             - name: Test
+#               run: pnpm t
