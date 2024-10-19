@@ -21,7 +21,7 @@ const constants_1 = require("../constants");
 /** Youtube Client */
 class Client {
     constructor(options = {}) {
-        this.options = Object.assign(Object.assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
+        this.options = Object.assign(Object.assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
         this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: constants_1.INNERTUBE_CLIENT_NAME, clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, this.options));
     }
     /**
@@ -75,12 +75,10 @@ class Client {
     getVideo(videoId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.http.get(`${constants_1.WATCH_END_POINT}`, {
-                params: { v: videoId, pbj: "1" },
-            });
-            const data = Array.isArray(response.data)
-                ? response.data.reduce((prev, curr) => (Object.assign(Object.assign({}, prev), curr)), {})
-                : response.data;
+            const nextPromise = this.http.post(`${constants_1.I_END_POINT}/next`, { data: { videoId } });
+            const playerPromise = this.http.post(`${constants_1.I_END_POINT}/player`, { data: { videoId } });
+            const [nextResponse, playerResponse] = yield Promise.all([nextPromise, playerPromise]);
+            const data = { response: nextResponse.data, playerResponse: playerResponse.data };
             if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
                 data.playerResponse.playabilityStatus.status === "ERROR") {
                 return undefined;

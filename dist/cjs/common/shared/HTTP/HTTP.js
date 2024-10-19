@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTP = void 0;
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const url_1 = require("url");
+const OAuth_1 = require("./OAuth");
 /**
  * @hidden
  */
@@ -31,6 +32,8 @@ class HTTP {
             "content-type": "application/json",
             "accept-encoding": "gzip, deflate, br",
         };
+        this.oauth = Object.assign({ enabled: false, token: null, expiresAt: null }, options.oauth);
+        this.authorizationPromise = null;
         this.defaultFetchOptions = options.fetchOptions || {};
         this.defaultClientOptions = options.youtubeClientOptions || {};
     }
@@ -48,7 +51,18 @@ class HTTP {
     }
     request(path, partialOptions) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (this.authorizationPromise)
+                yield this.authorizationPromise;
             const options = Object.assign(Object.assign(Object.assign({}, partialOptions), this.defaultFetchOptions), { headers: Object.assign(Object.assign(Object.assign(Object.assign({}, this.defaultHeaders), { cookie: this.cookie, referer: `https://${this.baseUrl}/` }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
+            if (this.oauth.enabled) {
+                this.authorizationPromise = this.authorize();
+                yield this.authorizationPromise;
+                if (this.oauth.token) {
+                    options.headers = {
+                        Authorization: `Bearer ${this.oauth.token}`,
+                    };
+                }
+            }
             // if URL is a full URL, ignore baseUrl
             let urlString;
             if (path.startsWith("http")) {
@@ -71,6 +85,22 @@ class HTTP {
         const cookie = response.headers.get("set-cookie");
         if (cookie)
             this.cookie = cookie;
+    }
+    authorize() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const isExpired = !this.oauth.expiresAt || this.oauth.expiresAt.getTime() - 5 * 60 * 1000 < Date.now();
+            if (this.oauth.refreshToken && (isExpired || !this.oauth.token)) {
+                const response = yield OAuth_1.OAuth.refreshToken(this.oauth.refreshToken);
+                this.oauth.token = response.accessToken;
+                this.oauth.expiresAt = new Date(Date.now() + response.expiresIn * 1000);
+            }
+            else if (isExpired || !this.oauth.token) {
+                const response = yield OAuth_1.OAuth.authorize();
+                this.oauth.token = response.accessToken;
+                this.oauth.refreshToken = response.refreshToken;
+                this.oauth.expiresAt = new Date(Date.now() + response.expiresIn * 1000);
+            }
+        });
     }
 }
 exports.HTTP = HTTP;

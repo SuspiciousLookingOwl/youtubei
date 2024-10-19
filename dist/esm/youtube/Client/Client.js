@@ -45,6 +45,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import { HTTP } from "../../common";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -52,12 +68,12 @@ import { MixPlaylist } from "../MixPlaylist";
 import { Playlist } from "../Playlist";
 import { SearchResult } from "../SearchResult";
 import { Video } from "../Video";
-import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_NAME, INNERTUBE_CLIENT_VERSION, I_END_POINT, WATCH_END_POINT, } from "../constants";
+import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_NAME, INNERTUBE_CLIENT_VERSION, I_END_POINT, } from "../constants";
 /** Youtube Client */
 var Client = /** @class */ (function () {
     function Client(options) {
         if (options === void 0) { options = {}; }
-        this.options = __assign(__assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
+        this.options = __assign(__assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
         this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: INNERTUBE_CLIENT_NAME, clientVersion: INNERTUBE_CLIENT_VERSION }, this.options));
     }
     /**
@@ -135,17 +151,16 @@ var Client = /** @class */ (function () {
     Client.prototype.getVideo = function (videoId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function () {
-            var response, data;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0: return [4 /*yield*/, this.http.get("" + WATCH_END_POINT, {
-                            params: { v: videoId, pbj: "1" },
-                        })];
+            var nextPromise, playerPromise, _c, nextResponse, playerResponse, data;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        nextPromise = this.http.post(I_END_POINT + "/next", { data: { videoId: videoId } });
+                        playerPromise = this.http.post(I_END_POINT + "/player", { data: { videoId: videoId } });
+                        return [4 /*yield*/, Promise.all([nextPromise, playerPromise])];
                     case 1:
-                        response = _c.sent();
-                        data = Array.isArray(response.data)
-                            ? response.data.reduce(function (prev, curr) { return (__assign(__assign({}, prev), curr)); }, {})
-                            : response.data;
+                        _c = __read.apply(void 0, [_d.sent(), 2]), nextResponse = _c[0], playerResponse = _c[1];
+                        data = { response: nextResponse.data, playerResponse: playerResponse.data };
                         if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
                             data.playerResponse.playabilityStatus.status === "ERROR") {
                             return [2 /*return*/, undefined];

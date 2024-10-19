@@ -74,6 +74,7 @@ var __read = (this && this.__read) || function (o, n) {
 };
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
+import { OAuth } from "./OAuth";
 /**
  * @hidden
  */
@@ -90,6 +91,8 @@ var HTTP = /** @class */ (function () {
             "content-type": "application/json",
             "accept-encoding": "gzip, deflate, br",
         };
+        this.oauth = __assign({ enabled: false, token: null, expiresAt: null }, options.oauth);
+        this.authorizationPromise = null;
         this.defaultFetchOptions = options.fetchOptions || {};
         this.defaultClientOptions = options.youtubeClientOptions || {};
     }
@@ -122,7 +125,25 @@ var HTTP = /** @class */ (function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
+                        if (!this.authorizationPromise) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.authorizationPromise];
+                    case 1:
+                        _e.sent();
+                        _e.label = 2;
+                    case 2:
                         options = __assign(__assign(__assign({}, partialOptions), this.defaultFetchOptions), { headers: __assign(__assign(__assign(__assign({}, this.defaultHeaders), { cookie: this.cookie, referer: "https://" + this.baseUrl + "/" }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
+                        if (!this.oauth.enabled) return [3 /*break*/, 4];
+                        this.authorizationPromise = this.authorize();
+                        return [4 /*yield*/, this.authorizationPromise];
+                    case 3:
+                        _e.sent();
+                        if (this.oauth.token) {
+                            options.headers = {
+                                Authorization: "Bearer " + this.oauth.token,
+                            };
+                        }
+                        _e.label = 4;
+                    case 4:
                         if (path.startsWith("http")) {
                             url = new URL(path);
                             try {
@@ -144,10 +165,10 @@ var HTTP = /** @class */ (function () {
                             urlString = "https://" + this.baseUrl + "/" + path + "?" + new URLSearchParams(partialOptions.params);
                         }
                         return [4 /*yield*/, fetch(urlString, options)];
-                    case 1:
+                    case 5:
                         response = _e.sent();
                         return [4 /*yield*/, response.json()];
-                    case 2:
+                    case 6:
                         data = _e.sent();
                         this.parseCookie(response);
                         return [2 /*return*/, { data: data }];
@@ -159,6 +180,34 @@ var HTTP = /** @class */ (function () {
         var cookie = response.headers.get("set-cookie");
         if (cookie)
             this.cookie = cookie;
+    };
+    HTTP.prototype.authorize = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var isExpired, response, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        isExpired = !this.oauth.expiresAt || this.oauth.expiresAt.getTime() - 5 * 60 * 1000 < Date.now();
+                        if (!(this.oauth.refreshToken && (isExpired || !this.oauth.token))) return [3 /*break*/, 2];
+                        return [4 /*yield*/, OAuth.refreshToken(this.oauth.refreshToken)];
+                    case 1:
+                        response = _a.sent();
+                        this.oauth.token = response.accessToken;
+                        this.oauth.expiresAt = new Date(Date.now() + response.expiresIn * 1000);
+                        return [3 /*break*/, 4];
+                    case 2:
+                        if (!(isExpired || !this.oauth.token)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, OAuth.authorize()];
+                    case 3:
+                        response = _a.sent();
+                        this.oauth.token = response.accessToken;
+                        this.oauth.refreshToken = response.refreshToken;
+                        this.oauth.expiresAt = new Date(Date.now() + response.expiresIn * 1000);
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
     };
     return HTTP;
 }());

@@ -1,5 +1,5 @@
 import { RequestInit } from "node-fetch";
-import { HTTP } from "../../common";
+import { HTTP, OAuthOptions } from "../../common";
 import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -9,6 +9,7 @@ import { SearchOptions, SearchResult, SearchResultItem } from "../SearchResult";
 import { Video } from "../Video";
 export declare type ClientOptions = {
     initialCookie: string;
+    oauth: OAuthOptions;
     /** Optional options for http client */
     fetchOptions: Partial<RequestInit>;
     /** Optional options passed when sending a request to youtube (context.client) */
