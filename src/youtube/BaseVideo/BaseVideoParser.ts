@@ -41,9 +41,15 @@ export class BaseVideoParser {
 		target.description = videoInfo.videoDetails.shortDescription || "";
 
 		// related videos
-		const secondaryContents =
+		let secondaryContents =
 			data.response.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults
 				.results;
+
+		const itemSectionRenderer = secondaryContents.find((c: YoutubeRawData) => {
+			return c.itemSectionRenderer;
+		})?.itemSectionRenderer;
+
+		if (itemSectionRenderer) secondaryContents = itemSectionRenderer.contents;
 
 		if (secondaryContents) {
 			target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(
