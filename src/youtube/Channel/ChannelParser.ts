@@ -100,7 +100,7 @@ export class ChannelParser {
 				.filter((i: YoutubeRawData) => i !== undefined);
 
 			const shelf: ChannelShelf = {
-				title: title.runs[0].text,
+				title: title.simpleText || title.runs[0].text,
 				subtitle: subtitle?.simpleText,
 				items,
 			};

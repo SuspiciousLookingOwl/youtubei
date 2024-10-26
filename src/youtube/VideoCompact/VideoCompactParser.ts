@@ -43,23 +43,21 @@ export class VideoCompactParser {
 			thumbnailOverlays?.[0].thumbnailOverlayTimeStatusRenderer?.style === "LIVE";
 
 		// Channel
-		if (ownerText || shortBylineText) {
-			const browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint
-				.browseEndpoint;
+		const browseEndpoint = (ownerText || shortBylineText)?.runs[0]?.navigationEndpoint
+			?.browseEndpoint;
 
-			if (browseEndpoint) {
-				const id = browseEndpoint.browseId;
-				const thumbnails =
-					channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
-						.thumbnails;
+		if (browseEndpoint) {
+			const id = browseEndpoint.browseId;
+			const thumbnails =
+				channelThumbnailSupportedRenderers?.channelThumbnailWithLinkRenderer.thumbnail
+					.thumbnails;
 
-				target.channel = new BaseChannel({
-					id,
-					name: (ownerText || shortBylineText).runs[0].text,
-					thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
-					client: target.client,
-				});
-			}
+			target.channel = new BaseChannel({
+				id,
+				name: (ownerText || shortBylineText).runs[0].text,
+				thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
+				client: target.client,
+			});
 		}
 
 		target.viewCount = stripToInt(viewCountText?.simpleText || viewCountText?.runs[0].text);
