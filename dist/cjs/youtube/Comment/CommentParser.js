@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CommentParser = void 0;
 const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
-const Reply_1 = require("../Reply");
+const Comment_1 = require("./Comment");
 class CommentParser {
     static loadComment(target, data) {
         const { properties, toolbar, author, avatar } = data;
@@ -33,9 +33,10 @@ class CommentParser {
         return common_1.getContinuationFromItems(continuationItems, ["button", "buttonRenderer", "command"]);
     }
     static parseReplies(data, comment) {
-        const continuationItems = data.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems;
-        const rawReplies = common_1.mapFilter(continuationItems, "commentRenderer");
-        return rawReplies.map((i) => new Reply_1.Reply({ video: comment.video, comment, client: comment.client }).load(i));
+        const replies = data.frameworkUpdates.entityBatchUpdate.mutations
+            .filter((e) => e.payload.commentEntityPayload)
+            .map((e) => e.payload.commentEntityPayload);
+        return replies.map((i) => new Comment_1.Comment({ video: comment.video, client: comment.client }).load(i));
     }
 }
 exports.CommentParser = CommentParser;

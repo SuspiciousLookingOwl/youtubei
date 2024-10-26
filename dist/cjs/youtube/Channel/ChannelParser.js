@@ -67,7 +67,7 @@ class ChannelParser {
             })
                 .filter((i) => i !== undefined);
             const shelf = {
-                title: title.runs[0].text,
+                title: title.simpleText || title.runs[0].text,
                 subtitle: subtitle === null || subtitle === void 0 ? void 0 : subtitle.simpleText,
                 items,
             };

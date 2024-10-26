@@ -4,7 +4,7 @@ var VideoCompactParser = /** @class */ (function () {
     function VideoCompactParser() {
     }
     VideoCompactParser.loadVideoCompact = function (target, data) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         var videoId = data.videoId, title = data.title, headline = data.headline, lengthText = data.lengthText, thumbnail = data.thumbnail, ownerText = data.ownerText, shortBylineText = data.shortBylineText, publishedTimeText = data.publishedTimeText, viewCountText = data.viewCountText, badges = data.badges, thumbnailOverlays = data.thumbnailOverlays, channelThumbnailSupportedRenderers = data.channelThumbnailSupportedRenderers, detailedMetadataSnippets = data.detailedMetadataSnippets;
         target.id = videoId;
         target.title = headline
@@ -21,19 +21,16 @@ var VideoCompactParser = /** @class */ (function () {
             !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW") ||
                 ((_e = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _e === void 0 ? void 0 : _e.style) === "LIVE";
         // Channel
-        if (ownerText || shortBylineText) {
-            var browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint
-                .browseEndpoint;
-            if (browseEndpoint) {
-                var id = browseEndpoint.browseId;
-                var thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
-                target.channel = new BaseChannel({
-                    id: id,
-                    name: (ownerText || shortBylineText).runs[0].text,
-                    thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
-                    client: target.client,
-                });
-            }
+        var browseEndpoint = (_h = (_g = (_f = (ownerText || shortBylineText)) === null || _f === void 0 ? void 0 : _f.runs[0]) === null || _g === void 0 ? void 0 : _g.navigationEndpoint) === null || _h === void 0 ? void 0 : _h.browseEndpoint;
+        if (browseEndpoint) {
+            var id = browseEndpoint.browseId;
+            var thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
+            target.channel = new BaseChannel({
+                id: id,
+                name: (ownerText || shortBylineText).runs[0].text,
+                thumbnails: thumbnails ? new Thumbnails().load(thumbnails) : undefined,
+                client: target.client,
+            });
         }
         target.viewCount = stripToInt((viewCountText === null || viewCountText === void 0 ? void 0 : viewCountText.simpleText) || (viewCountText === null || viewCountText === void 0 ? void 0 : viewCountText.runs[0].text));
         return target;

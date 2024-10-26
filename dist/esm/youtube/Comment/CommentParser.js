@@ -1,6 +1,6 @@
-import { getContinuationFromItems, mapFilter, Thumbnails } from "../../common";
+import { getContinuationFromItems, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
-import { Reply } from "../Reply";
+import { Comment } from "./Comment";
 var CommentParser = /** @class */ (function () {
     function CommentParser() {
     }
@@ -32,10 +32,11 @@ var CommentParser = /** @class */ (function () {
         return getContinuationFromItems(continuationItems, ["button", "buttonRenderer", "command"]);
     };
     CommentParser.parseReplies = function (data, comment) {
-        var continuationItems = data.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems;
-        var rawReplies = mapFilter(continuationItems, "commentRenderer");
-        return rawReplies.map(function (i) {
-            return new Reply({ video: comment.video, comment: comment, client: comment.client }).load(i);
+        var replies = data.frameworkUpdates.entityBatchUpdate.mutations
+            .filter(function (e) { return e.payload.commentEntityPayload; })
+            .map(function (e) { return e.payload.commentEntityPayload; });
+        return replies.map(function (i) {
+            return new Comment({ video: comment.video, client: comment.client }).load(i);
         });
     };
     return CommentParser;

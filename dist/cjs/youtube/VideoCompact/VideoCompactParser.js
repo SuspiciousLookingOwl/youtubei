@@ -5,7 +5,7 @@ const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 class VideoCompactParser {
     static loadVideoCompact(target, data) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         const { videoId, title, headline, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
         target.id = videoId;
         target.title = headline
@@ -22,19 +22,16 @@ class VideoCompactParser {
             !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW") ||
                 ((_e = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _e === void 0 ? void 0 : _e.style) === "LIVE";
         // Channel
-        if (ownerText || shortBylineText) {
-            const browseEndpoint = (ownerText || shortBylineText).runs[0].navigationEndpoint
-                .browseEndpoint;
-            if (browseEndpoint) {
-                const id = browseEndpoint.browseId;
-                const thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
-                target.channel = new BaseChannel_1.BaseChannel({
-                    id,
-                    name: (ownerText || shortBylineText).runs[0].text,
-                    thumbnails: thumbnails ? new common_1.Thumbnails().load(thumbnails) : undefined,
-                    client: target.client,
-                });
-            }
+        const browseEndpoint = (_h = (_g = (_f = (ownerText || shortBylineText)) === null || _f === void 0 ? void 0 : _f.runs[0]) === null || _g === void 0 ? void 0 : _g.navigationEndpoint) === null || _h === void 0 ? void 0 : _h.browseEndpoint;
+        if (browseEndpoint) {
+            const id = browseEndpoint.browseId;
+            const thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
+            target.channel = new BaseChannel_1.BaseChannel({
+                id,
+                name: (ownerText || shortBylineText).runs[0].text,
+                thumbnails: thumbnails ? new common_1.Thumbnails().load(thumbnails) : undefined,
+                client: target.client,
+            });
         }
         target.viewCount = common_1.stripToInt((viewCountText === null || viewCountText === void 0 ? void 0 : viewCountText.simpleText) || (viewCountText === null || viewCountText === void 0 ? void 0 : viewCountText.runs[0].text));
         return target;

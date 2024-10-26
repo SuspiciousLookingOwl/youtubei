@@ -1,3 +1,14 @@
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 import { getContinuationFromItems, Thumbnails } from "../../common";
 import { BaseVideoParser } from "../BaseVideo";
 import { Comment } from "../Comment";
@@ -25,9 +36,21 @@ var VideoParser = /** @class */ (function () {
         return target;
     };
     VideoParser.parseComments = function (data, video) {
+        var endpoints = data.onResponseReceivedEndpoints.find(function (c) {
+            var _a;
+            return (c.appendContinuationItemsAction ||
+                ((_a = c.reloadContinuationItemsCommand) === null || _a === void 0 ? void 0 : _a.slot) === "RELOAD_CONTINUATION_SLOT_BODY");
+        });
+        var repliesContinuationItems = (endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction).continuationItems;
         var comments = data.frameworkUpdates.entityBatchUpdate.mutations
             .filter(function (m) { return m.payload.commentEntityPayload; })
-            .map(function (m) { return m.payload.commentEntityPayload; });
+            .map(function (m) {
+            var _a;
+            var repliesItems = (_a = repliesContinuationItems.find(function (r) {
+                return r.commentThreadRenderer.commentViewModel.commentKey === m.key;
+            })) === null || _a === void 0 ? void 0 : _a.commentThreadRenderer;
+            return __assign(__assign({}, m.payload.commentEntityPayload), repliesItems);
+        });
         return comments.map(function (c) {
             return new Comment({ video: video, client: video.client }).load(c);
         });
