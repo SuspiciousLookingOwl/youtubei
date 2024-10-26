@@ -37,7 +37,9 @@ export class ChannelParser {
 				banner: bannerModel,
 			} = pageHeaderRenderer.content.pageHeaderViewModel;
 
-			const metadataRow = metadata.contentMetadataViewModel.metadataRows[1];
+			const metadataRow = metadata.contentMetadataViewModel.metadataRows.find(
+				(m: YoutubeRawData) => m.metadataParts
+			);
 
 			subscriberCountText = metadataRow.metadataParts.find(
 				(m: YoutubeRawData) => !m.text.styeRuns
