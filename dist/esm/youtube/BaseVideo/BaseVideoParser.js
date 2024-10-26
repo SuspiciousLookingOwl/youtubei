@@ -18,7 +18,7 @@ var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {
     }
     BaseVideoParser.loadBaseVideo = function (target, data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         var videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.videoDetails.videoId;
@@ -28,7 +28,7 @@ var BaseVideoParser = /** @class */ (function () {
         target.isLiveContent = videoInfo.videoDetails.isLiveContent;
         target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
         // Channel
-        var _d = videoInfo.owner.videoOwnerRenderer, title = _d.title, thumbnail = _d.thumbnail, subscriberCountText = _d.subscriberCountText;
+        var _e = videoInfo.owner.videoOwnerRenderer, title = _e.title, thumbnail = _e.thumbnail, subscriberCountText = _e.subscriberCountText;
         target.channel = new BaseChannel({
             client: target.client,
             id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
@@ -45,6 +45,11 @@ var BaseVideoParser = /** @class */ (function () {
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
         var secondaryContents = (_c = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
+        var itemSectionRenderer = (_d = secondaryContents.find(function (c) {
+            return c.itemSectionRenderer;
+        })) === null || _d === void 0 ? void 0 : _d.itemSectionRenderer;
+        if (itemSectionRenderer)
+            secondaryContents = itemSectionRenderer.contents;
         if (secondaryContents) {
             target.related.items = BaseVideoParser.parseRelatedFromSecondaryContent(secondaryContents, target.client);
             target.related.continuation = getContinuationFromItems(secondaryContents);
