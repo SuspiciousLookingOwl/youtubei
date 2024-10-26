@@ -36,7 +36,7 @@ var ChannelParser = /** @class */ (function () {
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
             var _l = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _l.metadata, imageModel = _l.image, bannerModel = _l.banner;
-            var metadataRow = metadata.contentMetadataViewModel.metadataRows[1];
+            var metadataRow = metadata.contentMetadataViewModel.metadataRows.find(function (m) { return m.metadataParts; });
             subscriberCountText = metadataRow.metadataParts.find(function (m) { return !m.text.styeRuns; }).text.content;
             videoCountText = (_j = metadataRow.metadataParts.find(function (m) { return m.text.styeRuns; })) === null || _j === void 0 ? void 0 : _j.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;

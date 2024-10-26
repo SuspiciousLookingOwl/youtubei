@@ -26,7 +26,7 @@ class ChannelParser {
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
             const { metadata, image: imageModel, banner: bannerModel, } = pageHeaderRenderer.content.pageHeaderViewModel;
-            const metadataRow = metadata.contentMetadataViewModel.metadataRows[1];
+            const metadataRow = metadata.contentMetadataViewModel.metadataRows.find((m) => m.metadataParts);
             subscriberCountText = metadataRow.metadataParts.find((m) => !m.text.styeRuns).text.content;
             videoCountText = (_j = metadataRow.metadataParts.find((m) => m.text.styeRuns)) === null || _j === void 0 ? void 0 : _j.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
