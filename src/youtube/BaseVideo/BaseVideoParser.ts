@@ -37,7 +37,7 @@ export class BaseVideoParser {
 		target.tags =
 			videoInfo.superTitleLink?.runs
 				?.map((r: YoutubeRawData) => r.text.trim())
-				.filter((t: string) => t) || [];	
+				.filter((t: string) => t) || [];
 		target.description = videoInfo.videoDetails.shortDescription || "";
 
 		// related videos
