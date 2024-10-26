@@ -4,30 +4,20 @@ import { Reply } from "./Reply";
 
 export class ReplyParser {
 	static loadReply(target: Reply, data: YoutubeRawData): Reply {
-		const {
-			authorText,
-			authorThumbnail,
-			authorEndpoint,
-			contentText,
-			publishedTimeText,
-			commentId,
-			likeCount,
-			authorIsChannelOwner,
-		} = data;
+		const { properties, toolbar, author, avatar } = data;
 
 		// Basic information
-		target.id = commentId;
-		target.content = contentText.runs.map((r: YoutubeRawData) => r.text).join("");
-		target.publishDate = publishedTimeText.runs.shift().text;
-		target.likeCount = likeCount;
-		target.isAuthorChannelOwner = authorIsChannelOwner;
+		target.id = properties.commentId;
+		target.content = properties.content.content;
+		target.publishDate = properties.publishedTime;
+		target.likeCount = +toolbar.likeCountLiked; // probably broken
+		target.isAuthorChannelOwner = !!author.isCreator;
 
 		// Author
-		const { browseId } = authorEndpoint.browseEndpoint;
 		target.author = new BaseChannel({
-			id: browseId,
-			name: authorText.simpleText,
-			thumbnails: new Thumbnails().load(authorThumbnail.thumbnails),
+			id: author.id,
+			name: author.displayName,
+			thumbnails: new Thumbnails().load(avatar.image.sources),
 			client: target.client,
 		});
 

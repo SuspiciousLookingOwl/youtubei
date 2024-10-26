@@ -32,9 +32,30 @@ export class VideoParser {
 	}
 
 	static parseComments(data: YoutubeRawData, video: Video): Comment[] {
+		const endpoints = data.onResponseReceivedEndpoints.find((c: YoutubeRawData) => {
+			return (
+				c.appendContinuationItemsAction ||
+				c.reloadContinuationItemsCommand?.slot === "RELOAD_CONTINUATION_SLOT_BODY"
+			);
+		});
+
+		const repliesContinuationItems = (
+			endpoints.reloadContinuationItemsCommand || endpoints.appendContinuationItemsAction
+		).continuationItems;
+
 		const comments = data.frameworkUpdates.entityBatchUpdate.mutations
 			.filter((m: YoutubeRawData) => m.payload.commentEntityPayload)
-			.map((m: YoutubeRawData) => m.payload.commentEntityPayload);
+			.map((m: YoutubeRawData) => {
+				const repliesItems = repliesContinuationItems.find(
+					(r: YoutubeRawData) =>
+						r.commentThreadRenderer.commentViewModel.commentKey === m.key
+				)?.commentThreadRenderer;
+
+				return {
+					...m.payload.commentEntityPayload,
+					...repliesItems,
+				};
+			});
 
 		return comments.map((c: YoutubeRawData) =>
 			new Comment({ video, client: video.client }).load(c)

@@ -1,4 +1,4 @@
-import { getContinuationFromItems, mapFilter, Thumbnails, YoutubeRawData } from "../../common";
+import { getContinuationFromItems, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
 import { Comment } from "./Comment";
@@ -40,13 +40,12 @@ export class CommentParser {
 	}
 
 	static parseReplies(data: YoutubeRawData, comment: Comment): Reply[] {
-		const continuationItems =
-			data.onResponseReceivedEndpoints[0].appendContinuationItemsAction.continuationItems;
+		const replies = data.frameworkUpdates.entityBatchUpdate.mutations
+			.filter((e: YoutubeRawData) => e.payload.commentEntityPayload)
+			.map((e: YoutubeRawData) => e.payload.commentEntityPayload);
 
-		const rawReplies = mapFilter(continuationItems, "commentRenderer");
-
-		return rawReplies.map((i: YoutubeRawData) =>
-			new Reply({ video: comment.video, comment, client: comment.client }).load(i)
+		return replies.map((i: YoutubeRawData) =>
+			new Comment({ video: comment.video, client: comment.client }).load(i)
 		);
 	}
 }
