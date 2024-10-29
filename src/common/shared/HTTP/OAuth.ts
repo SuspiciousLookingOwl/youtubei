@@ -14,6 +14,14 @@ interface AuthorizeRawResponse {
 	verification_url: string;
 }
 
+export interface AuthorizeResponse {
+	deviceCode: string;
+	userCode: string;
+	expiresIn: number;
+	interval: number;
+	verificationUrl: string;
+}
+
 interface RefreshRawResponse {
 	access_token: string;
 	expires_in: number;
@@ -44,13 +52,21 @@ export interface AuthenticateResponse {
 	tokenType: string;
 }
 
+/** OAuth Helper Class */
 export class OAuth {
 	private static CLIENT_ID =
 		"861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleusercontent.com";
 	private static CLIENT_SECRET = "SboVhoG9s0rNafixCSGGKXAT";
 	private static SCOPE = "http://gdata.youtube.com https://www.googleapis.com/auth/youtube";
 
-	static async authorize(): Promise<AuthenticateResponse> {
+	/**
+	 * Start the authorization process
+	 *
+	 * @param manual If true, returns the raw response instead of printing out the code and automatically do a authentication pooling
+	 */
+	static async authorize(): Promise<AuthenticateResponse>;
+	static async authorize(manual: true): Promise<AuthorizeResponse>;
+	static async authorize(manual?: true): Promise<AuthenticateResponse | AuthorizeResponse> {
 		const body = {
 			client_id: this.CLIENT_ID,
 			scope: this.SCOPE,
@@ -69,6 +85,15 @@ export class OAuth {
 
 		if (response.ok) {
 			const data: AuthorizeRawResponse = await response.json();
+			if (manual) {
+				return {
+					deviceCode: data.device_code,
+					userCode: data.user_code,
+					expiresIn: data.expires_in,
+					interval: data.interval,
+					verificationUrl: data.verification_url,
+				};
+			}
 
 			console.log(`[youtubei] Open ${data.verification_url} and enter ${data.user_code}`);
 
@@ -95,7 +120,12 @@ export class OAuth {
 		throw new Error("Authorization failed");
 	}
 
-	private static async authenticate(code: string): Promise<AuthenticateResponse> {
+	/**
+	 * Authenticate to obtain a token and refresh token using the code from the authorize method
+	 *
+	 * @param code code obtained from the authorize method
+	 */
+	static async authenticate(code: string): Promise<AuthenticateResponse> {
 		const body = {
 			client_id: this.CLIENT_ID,
 			client_secret: this.CLIENT_SECRET,

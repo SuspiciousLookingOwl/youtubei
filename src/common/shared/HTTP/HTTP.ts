@@ -8,9 +8,10 @@ export type OAuthOptions = {
 	refreshToken?: string;
 };
 
-type OAuthProps = {
+export type OAuthProps = {
 	token: string | null;
 	expiresAt: Date | null;
+	refreshToken?: string;
 };
 
 type HTTPOptions = {

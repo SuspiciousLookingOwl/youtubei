@@ -23,7 +23,7 @@ and all of the codes are running inside an async function.
 
 ```js
 const videos = await youtube.search("Keyword", {
-	type: "video"
+	type: "video",
 });
 
 console.log(videos.items);
@@ -33,7 +33,7 @@ console.log(videos.items);
 
 ```js
 const videos = await youtube.search("Keyword", {
-	type: "video"
+	type: "video",
 });
 
 console.log(videos.items); // search result from first page
@@ -72,7 +72,6 @@ console.log(video.comments.items); // all 40 loaded comments
 
 await video.comments.next(0); // load the rest of the comments
 console.log(video.comments.items); // all comments on the video
-
 ```
 
 ### How to listen to chat event on live video?
@@ -89,5 +88,53 @@ video.on("chat", (chat) => {
 video.playChat(5000); // start chat polling with 5000ms chat delay
 
 video.stopChat(); // stop chat polling
+```
 
+### How to use OAuth?
+
+```js
+// initialize the client with OAuth enabled
+const youtube = new Client({
+	oauth: {
+		enabled: true,
+		refreshToken: "", // optional, if you have refresh token
+	},
+});
+
+// make any request with the client
+await youtube.getVideo();
+// if you don't have a valid refresh token, the client will print out an URL and code to authorize
+// e.g. [youtubei] Open https://www.google.com/device and enter XXX-XXX-XXX
+// once the authorization is done, the client store the refresh token for future use
+
+// printing out the refresh token, so you can store it for future use
+console.log(youtube.oauth.refreshToken);
+```
+
+Alternatively, you can use `OAuth` static helper class to authorize and obtain a refresh token:
+
+```js
+import { OAuth, Client } from "youtubei";
+
+const response = await OAuth.authorize(); / will print out an URL and code
+
+console.log(response);
+
+/**
+{
+	accessToken: '...';
+	expiresIn: 5000;
+	refreshToken: '...';
+	scope: '...';
+	tokenType: '...';
+}
+*/
+
+// then you can use the refresh token when initializing the client
+const client = new Client({
+	oauth: {
+		enabled: true,
+		refreshToken: response.refreshToken,
+	},
+});
 ```

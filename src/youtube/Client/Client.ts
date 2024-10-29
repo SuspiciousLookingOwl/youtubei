@@ -1,6 +1,6 @@
 import { RequestInit } from "node-fetch";
 
-import { HTTP, OAuthOptions } from "../../common";
+import { HTTP, OAuthOptions, OAuthProps } from "../../common";
 import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -52,6 +52,14 @@ export class Client {
 			clientVersion: INNERTUBE_CLIENT_VERSION,
 			...this.options,
 		});
+	}
+
+	get oauth(): OAuthProps {
+		return {
+			token: this.http.oauth.token,
+			expiresAt: this.http.oauth.expiresAt,
+			refreshToken: this.http.oauth.refreshToken,
+		};
 	}
 
 	/**
