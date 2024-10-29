@@ -15,8 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OAuth = void 0;
 const crypto_1 = require("crypto");
 const node_fetch_1 = __importDefault(require("node-fetch"));
+/** OAuth Helper Class */
 class OAuth {
-    static authorize() {
+    static authorize(manual) {
         return __awaiter(this, void 0, void 0, function* () {
             const body = {
                 client_id: this.CLIENT_ID,
@@ -34,6 +35,15 @@ class OAuth {
             });
             if (response.ok) {
                 const data = yield response.json();
+                if (manual) {
+                    return {
+                        deviceCode: data.device_code,
+                        userCode: data.user_code,
+                        expiresIn: data.expires_in,
+                        interval: data.interval,
+                        verificationUrl: data.verification_url,
+                    };
+                }
                 console.log(`[youtubei] Open ${data.verification_url} and enter ${data.user_code}`);
                 let authenticateResponse = null;
                 while (!authenticateResponse) {
@@ -58,6 +68,11 @@ class OAuth {
             throw new Error("Authorization failed");
         });
     }
+    /**
+     * Authenticate to obtain a token and refresh token using the code from the authorize method
+     *
+     * @param code code obtained from the authorize method
+     */
     static authenticate(code) {
         return __awaiter(this, void 0, void 0, function* () {
             const body = {

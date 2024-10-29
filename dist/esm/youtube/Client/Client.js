@@ -76,6 +76,17 @@ var Client = /** @class */ (function () {
         this.options = __assign(__assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
         this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: INNERTUBE_CLIENT_NAME, clientVersion: INNERTUBE_CLIENT_VERSION }, this.options));
     }
+    Object.defineProperty(Client.prototype, "oauth", {
+        get: function () {
+            return {
+                token: this.http.oauth.token,
+                expiresAt: this.http.oauth.expiresAt,
+                refreshToken: this.http.oauth.refreshToken,
+            };
+        },
+        enumerable: false,
+        configurable: true
+    });
     /**
      * Searches for videos / playlists / channels
      *

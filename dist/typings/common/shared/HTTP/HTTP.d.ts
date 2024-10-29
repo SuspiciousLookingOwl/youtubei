@@ -3,9 +3,10 @@ export declare type OAuthOptions = {
     enabled: boolean;
     refreshToken?: string;
 };
-declare type OAuthProps = {
+export declare type OAuthProps = {
     token: string | null;
     expiresAt: Date | null;
+    refreshToken?: string;
 };
 declare type HTTPOptions = {
     apiKey: string;

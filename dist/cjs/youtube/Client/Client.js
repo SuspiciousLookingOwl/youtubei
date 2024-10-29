@@ -24,6 +24,13 @@ class Client {
         this.options = Object.assign(Object.assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
         this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: constants_1.INNERTUBE_CLIENT_NAME, clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, this.options));
     }
+    get oauth() {
+        return {
+            token: this.http.oauth.token,
+            expiresAt: this.http.oauth.expiresAt,
+            refreshToken: this.http.oauth.refreshToken,
+        };
+    }
     /**
      * Searches for videos / playlists / channels
      *

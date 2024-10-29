@@ -36,10 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { randomBytes } from "crypto";
 import fetch from "node-fetch";
+/** OAuth Helper Class */
 var OAuth = /** @class */ (function () {
     function OAuth() {
     }
-    OAuth.authorize = function () {
+    OAuth.authorize = function (manual) {
         return __awaiter(this, void 0, void 0, function () {
             var body, response, data_1, authenticateResponse, err_1, message;
             return __generator(this, function (_a) {
@@ -65,6 +66,15 @@ var OAuth = /** @class */ (function () {
                         return [4 /*yield*/, response.json()];
                     case 2:
                         data_1 = _a.sent();
+                        if (manual) {
+                            return [2 /*return*/, {
+                                    deviceCode: data_1.device_code,
+                                    userCode: data_1.user_code,
+                                    expiresIn: data_1.expires_in,
+                                    interval: data_1.interval,
+                                    verificationUrl: data_1.verification_url,
+                                }];
+                        }
                         console.log("[youtubei] Open " + data_1.verification_url + " and enter " + data_1.user_code);
                         authenticateResponse = null;
                         _a.label = 3;
@@ -101,6 +111,11 @@ var OAuth = /** @class */ (function () {
             });
         });
     };
+    /**
+     * Authenticate to obtain a token and refresh token using the code from the authorize method
+     *
+     * @param code code obtained from the authorize method
+     */
     OAuth.authenticate = function (code) {
         return __awaiter(this, void 0, void 0, function () {
             var body, response, data;
