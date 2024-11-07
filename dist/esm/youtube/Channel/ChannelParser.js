@@ -17,9 +17,9 @@ var ChannelParser = /** @class */ (function () {
     function ChannelParser() {
     }
     ChannelParser.loadChannel = function (target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-        var channelId, title, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
-        var _k = data.header, c4TabbedHeaderRenderer = _k.c4TabbedHeaderRenderer, pageHeaderRenderer = _k.pageHeaderRenderer;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var channelId, title, handle, description, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
+        var _m = data.header, c4TabbedHeaderRenderer = _m.c4TabbedHeaderRenderer, pageHeaderRenderer = _m.pageHeaderRenderer;
         if (c4TabbedHeaderRenderer) {
             channelId = c4TabbedHeaderRenderer.channelId;
             title = c4TabbedHeaderRenderer.title;
@@ -35,15 +35,20 @@ var ChannelParser = /** @class */ (function () {
                 data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
-            var _l = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _l.metadata, imageModel = _l.image, bannerModel = _l.banner;
-            var metadataRow = metadata.contentMetadataViewModel.metadataRows.find(function (m) { return m.metadataParts; });
-            subscriberCountText = metadataRow.metadataParts.find(function (m) { return !m.text.styeRuns; }).text.content;
-            videoCountText = (_j = metadataRow.metadataParts.find(function (m) { return m.text.styeRuns; })) === null || _j === void 0 ? void 0 : _j.text.content;
+            var _o = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _o.metadata, imageModel = _o.image, bannerModel = _o.banner, descriptionModel = _o.description;
+            var metadataRow = metadata.contentMetadataViewModel.metadataRows.find(function (m) { return m.metadataParts && m.metadataParts.length == 2; });
+            var handleRow = metadata.contentMetadataViewModel.metadataRows.find(function (m) { return m.metadataParts && m.metadataParts.length == 1; });
+            handle = (_j = handleRow === null || handleRow === void 0 ? void 0 : handleRow.metadataParts[0].text) === null || _j === void 0 ? void 0 : _j.content;
+            videoCountText = (_k = metadataRow.metadataParts.find(function (m) { return m.text.styleRuns; })) === null || _k === void 0 ? void 0 : _k.text.content;
+            subscriberCountText = (_l = metadataRow.metadataParts.find(function (m) { return !m.text.styleRuns; })) === null || _l === void 0 ? void 0 : _l.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
             banner = bannerModel === null || bannerModel === void 0 ? void 0 : bannerModel.imageBannerViewModel.image.sources;
+            description = descriptionModel === null || descriptionModel === void 0 ? void 0 : descriptionModel.descriptionPreviewViewModel.description.content;
         }
         target.id = channelId;
         target.name = title;
+        target.handle = handle;
+        target.description = description;
         target.thumbnails = new Thumbnails().load(avatar);
         target.videoCount = videoCountText;
         target.subscriberCount = subscriberCountText;

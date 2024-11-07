@@ -7,8 +7,8 @@ const PlaylistCompact_1 = require("../PlaylistCompact");
 const VideoCompact_1 = require("../VideoCompact");
 class ChannelParser {
     static loadChannel(target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
-        let channelId, title, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        let channelId, title, handle, description, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
         const { c4TabbedHeaderRenderer, pageHeaderRenderer } = data.header;
         if (c4TabbedHeaderRenderer) {
             channelId = c4TabbedHeaderRenderer.channelId;
@@ -25,15 +25,20 @@ class ChannelParser {
                 data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
-            const { metadata, image: imageModel, banner: bannerModel, } = pageHeaderRenderer.content.pageHeaderViewModel;
-            const metadataRow = metadata.contentMetadataViewModel.metadataRows.find((m) => m.metadataParts);
-            subscriberCountText = metadataRow.metadataParts.find((m) => !m.text.styeRuns).text.content;
-            videoCountText = (_j = metadataRow.metadataParts.find((m) => m.text.styeRuns)) === null || _j === void 0 ? void 0 : _j.text.content;
+            const { metadata, image: imageModel, banner: bannerModel, description: descriptionModel, } = pageHeaderRenderer.content.pageHeaderViewModel;
+            const metadataRow = metadata.contentMetadataViewModel.metadataRows.find((m) => m.metadataParts && m.metadataParts.length == 2);
+            const handleRow = metadata.contentMetadataViewModel.metadataRows.find((m) => m.metadataParts && m.metadataParts.length == 1);
+            handle = (_j = handleRow === null || handleRow === void 0 ? void 0 : handleRow.metadataParts[0].text) === null || _j === void 0 ? void 0 : _j.content;
+            videoCountText = (_k = metadataRow.metadataParts.find((m) => m.text.styleRuns)) === null || _k === void 0 ? void 0 : _k.text.content;
+            subscriberCountText = (_l = metadataRow.metadataParts.find((m) => !m.text.styleRuns)) === null || _l === void 0 ? void 0 : _l.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
             banner = bannerModel === null || bannerModel === void 0 ? void 0 : bannerModel.imageBannerViewModel.image.sources;
+            description = descriptionModel === null || descriptionModel === void 0 ? void 0 : descriptionModel.descriptionPreviewViewModel.description.content;
         }
         target.id = channelId;
         target.name = title;
+        target.handle = handle;
+        target.description = description;
         target.thumbnails = new common_1.Thumbnails().load(avatar);
         target.videoCount = videoCountText;
         target.subscriberCount = subscriberCountText;
