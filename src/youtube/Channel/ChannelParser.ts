@@ -8,6 +8,8 @@ export class ChannelParser {
 	static loadChannel(target: Channel, data: YoutubeRawData): Channel {
 		let channelId,
 			title,
+			handle,
+			description,
 			avatar,
 			subscriberCountText,
 			videoCountText,
@@ -35,23 +37,31 @@ export class ChannelParser {
 				metadata,
 				image: imageModel,
 				banner: bannerModel,
+				description: descriptionModel,
 			} = pageHeaderRenderer.content.pageHeaderViewModel;
 
 			const metadataRow = metadata.contentMetadataViewModel.metadataRows.find(
-				(m: YoutubeRawData) => m.metadataParts
+				(m: YoutubeRawData) => m.metadataParts && m.metadataParts.length == 2
 			);
 
-			subscriberCountText = metadataRow.metadataParts.find(
-				(m: YoutubeRawData) => !m.text.styeRuns
-			).text.content;
-			videoCountText = metadataRow.metadataParts.find((m: YoutubeRawData) => m.text.styeRuns)
+			const handleRow = metadata.contentMetadataViewModel.metadataRows.find(
+				(m: YoutubeRawData) => m.metadataParts && m.metadataParts.length == 1
+			);
+			handle = handleRow?.metadataParts[0].text?.content;
+			videoCountText = metadataRow.metadataParts.find((m: YoutubeRawData) => m.text.styleRuns)
 				?.text.content;
+			subscriberCountText = metadataRow.metadataParts.find(
+				(m: YoutubeRawData) => !m.text.styleRuns
+			)?.text.content;
 			avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
 			banner = bannerModel?.imageBannerViewModel.image.sources;
+			description = descriptionModel?.descriptionPreviewViewModel.description.content;
 		}
 
 		target.id = channelId;
 		target.name = title;
+		target.handle = handle;
+		target.description = description;
 		target.thumbnails = new Thumbnails().load(avatar);
 		target.videoCount = videoCountText;
 		target.subscriberCount = subscriberCountText;
