@@ -28,6 +28,8 @@ export declare class VideoCompact extends Base implements VideoCompactProperties
     duration: number | null;
     /** Whether this video is a live now or not */
     isLive: boolean;
+    /** Whether this video is a shorts or not */
+    isShort: boolean;
     /** The channel who uploads this video */
     channel?: BaseChannel;
     /** The date this video is uploaded at */

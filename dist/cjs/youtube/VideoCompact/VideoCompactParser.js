@@ -5,7 +5,7 @@ const common_1 = require("../../common");
 const BaseChannel_1 = require("../BaseChannel");
 class VideoCompactParser {
     static loadVideoCompact(target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         const { videoId, title, headline, lengthText, thumbnail, ownerText, shortBylineText, publishedTimeText, viewCountText, badges, thumbnailOverlays, channelThumbnailSupportedRenderers, detailedMetadataSnippets, } = data;
         target.id = videoId;
         target.title = headline
@@ -21,8 +21,10 @@ class VideoCompactParser {
         target.isLive =
             !!((badges === null || badges === void 0 ? void 0 : badges[0].metadataBadgeRenderer.style) === "BADGE_STYLE_TYPE_LIVE_NOW") ||
                 ((_e = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _e === void 0 ? void 0 : _e.style) === "LIVE";
+        target.isShort =
+            ((_f = thumbnailOverlays === null || thumbnailOverlays === void 0 ? void 0 : thumbnailOverlays[0].thumbnailOverlayTimeStatusRenderer) === null || _f === void 0 ? void 0 : _f.style) === "SHORTS" || false;
         // Channel
-        const browseEndpoint = (_h = (_g = (_f = (ownerText || shortBylineText)) === null || _f === void 0 ? void 0 : _f.runs[0]) === null || _g === void 0 ? void 0 : _g.navigationEndpoint) === null || _h === void 0 ? void 0 : _h.browseEndpoint;
+        const browseEndpoint = (_j = (_h = (_g = (ownerText || shortBylineText)) === null || _g === void 0 ? void 0 : _g.runs[0]) === null || _h === void 0 ? void 0 : _h.navigationEndpoint) === null || _j === void 0 ? void 0 : _j.browseEndpoint;
         if (browseEndpoint) {
             const id = browseEndpoint.browseId;
             const thumbnails = channelThumbnailSupportedRenderers === null || channelThumbnailSupportedRenderers === void 0 ? void 0 : channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail.thumbnails;
