@@ -42,6 +42,9 @@ export class VideoCompactParser {
 			!!(badges?.[0].metadataBadgeRenderer.style === "BADGE_STYLE_TYPE_LIVE_NOW") ||
 			thumbnailOverlays?.[0].thumbnailOverlayTimeStatusRenderer?.style === "LIVE";
 
+		target.isShort =
+			thumbnailOverlays?.[0].thumbnailOverlayTimeStatusRenderer?.style === "SHORTS" || false;
+
 		// Channel
 		const browseEndpoint = (ownerText || shortBylineText)?.runs[0]?.navigationEndpoint
 			?.browseEndpoint;
