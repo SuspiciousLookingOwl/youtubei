@@ -138,3 +138,18 @@ const client = new Client({
 	},
 });
 ```
+
+### How to use Proxy
+
+You can proxy your request using `http-proxy-agent` or `https-proxy-agent` by passing the agent instance to the client's `fetchOptions`
+
+```ts
+import { HttpsProxyAgent } from "https-proxy-agent";
+
+const proxyAgent = new HttpsProxyAgent(`https://${user}:${pass}@${host}:${port}`);
+const client = new Client({
+	fetchOptions: {
+		agent: proxyAgent,
+	},
+});
+```
