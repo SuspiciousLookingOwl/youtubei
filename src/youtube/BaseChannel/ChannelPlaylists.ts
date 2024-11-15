@@ -44,7 +44,7 @@ export class ChannelPlaylists extends Continuable<PlaylistCompact> {
 
 		const items = BaseChannelParser.parseTabData("playlists", response.data);
 		const continuation = getContinuationFromItems(items);
-		const data = mapFilter(items, "gridPlaylistRenderer");
+		const data = mapFilter(items, "lockupViewModel");
 
 		return {
 			continuation,

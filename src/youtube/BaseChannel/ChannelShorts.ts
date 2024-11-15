@@ -44,7 +44,7 @@ export class ChannelShorts extends Continuable<VideoCompact> {
 
 		const items = BaseChannelParser.parseTabData("shorts", response.data);
 		const continuation = getContinuationFromItems(items);
-		const data = mapFilter(items, "reelItemRenderer");
+		const data = mapFilter(items, "shortsLockupViewModel");
 
 		return {
 			continuation,
