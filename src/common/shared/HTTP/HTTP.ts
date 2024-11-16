@@ -14,7 +14,12 @@ export type OAuthProps = {
 	refreshToken?: string;
 };
 
-type HTTPOptions = {
+export type PotOptions = {
+	token: string;
+	visitorData: string;
+};
+
+export type HTTPOptions = {
 	apiKey: string;
 	baseUrl: string;
 	clientName: string;
@@ -23,6 +28,7 @@ type HTTPOptions = {
 	youtubeClientOptions?: Record<string, unknown>;
 	initialCookie?: string;
 	oauth?: OAuthOptions;
+	pot?: PotOptions;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,6 +54,7 @@ export class HTTP {
 	private defaultFetchOptions: Partial<RequestInit>;
 	private defaultClientOptions: Record<string, unknown>;
 	private authorizationPromise: Promise<void> | null;
+	private pot?: PotOptions;
 	public oauth: OAuthOptions & OAuthProps;
 
 	constructor(options: HTTPOptions) {
@@ -68,7 +75,7 @@ export class HTTP {
 			expiresAt: null,
 			...options.oauth,
 		};
-		this.authorizationPromise = null;
+		(this.pot = options.pot), (this.authorizationPromise = null);
 		this.defaultFetchOptions = options.fetchOptions || {};
 		this.defaultClientOptions = options.youtubeClientOptions || {};
 	}
@@ -95,9 +102,15 @@ export class HTTP {
 					client: {
 						clientName: this.clientName,
 						clientVersion: this.clientVersion,
+						visitorData: this.pot?.visitorData,
 						...this.defaultClientOptions,
 					},
 				},
+				serviceIntegrityDimensions: this.pot
+					? {
+							poToken: this.pot.token,
+					  }
+					: undefined,
 				...options?.data,
 			},
 		});

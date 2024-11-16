@@ -1,6 +1,6 @@
 import { RequestInit } from "node-fetch";
 
-import { HTTP, OAuthOptions, OAuthProps } from "../../common";
+import { HTTP, HTTPOptions, OAuthProps } from "../../common";
 import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -16,21 +16,14 @@ import {
 	I_END_POINT,
 } from "../constants";
 
-export type ClientOptions = {
-	initialCookie: string;
-	oauth: OAuthOptions;
-	/** Optional options for http client */
-	fetchOptions: Partial<RequestInit>;
-	/** Optional options passed when sending a request to youtube (context.client) */
-	youtubeClientOptions: Record<string, string>;
-};
+export type ClientOptions = HTTPOptions;
 
 /** Youtube Client */
 export class Client {
 	/** @hidden */
 	http: HTTP;
 	/** @hidden */
-	options: ClientOptions;
+	options: HTTPOptions;
 
 	constructor(options: Partial<ClientOptions> = {}) {
 		this.options = {
@@ -43,15 +36,13 @@ export class Client {
 				gl: "US",
 				...options.youtubeClientOptions,
 			},
+			apiKey: options.apiKey || INNERTUBE_API_KEY,
+			baseUrl: options.baseUrl || BASE_URL,
+			clientName: options.clientName || INNERTUBE_CLIENT_NAME,
+			clientVersion: options.clientVersion || INNERTUBE_CLIENT_VERSION,
 		};
 
-		this.http = new HTTP({
-			apiKey: INNERTUBE_API_KEY,
-			baseUrl: BASE_URL,
-			clientName: INNERTUBE_CLIENT_NAME,
-			clientVersion: INNERTUBE_CLIENT_VERSION,
-			...this.options,
-		});
+		this.http = new HTTP(this.options);
 	}
 
 	get oauth(): OAuthProps {
