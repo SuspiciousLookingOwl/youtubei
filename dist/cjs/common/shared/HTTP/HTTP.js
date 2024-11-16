@@ -33,7 +33,8 @@ class HTTP {
             "accept-encoding": "gzip, deflate, br",
         };
         this.oauth = Object.assign({ enabled: false, token: null, expiresAt: null }, options.oauth);
-        (this.pot = options.pot), (this.authorizationPromise = null);
+        this.pot = options.pot;
+        this.authorizationPromise = null;
         this.defaultFetchOptions = options.fetchOptions || {};
         this.defaultClientOptions = options.youtubeClientOptions || {};
     }
@@ -48,9 +49,7 @@ class HTTP {
             return yield this.request(path, Object.assign(Object.assign({}, options), { method: "POST", params: Object.assign({ key: this.apiKey, prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), data: Object.assign({ context: {
                         client: Object.assign({ clientName: this.clientName, clientVersion: this.clientVersion, visitorData: (_a = this.pot) === null || _a === void 0 ? void 0 : _a.visitorData }, this.defaultClientOptions),
                     }, serviceIntegrityDimensions: this.pot
-                        ? {
-                            poToken: this.pot.token,
-                        }
+                        ? { poToken: this.pot.token, }
                         : undefined }, options === null || options === void 0 ? void 0 : options.data) }));
         });
     }
