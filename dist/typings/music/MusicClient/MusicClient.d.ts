@@ -1,5 +1,4 @@
-import { RequestInit } from "node-fetch";
-import { HTTP, Shelf } from "../../common";
+import { HTTP, HTTPOptions, Shelf } from "../../common";
 import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicLyrics } from "../MusicLyrics";
@@ -10,13 +9,7 @@ export declare type MusicTopShelf = {
     item?: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
     more?: (MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact)[];
 };
-export declare type MusicClientOptions = {
-    initialCookie: string;
-    /** Optional options for http client */
-    fetchOptions: Partial<RequestInit>;
-    /** Optional options passed when sending a request to youtube (context.client) */
-    youtubeClientOptions: Record<string, unknown>;
-};
+export declare type MusicClientOptions = HTTPOptions;
 /** Youtube Music Client */
 export declare class MusicClient {
     /** @hidden */

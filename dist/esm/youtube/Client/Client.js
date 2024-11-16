@@ -73,8 +73,8 @@ import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_NAME, INNERTUBE_CLIENT_VE
 var Client = /** @class */ (function () {
     function Client(options) {
         if (options === void 0) { options = {}; }
-        this.options = __assign(__assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
-        this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: INNERTUBE_CLIENT_NAME, clientVersion: INNERTUBE_CLIENT_VERSION }, this.options));
+        this.options = __assign(__assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions), apiKey: options.apiKey || INNERTUBE_API_KEY, baseUrl: options.baseUrl || BASE_URL, clientName: options.clientName || INNERTUBE_CLIENT_NAME, clientVersion: options.clientVersion || INNERTUBE_CLIENT_VERSION });
+        this.http = new HTTP(this.options);
     }
     Object.defineProperty(Client.prototype, "oauth", {
         get: function () {

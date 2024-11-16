@@ -52,18 +52,19 @@ class VideoCaptions extends Base_1.Base {
      * Get captions of a specific language or a translation of a specific language
      */
     get(languageCode, translationLanguageCode) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function* () {
-            if (!languageCode)
+            if (!languageCode && ((_a = this.client.options.youtubeClientOptions) === null || _a === void 0 ? void 0 : _a.hl)) {
                 languageCode = this.client.options.youtubeClientOptions.hl;
-            const url = (_a = this.languages.find((l) => l.code.toUpperCase() === (languageCode === null || languageCode === void 0 ? void 0 : languageCode.toUpperCase()))) === null || _a === void 0 ? void 0 : _a.url;
+            }
+            const url = (_b = this.languages.find((l) => l.code.toUpperCase() === (languageCode === null || languageCode === void 0 ? void 0 : languageCode.toUpperCase()))) === null || _b === void 0 ? void 0 : _b.url;
             if (!url)
                 return undefined;
             const params = { fmt: "json3" };
             if (translationLanguageCode)
                 params["tlang"] = translationLanguageCode;
             const response = yield this.client.http.get(url, { params });
-            const captions = (_b = response.data.events) === null || _b === void 0 ? void 0 : _b.reduce((curr, e) => {
+            const captions = (_c = response.data.events) === null || _c === void 0 ? void 0 : _c.reduce((curr, e) => {
                 var _a;
                 if (e.segs === undefined)
                     return curr;

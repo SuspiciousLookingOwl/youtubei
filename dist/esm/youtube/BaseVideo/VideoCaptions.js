@@ -95,15 +95,16 @@ var VideoCaptions = /** @class */ (function (_super) {
      * Get captions of a specific language or a translation of a specific language
      */
     VideoCaptions.prototype.get = function (languageCode, translationLanguageCode) {
-        var _a, _b;
+        var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
             var url, params, response, captions;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
-                        if (!languageCode)
+                        if (!languageCode && ((_a = this.client.options.youtubeClientOptions) === null || _a === void 0 ? void 0 : _a.hl)) {
                             languageCode = this.client.options.youtubeClientOptions.hl;
-                        url = (_a = this.languages.find(function (l) { return l.code.toUpperCase() === (languageCode === null || languageCode === void 0 ? void 0 : languageCode.toUpperCase()); })) === null || _a === void 0 ? void 0 : _a.url;
+                        }
+                        url = (_b = this.languages.find(function (l) { return l.code.toUpperCase() === (languageCode === null || languageCode === void 0 ? void 0 : languageCode.toUpperCase()); })) === null || _b === void 0 ? void 0 : _b.url;
                         if (!url)
                             return [2 /*return*/, undefined];
                         params = { fmt: "json3" };
@@ -111,8 +112,8 @@ var VideoCaptions = /** @class */ (function (_super) {
                             params["tlang"] = translationLanguageCode;
                         return [4 /*yield*/, this.client.http.get(url, { params: params })];
                     case 1:
-                        response = _c.sent();
-                        captions = (_b = response.data.events) === null || _b === void 0 ? void 0 : _b.reduce(function (curr, e) {
+                        response = _d.sent();
+                        captions = (_c = response.data.events) === null || _c === void 0 ? void 0 : _c.reduce(function (curr, e) {
                             var _a;
                             if (e.segs === undefined)
                                 return curr;

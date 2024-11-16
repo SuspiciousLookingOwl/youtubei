@@ -21,8 +21,8 @@ const constants_1 = require("../constants");
 /** Youtube Client */
 class Client {
     constructor(options = {}) {
-        this.options = Object.assign(Object.assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
-        this.http = new common_1.HTTP(Object.assign({ apiKey: constants_1.INNERTUBE_API_KEY, baseUrl: constants_1.BASE_URL, clientName: constants_1.INNERTUBE_CLIENT_NAME, clientVersion: constants_1.INNERTUBE_CLIENT_VERSION }, this.options));
+        this.options = Object.assign(Object.assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions), apiKey: options.apiKey || constants_1.INNERTUBE_API_KEY, baseUrl: options.baseUrl || constants_1.BASE_URL, clientName: options.clientName || constants_1.INNERTUBE_CLIENT_NAME, clientVersion: options.clientVersion || constants_1.INNERTUBE_CLIENT_VERSION });
+        this.http = new common_1.HTTP(this.options);
     }
     get oauth() {
         return {

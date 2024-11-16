@@ -48,13 +48,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 import { HTTP } from "../../common";
 import { MusicLyrics } from "../MusicLyrics";
 import { MusicAllSearchResultParser, MusicSearchResult, } from "../MusicSearchResult";
-import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION, I_END_POINT } from "../constants";
+import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_NAME, INNERTUBE_CLIENT_VERSION, I_END_POINT, } from "../constants";
 /** Youtube Music Client */
 var MusicClient = /** @class */ (function () {
     function MusicClient(options) {
         if (options === void 0) { options = {}; }
-        var fullOptions = __assign(__assign({ initialCookie: "", fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions) });
-        this.http = new HTTP(__assign({ apiKey: INNERTUBE_API_KEY, baseUrl: BASE_URL, clientName: "WEB_REMIX", clientVersion: INNERTUBE_CLIENT_VERSION }, fullOptions));
+        var fullOptions = __assign(__assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions), apiKey: options.apiKey || INNERTUBE_API_KEY, baseUrl: options.baseUrl || BASE_URL, clientName: options.clientName || INNERTUBE_CLIENT_NAME, clientVersion: options.clientVersion || INNERTUBE_CLIENT_VERSION });
+        this.http = new HTTP(fullOptions);
     }
     MusicClient.prototype.search = function (query, type) {
         return __awaiter(this, void 0, void 0, function () {
