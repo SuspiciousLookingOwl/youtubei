@@ -75,7 +75,8 @@ export class HTTP {
 			expiresAt: null,
 			...options.oauth,
 		};
-		(this.pot = options.pot), (this.authorizationPromise = null);
+		this.pot = options.pot;
+		this.authorizationPromise = null;
 		this.defaultFetchOptions = options.fetchOptions || {};
 		this.defaultClientOptions = options.youtubeClientOptions || {};
 	}
@@ -107,9 +108,7 @@ export class HTTP {
 					},
 				},
 				serviceIntegrityDimensions: this.pot
-					? {
-							poToken: this.pot.token,
-					  }
+					? { poToken: this.pot.token, }
 					: undefined,
 				...options?.data,
 			},
