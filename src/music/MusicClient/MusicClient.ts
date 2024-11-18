@@ -1,6 +1,6 @@
 import { RequestInit } from "node-fetch";
 
-import { HTTP, Shelf } from "../../common";
+import { HTTP, HTTPOptions, Shelf } from "../../common";
 import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicLyrics } from "../MusicLyrics";
@@ -11,20 +11,20 @@ import {
 	MusicSearchType,
 } from "../MusicSearchResult";
 import { MusicVideoCompact } from "../MusicVideoCompact";
-import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_VERSION, I_END_POINT } from "../constants";
+import {
+	BASE_URL,
+	INNERTUBE_API_KEY,
+	INNERTUBE_CLIENT_NAME,
+	INNERTUBE_CLIENT_VERSION,
+	I_END_POINT,
+} from "../constants";
 
 export type MusicTopShelf = {
 	item?: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
 	more?: (MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact)[];
 };
 
-export type MusicClientOptions = {
-	initialCookie: string;
-	/** Optional options for http client */
-	fetchOptions: Partial<RequestInit>;
-	/** Optional options passed when sending a request to youtube (context.client) */
-	youtubeClientOptions: Record<string, unknown>;
-};
+export type MusicClientOptions = HTTPOptions;
 
 /** Youtube Music Client */
 export class MusicClient {
@@ -34,6 +34,7 @@ export class MusicClient {
 	constructor(options: Partial<MusicClientOptions> = {}) {
 		const fullOptions: MusicClientOptions = {
 			initialCookie: "",
+			oauth: { enabled: false },
 			fetchOptions: {},
 			...options,
 			youtubeClientOptions: {
@@ -41,15 +42,13 @@ export class MusicClient {
 				gl: "US",
 				...options.youtubeClientOptions,
 			},
+			apiKey: options.apiKey || INNERTUBE_API_KEY,
+			baseUrl: options.baseUrl || BASE_URL,
+			clientName: options.clientName || INNERTUBE_CLIENT_NAME,
+			clientVersion: options.clientVersion || INNERTUBE_CLIENT_VERSION,
 		};
 
-		this.http = new HTTP({
-			apiKey: INNERTUBE_API_KEY,
-			baseUrl: BASE_URL,
-			clientName: "WEB_REMIX",
-			clientVersion: INNERTUBE_CLIENT_VERSION,
-			...fullOptions,
-		});
+		this.http = new HTTP(fullOptions);
 	}
 
 	/**
