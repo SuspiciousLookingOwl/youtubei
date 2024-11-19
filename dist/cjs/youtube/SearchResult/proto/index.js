@@ -6,7 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.optionsToProto = exports.SearchProto = void 0;
 const protobufjs_1 = __importDefault(require("protobufjs"));
 // TODO move this to .proto file
-exports.SearchProto = protobufjs_1.default.parse(`
+exports.SearchProto = protobufjs_1.default
+    .parse(`
 	message SearchOptions {
 		message Options {
 			optional int32 uploadDate = 1;
@@ -26,7 +27,8 @@ exports.SearchProto = protobufjs_1.default.parse(`
 		optional int32 sortBy = 1;
 		optional Options options = 2;
 	}
-`).root.lookupType("SearchOptions");
+`)
+    .root.lookupType("SearchOptions");
 const searchUploadDateProto = {
     all: 0,
     hour: 1,

@@ -11,7 +11,9 @@ var __assign = (this && this.__assign) || function () {
 };
 import protobuf from "protobufjs";
 // TODO move this to .proto file
-export var SearchProto = protobuf.parse("\n\tmessage SearchOptions {\n\t\tmessage Options {\n\t\t\toptional int32 uploadDate = 1;\n\t\t\toptional int32 type = 2;\n\t\t\toptional int32 duration = 3;\n\t\t\toptional int32 hd = 4;\n\t\t\toptional int32 subtitles = 5;\n\t\t\toptional int32 creativeCommons = 6;\n\t\t\toptional int32 live = 8;\n\t\t\toptional int32 _4k = 14;\n\t\t\toptional int32 _360 = 15;\n\t\t\toptional int32 location = 23;\n\t\t\toptional int32 hdr = 25;\n\t\t\toptional int32 vr180 = 26;\n\t\t}\n\n\t\toptional int32 sortBy = 1;\n\t\toptional Options options = 2;\n\t}\n").root.lookupType("SearchOptions");
+export var SearchProto = protobuf
+    .parse("\n\tmessage SearchOptions {\n\t\tmessage Options {\n\t\t\toptional int32 uploadDate = 1;\n\t\t\toptional int32 type = 2;\n\t\t\toptional int32 duration = 3;\n\t\t\toptional int32 hd = 4;\n\t\t\toptional int32 subtitles = 5;\n\t\t\toptional int32 creativeCommons = 6;\n\t\t\toptional int32 live = 8;\n\t\t\toptional int32 _4k = 14;\n\t\t\toptional int32 _360 = 15;\n\t\t\toptional int32 location = 23;\n\t\t\toptional int32 hdr = 25;\n\t\t\toptional int32 vr180 = 26;\n\t\t}\n\n\t\toptional int32 sortBy = 1;\n\t\toptional Options options = 2;\n\t}\n")
+    .root.lookupType("SearchOptions");
 var searchUploadDateProto = {
     all: 0,
     hour: 1,
