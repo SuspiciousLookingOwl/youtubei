@@ -11,7 +11,9 @@ import {
 import { SearchProto as ProtoType } from "./SearchProto";
 
 // TODO move this to .proto file
-export const SearchProto = protobuf.parse(`
+export const SearchProto = protobuf
+	.parse(
+		`
 	message SearchOptions {
 		message Options {
 			optional int32 uploadDate = 1;
@@ -31,7 +33,9 @@ export const SearchProto = protobuf.parse(`
 		optional int32 sortBy = 1;
 		optional Options options = 2;
 	}
-`).root.lookupType("SearchOptions");
+`
+	)
+	.root.lookupType("SearchOptions");
 
 const searchUploadDateProto: Record<SearchUploadDate, number> = {
 	all: 0,

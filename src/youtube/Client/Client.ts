@@ -1,4 +1,3 @@
-import { RequestInit } from "node-fetch";
 
 import { HTTP, HTTPOptions, OAuthProps } from "../../common";
 import { Caption } from "../Caption";
