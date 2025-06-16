@@ -34,6 +34,10 @@ export const getContinuationFromItems = (
 		current = current[accessor];
 	}
 
+	 if (current.commandExecutorCommand?.commands?.length) {
+       		current = current.commandExecutorCommand.commands.find(cmd => 'continuationCommand' in cmd);
+    	}
+
 	return current.continuationCommand.token;
 };
 
