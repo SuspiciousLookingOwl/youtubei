@@ -34,11 +34,11 @@ export const getContinuationFromItems = (
 		current = current[accessor];
 	}
 
-	 if (current.commandExecutorCommand?.commands?.length) {
+	 if (current?.commandExecutorCommand?.commands?.length) {
        		current = current.commandExecutorCommand.commands.find(cmd => 'continuationCommand' in cmd);
     	}
 
-	return current.continuationCommand.token;
+	return current?.continuationCommand?.token;
 };
 
 export const mapFilter = (items: YoutubeRawData, key: string): YoutubeRawData => {
