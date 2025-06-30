@@ -114,9 +114,7 @@ var HTTP = /** @class */ (function () {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.request(path, __assign(__assign({}, options), { method: "POST", params: __assign({ key: this.apiKey, prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), data: __assign({ context: {
                                     client: __assign({ clientName: this.clientName, clientVersion: this.clientVersion, visitorData: (_a = this.pot) === null || _a === void 0 ? void 0 : _a.visitorData }, this.defaultClientOptions),
-                                }, serviceIntegrityDimensions: this.pot
-                                    ? { poToken: this.pot.token, }
-                                    : undefined }, options === null || options === void 0 ? void 0 : options.data) }))];
+                                }, serviceIntegrityDimensions: this.pot ? { poToken: this.pot.token } : undefined }, options === null || options === void 0 ? void 0 : options.data) }))];
                     case 1: return [2 /*return*/, _b.sent()];
                 }
             });

@@ -33,6 +33,7 @@ export var stripToInt = function (string) {
 };
 export var getContinuationFromItems = function (items, accessors) {
     var e_1, _a;
+    var _b, _c, _d;
     if (accessors === void 0) { accessors = ["continuationEndpoint"]; }
     var continuation = items[items.length - 1];
     var renderer = continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemRenderer;
@@ -52,7 +53,10 @@ export var getContinuationFromItems = function (items, accessors) {
         }
         finally { if (e_1) throw e_1.error; }
     }
-    return current.continuationCommand.token;
+    if ((_c = (_b = current === null || current === void 0 ? void 0 : current.commandExecutorCommand) === null || _b === void 0 ? void 0 : _b.commands) === null || _c === void 0 ? void 0 : _c.length) {
+        current = current.commandExecutorCommand.commands.find(function (cmd) { return "continuationCommand" in cmd; });
+    }
+    return (_d = current === null || current === void 0 ? void 0 : current.continuationCommand) === null || _d === void 0 ? void 0 : _d.token;
 };
 export var mapFilter = function (items, key) {
     return items

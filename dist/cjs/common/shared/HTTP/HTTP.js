@@ -48,9 +48,7 @@ class HTTP {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.request(path, Object.assign(Object.assign({}, options), { method: "POST", params: Object.assign({ key: this.apiKey, prettyPrint: "false" }, options === null || options === void 0 ? void 0 : options.params), data: Object.assign({ context: {
                         client: Object.assign({ clientName: this.clientName, clientVersion: this.clientVersion, visitorData: (_a = this.pot) === null || _a === void 0 ? void 0 : _a.visitorData }, this.defaultClientOptions),
-                    }, serviceIntegrityDimensions: this.pot
-                        ? { poToken: this.pot.token, }
-                        : undefined }, options === null || options === void 0 ? void 0 : options.data) }));
+                    }, serviceIntegrityDimensions: this.pot ? { poToken: this.pot.token } : undefined }, options === null || options === void 0 ? void 0 : options.data) }));
         });
     }
     request(path, partialOptions) {

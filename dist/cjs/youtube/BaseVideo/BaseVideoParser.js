@@ -28,7 +28,9 @@ class BaseVideoParser {
         });
         // Like Count and Dislike Count
         const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
-        target.likeCount = common_1.stripToInt(BaseVideoParser.parseButtonRenderer(topLevelButtons[0]));
+        target.likeCount = topLevelButtons
+            ? common_1.stripToInt(BaseVideoParser.parseButtonRenderer(topLevelButtons[0]))
+            : null;
         // Tags and description
         target.tags =
             ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text.trim()).filter((t) => t)) || [];
