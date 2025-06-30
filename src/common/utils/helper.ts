@@ -34,9 +34,11 @@ export const getContinuationFromItems = (
 		current = current[accessor];
 	}
 
-	 if (current?.commandExecutorCommand?.commands?.length) {
-       		current = current.commandExecutorCommand.commands.find(cmd => 'continuationCommand' in cmd);
-    	}
+	if (current?.commandExecutorCommand?.commands?.length) {
+		current = current.commandExecutorCommand.commands.find(
+			(cmd: YoutubeRawData) => "continuationCommand" in cmd
+		);
+	}
 
 	return current?.continuationCommand?.token;
 };

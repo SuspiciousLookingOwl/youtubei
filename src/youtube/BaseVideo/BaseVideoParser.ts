@@ -31,7 +31,9 @@ export class BaseVideoParser {
 
 		// Like Count and Dislike Count
 		const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
-		target.likeCount = topLevelButtons ? stripToInt(BaseVideoParser.parseButtonRenderer(topLevelButtons[0])) : null;
+		target.likeCount = topLevelButtons
+			? stripToInt(BaseVideoParser.parseButtonRenderer(topLevelButtons[0]))
+			: null;
 
 		// Tags and description
 		target.tags =

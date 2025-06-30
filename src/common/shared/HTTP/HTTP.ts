@@ -107,9 +107,7 @@ export class HTTP {
 						...this.defaultClientOptions,
 					},
 				},
-				serviceIntegrityDimensions: this.pot
-					? { poToken: this.pot.token, }
-					: undefined,
+				serviceIntegrityDimensions: this.pot ? { poToken: this.pot.token } : undefined,
 				...options?.data,
 			},
 		});
