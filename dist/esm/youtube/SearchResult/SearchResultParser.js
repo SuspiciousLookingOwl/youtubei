@@ -49,7 +49,6 @@ var SearchResultParser = /** @class */ (function () {
                 else if ("lockupViewModel" in c) {
                     // new data structure for search result
                     var type = c.lockupViewModel.contentType;
-                    console.log(type);
                     if (type === "LOCKUP_CONTENT_TYPE_VIDEO") {
                         contents.push(new VideoCompact({ client: client }).loadLockup(c.lockupViewModel));
                     }
