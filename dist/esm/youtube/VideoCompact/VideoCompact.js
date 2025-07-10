@@ -76,6 +76,15 @@ var VideoCompact = /** @class */ (function (_super) {
         return this;
     };
     /**
+     * Load this instance with raw lockup data from Youtube
+     *
+     * @hidden
+     */
+    VideoCompact.prototype.loadLockup = function (data) {
+        VideoCompactParser.loadLockupVideoCompact(this, data);
+        return this;
+    };
+    /**
      * Get {@link Video} object based on current video id
      *
      * Equivalent to

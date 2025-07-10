@@ -30,6 +30,12 @@ export declare class PlaylistCompact extends Base implements PlaylistCompactProp
      */
     load(data: YoutubeRawData): PlaylistCompact;
     /**
+     * Load this instance with raw lockup data from Youtube
+     *
+     * @hidden
+     */
+    loadLockup(data: YoutubeRawData): PlaylistCompact;
+    /**
      * Get {@link Playlist} object based on current playlist id
      *
      * Equivalent to

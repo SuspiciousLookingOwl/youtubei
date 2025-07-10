@@ -85,6 +85,16 @@ var BaseVideoParser = /** @class */ (function () {
         else if ("compactRadioRenderer" in data) {
             return new PlaylistCompact({ client: client }).load(data.compactRadioRenderer);
         }
+        else if ("lockupViewModel" in data) {
+            // new data structure for related contents
+            var type = data.lockupViewModel.contentType;
+            if (type === "LOCKUP_CONTENT_TYPE_VIDEO") {
+                return new VideoCompact({ client: client }).loadLockup(data.lockupViewModel);
+            }
+            else if (type === "LOCKUP_CONTENT_TYPE_PLAYLIST") {
+                return new PlaylistCompact({ client: client }).loadLockup(data.lockupViewModel);
+            }
+        }
     };
     BaseVideoParser.parseRelatedFromSecondaryContent = function (secondaryContents, client) {
         return secondaryContents

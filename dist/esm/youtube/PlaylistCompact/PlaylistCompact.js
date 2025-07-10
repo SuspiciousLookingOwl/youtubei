@@ -68,6 +68,15 @@ var PlaylistCompact = /** @class */ (function (_super) {
         return this;
     };
     /**
+     * Load this instance with raw lockup data from Youtube
+     *
+     * @hidden
+     */
+    PlaylistCompact.prototype.loadLockup = function (data) {
+        PlaylistCompactParser.loadLockupPlaylistCompact(this, data);
+        return this;
+    };
+    /**
      * Get {@link Playlist} object based on current playlist id
      *
      * Equivalent to

@@ -47,6 +47,12 @@ export declare class VideoCompact extends Base implements VideoCompactProperties
      */
     load(data: YoutubeRawData): VideoCompact;
     /**
+     * Load this instance with raw lockup data from Youtube
+     *
+     * @hidden
+     */
+    loadLockup(data: YoutubeRawData): VideoCompact;
+    /**
      * Get {@link Video} object based on current video id
      *
      * Equivalent to

@@ -22,6 +22,29 @@ var PlaylistCompactParser = /** @class */ (function () {
         }
         return target;
     };
+    PlaylistCompactParser.loadLockupPlaylistCompact = function (target, data) {
+        var lockupMetadataViewModel = data.metadata.lockupMetadataViewModel;
+        var channelMetadata = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows[0]
+            .metadataParts[0];
+        var thumbnailViewModel = data.contentImage.collectionThumbnailViewModel.primaryThumbnail.thumbnailViewModel;
+        if (channelMetadata.text.commandRuns) {
+            // not a mix
+            var channel = new BaseChannel({
+                client: target.client,
+                name: channelMetadata.text.content,
+                id: channelMetadata.text.commandRuns[0].onTap.innertubeCommand.browseEndpoint
+                    .browseId,
+            });
+            target.channel = channel;
+        }
+        target.id = data.contentId;
+        target.title = lockupMetadataViewModel.title.content;
+        target.videoCount =
+            stripToInt(thumbnailViewModel.overlays[0].thumbnailOverlayBadgeViewModel.thumbnailBadges[0]
+                .thumbnailBadgeViewModel.text) || 0;
+        target.thumbnails = new Thumbnails().load(thumbnailViewModel.image.sources);
+        return target;
+    };
     return PlaylistCompactParser;
 }());
 export { PlaylistCompactParser };

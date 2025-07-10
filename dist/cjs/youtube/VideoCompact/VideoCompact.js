@@ -33,6 +33,15 @@ class VideoCompact extends Base_1.Base {
         return this;
     }
     /**
+     * Load this instance with raw lockup data from Youtube
+     *
+     * @hidden
+     */
+    loadLockup(data) {
+        VideoCompactParser_1.VideoCompactParser.loadLockupVideoCompact(this, data);
+        return this;
+    }
+    /**
      * Get {@link Video} object based on current video id
      *
      * Equivalent to

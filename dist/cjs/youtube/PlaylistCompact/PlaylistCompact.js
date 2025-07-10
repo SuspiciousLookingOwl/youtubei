@@ -29,6 +29,15 @@ class PlaylistCompact extends Base_1.Base {
         return this;
     }
     /**
+     * Load this instance with raw lockup data from Youtube
+     *
+     * @hidden
+     */
+    loadLockup(data) {
+        PlaylistCompactParser_1.PlaylistCompactParser.loadLockupPlaylistCompact(this, data);
+        return this;
+    }
+    /**
      * Get {@link Playlist} object based on current playlist id
      *
      * Equivalent to

@@ -46,6 +46,17 @@ var SearchResultParser = /** @class */ (function () {
                     contents.push(new VideoCompact({ client: client }).load(c.videoRenderer));
                 else if ("channelRenderer" in c)
                     contents.push(new BaseChannel({ client: client }).load(c.channelRenderer));
+                else if ("lockupViewModel" in c) {
+                    // new data structure for search result
+                    var type = c.lockupViewModel.contentType;
+                    console.log(type);
+                    if (type === "LOCKUP_CONTENT_TYPE_VIDEO") {
+                        contents.push(new VideoCompact({ client: client }).loadLockup(c.lockupViewModel));
+                    }
+                    else if (type === "LOCKUP_CONTENT_TYPE_PLAYLIST") {
+                        contents.push(new PlaylistCompact({ client: client }).loadLockup(c.lockupViewModel));
+                    }
+                }
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
