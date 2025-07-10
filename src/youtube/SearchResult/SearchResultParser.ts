@@ -53,8 +53,6 @@ export class SearchResultParser {
 				// new data structure for search result
 				const type = c.lockupViewModel.contentType;
 
-				console.log(type);
-
 				if (type === "LOCKUP_CONTENT_TYPE_VIDEO") {
 					contents.push(new VideoCompact({ client }).loadLockup(c.lockupViewModel));
 				} else if (type === "LOCKUP_CONTENT_TYPE_PLAYLIST") {
