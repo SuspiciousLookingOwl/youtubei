@@ -62,6 +62,16 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	}
 
 	/**
+	 * Load this instance with raw lockup data from Youtube
+	 *
+	 * @hidden
+	 */
+	loadLockup(data: YoutubeRawData): VideoCompact {
+		VideoCompactParser.loadLockupVideoCompact(this, data);
+		return this;
+	}
+
+	/**
 	 * Get {@link Video} object based on current video id
 	 *
 	 * Equivalent to

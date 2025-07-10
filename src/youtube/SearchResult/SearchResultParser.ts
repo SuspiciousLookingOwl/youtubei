@@ -49,6 +49,18 @@ export class SearchResultParser {
 				contents.push(new VideoCompact({ client }).load(c.videoRenderer));
 			else if ("channelRenderer" in c)
 				contents.push(new BaseChannel({ client }).load(c.channelRenderer));
+			else if ("lockupViewModel" in c) {
+				// new data structure for search result
+				const type = c.lockupViewModel.contentType;
+
+				console.log(type);
+
+				if (type === "LOCKUP_CONTENT_TYPE_VIDEO") {
+					contents.push(new VideoCompact({ client }).loadLockup(c.lockupViewModel));
+				} else if (type === "LOCKUP_CONTENT_TYPE_PLAYLIST") {
+					contents.push(new PlaylistCompact({ client }).loadLockup(c.lockupViewModel));
+				}
+			}
 		}
 
 		return contents;

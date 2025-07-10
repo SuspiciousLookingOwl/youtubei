@@ -42,6 +42,16 @@ export class PlaylistCompact extends Base implements PlaylistCompactProperties {
 	}
 
 	/**
+	 * Load this instance with raw lockup data from Youtube
+	 *
+	 * @hidden
+	 */
+	loadLockup(data: YoutubeRawData): PlaylistCompact {
+		PlaylistCompactParser.loadLockupPlaylistCompact(this, data);
+		return this;
+	}
+
+	/**
 	 * Get {@link Playlist} object based on current playlist id
 	 *
 	 * Equivalent to

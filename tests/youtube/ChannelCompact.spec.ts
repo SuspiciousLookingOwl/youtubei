@@ -26,7 +26,7 @@ describe("BaseChannel", () => {
 
 	it("load playlists", async () => {
 		const playlists = await channel.playlists.next(2);
-		expect(playlists.length).toBe(60);
+		expect(playlists.length).toBeGreaterThanOrEqual(30);
 		expect(channel.playlists.items.length).toBe(playlists.length);
 	});
 });

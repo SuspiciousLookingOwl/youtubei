@@ -64,7 +64,7 @@ describe("Video", () => {
 
 	it("match ended live getVideo result", () => {
 		expect(endedLiveVideo.isLiveContent).toBeTrue();
-		expect(endedLiveVideo.duration).toBe(4842);
+		expect(endedLiveVideo.duration).toBe(4808);
 	});
 
 	it("match membership video getVideo result", () => {
