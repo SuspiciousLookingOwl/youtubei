@@ -40,19 +40,23 @@ export class ChannelParser {
 				description: descriptionModel,
 			} = pageHeaderRenderer.content.pageHeaderViewModel;
 
-			const metadataRow = metadata.contentMetadataViewModel.metadataRows.find(
-				(m: YoutubeRawData) => m.metadataParts && m.metadataParts.length == 2
+			const metadataParts = metadata.contentMetadataViewModel.metadataRows
+				.map((m: YoutubeRawData) => m.metadataParts)
+				.flat();
+
+			const handlePart = metadataParts.find((m: YoutubeRawData) =>
+				m.text.styleRuns?.some((s: YoutubeRawData) => "weightLabel" in s)
+			);
+			const subscriberCountPart = metadataParts.find(
+				(m: YoutubeRawData) => m.accessibilityLabel
+			);
+			const videoCountPart = metadataParts.find((m: YoutubeRawData) =>
+				m.text.styleRuns?.some((s: YoutubeRawData) => "startIndex" in s)
 			);
 
-			const handleRow = metadata.contentMetadataViewModel.metadataRows.find(
-				(m: YoutubeRawData) => m.metadataParts && m.metadataParts.length == 1
-			);
-			handle = handleRow?.metadataParts[0].text?.content;
-			videoCountText = metadataRow.metadataParts.find((m: YoutubeRawData) => m.text.styleRuns)
-				?.text.content;
-			subscriberCountText = metadataRow.metadataParts.find(
-				(m: YoutubeRawData) => !m.text.styleRuns
-			)?.text.content;
+			handle = handlePart.text?.content;
+			videoCountText = videoCountPart?.text.content;
+			subscriberCountText = subscriberCountPart?.text.content;
 			avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
 			banner = bannerModel?.imageBannerViewModel.image.sources;
 			description = descriptionModel?.descriptionPreviewViewModel.description.content;
