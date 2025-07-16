@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { getContinuationFromItems, mapFilter } from "../../common";
+import { getContinuationFromItems } from "../../common";
 import { Continuable } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { I_END_POINT } from "../constants";
@@ -93,11 +93,19 @@ var ChannelPlaylists = /** @class */ (function (_super) {
                         response = _b.sent();
                         items = BaseChannelParser.parseTabData("playlists", response.data);
                         continuation = getContinuationFromItems(items);
-                        data = mapFilter(items, "gridPlaylistRenderer");
+                        data = items.filter(function (i) { return "gridPlaylistRenderer" in i || "lockupViewModel" in i; });
                         return [2 /*return*/, {
                                 continuation: continuation,
                                 items: data.map(function (i) {
-                                    return new PlaylistCompact({ client: _this.client, channel: _this.channel }).load(i);
+                                    var playlist = new PlaylistCompact({
+                                        client: _this.client,
+                                        channel: _this.channel,
+                                    });
+                                    if (i.gridPlaylistRenderer)
+                                        playlist.load(i.gridPlaylistRenderer);
+                                    else if (i.lockupViewModel)
+                                        playlist.loadLockup(i.lockupViewModel);
+                                    return playlist;
                                 }),
                             }];
                 }

@@ -46,10 +46,20 @@ class ChannelPlaylists extends Continuable_1.Continuable {
             });
             const items = BaseChannelParser_1.BaseChannelParser.parseTabData("playlists", response.data);
             const continuation = common_1.getContinuationFromItems(items);
-            const data = common_1.mapFilter(items, "gridPlaylistRenderer");
+            const data = items.filter((i) => "gridPlaylistRenderer" in i || "lockupViewModel" in i);
             return {
                 continuation,
-                items: data.map((i) => new PlaylistCompact_1.PlaylistCompact({ client: this.client, channel: this.channel }).load(i)),
+                items: data.map((i) => {
+                    const playlist = new PlaylistCompact_1.PlaylistCompact({
+                        client: this.client,
+                        channel: this.channel,
+                    });
+                    if (i.gridPlaylistRenderer)
+                        playlist.load(i.gridPlaylistRenderer);
+                    else if (i.lockupViewModel)
+                        playlist.loadLockup(i.lockupViewModel);
+                    return playlist;
+                }),
             };
         });
     }
