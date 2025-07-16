@@ -17,9 +17,9 @@ var ChannelParser = /** @class */ (function () {
     function ChannelParser() {
     }
     ChannelParser.loadChannel = function (target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         var channelId, title, handle, description, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
-        var _m = data.header, c4TabbedHeaderRenderer = _m.c4TabbedHeaderRenderer, pageHeaderRenderer = _m.pageHeaderRenderer;
+        var _k = data.header, c4TabbedHeaderRenderer = _k.c4TabbedHeaderRenderer, pageHeaderRenderer = _k.pageHeaderRenderer;
         if (c4TabbedHeaderRenderer) {
             channelId = c4TabbedHeaderRenderer.channelId;
             title = c4TabbedHeaderRenderer.title;
@@ -35,12 +35,16 @@ var ChannelParser = /** @class */ (function () {
                 data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.endpoint
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
-            var _o = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _o.metadata, imageModel = _o.image, bannerModel = _o.banner, descriptionModel = _o.description;
-            var metadataRow = metadata.contentMetadataViewModel.metadataRows.find(function (m) { return m.metadataParts && m.metadataParts.length == 2; });
-            var handleRow = metadata.contentMetadataViewModel.metadataRows.find(function (m) { return m.metadataParts && m.metadataParts.length == 1; });
-            handle = (_j = handleRow === null || handleRow === void 0 ? void 0 : handleRow.metadataParts[0].text) === null || _j === void 0 ? void 0 : _j.content;
-            videoCountText = (_k = metadataRow.metadataParts.find(function (m) { return m.text.styleRuns; })) === null || _k === void 0 ? void 0 : _k.text.content;
-            subscriberCountText = (_l = metadataRow.metadataParts.find(function (m) { return !m.text.styleRuns; })) === null || _l === void 0 ? void 0 : _l.text.content;
+            var _l = pageHeaderRenderer.content.pageHeaderViewModel, metadata = _l.metadata, imageModel = _l.image, bannerModel = _l.banner, descriptionModel = _l.description;
+            var metadataParts = metadata.contentMetadataViewModel.metadataRows
+                .map(function (m) { return m.metadataParts; })
+                .flat();
+            var handlePart = metadataParts.find(function (m) { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some(function (s) { return "weightLabel" in s; }); });
+            var subscriberCountPart = metadataParts.find(function (m) { return m.accessibilityLabel; });
+            var videoCountPart = metadataParts.find(function (m) { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some(function (s) { return "startIndex" in s; }); });
+            handle = (_j = handlePart.text) === null || _j === void 0 ? void 0 : _j.content;
+            videoCountText = videoCountPart === null || videoCountPart === void 0 ? void 0 : videoCountPart.text.content;
+            subscriberCountText = subscriberCountPart === null || subscriberCountPart === void 0 ? void 0 : subscriberCountPart.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
             banner = bannerModel === null || bannerModel === void 0 ? void 0 : bannerModel.imageBannerViewModel.image.sources;
             description = descriptionModel === null || descriptionModel === void 0 ? void 0 : descriptionModel.descriptionPreviewViewModel.description.content;

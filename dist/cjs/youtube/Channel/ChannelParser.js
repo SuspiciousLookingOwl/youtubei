@@ -7,7 +7,7 @@ const PlaylistCompact_1 = require("../PlaylistCompact");
 const VideoCompact_1 = require("../VideoCompact");
 class ChannelParser {
     static loadChannel(target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         let channelId, title, handle, description, avatar, subscriberCountText, videoCountText, tvBanner, mobileBanner, banner;
         const { c4TabbedHeaderRenderer, pageHeaderRenderer } = data.header;
         if (c4TabbedHeaderRenderer) {
@@ -26,11 +26,15 @@ class ChannelParser {
                     .browseEndpoint.browseId;
             title = pageHeaderRenderer.pageTitle;
             const { metadata, image: imageModel, banner: bannerModel, description: descriptionModel, } = pageHeaderRenderer.content.pageHeaderViewModel;
-            const metadataRow = metadata.contentMetadataViewModel.metadataRows.find((m) => m.metadataParts && m.metadataParts.length == 2);
-            const handleRow = metadata.contentMetadataViewModel.metadataRows.find((m) => m.metadataParts && m.metadataParts.length == 1);
-            handle = (_j = handleRow === null || handleRow === void 0 ? void 0 : handleRow.metadataParts[0].text) === null || _j === void 0 ? void 0 : _j.content;
-            videoCountText = (_k = metadataRow.metadataParts.find((m) => m.text.styleRuns)) === null || _k === void 0 ? void 0 : _k.text.content;
-            subscriberCountText = (_l = metadataRow.metadataParts.find((m) => !m.text.styleRuns)) === null || _l === void 0 ? void 0 : _l.text.content;
+            const metadataParts = metadata.contentMetadataViewModel.metadataRows
+                .map((m) => m.metadataParts)
+                .flat();
+            const handlePart = metadataParts.find((m) => { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some((s) => "weightLabel" in s); });
+            const subscriberCountPart = metadataParts.find((m) => m.accessibilityLabel);
+            const videoCountPart = metadataParts.find((m) => { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some((s) => "startIndex" in s); });
+            handle = (_j = handlePart.text) === null || _j === void 0 ? void 0 : _j.content;
+            videoCountText = videoCountPart === null || videoCountPart === void 0 ? void 0 : videoCountPart.text.content;
+            subscriberCountText = subscriberCountPart === null || subscriberCountPart === void 0 ? void 0 : subscriberCountPart.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
             banner = bannerModel === null || bannerModel === void 0 ? void 0 : bannerModel.imageBannerViewModel.image.sources;
             description = descriptionModel === null || descriptionModel === void 0 ? void 0 : descriptionModel.descriptionPreviewViewModel.description.content;
