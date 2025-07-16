@@ -1,4 +1,4 @@
-import { YoutubeRawData, getContinuationFromItems, mapFilter } from "../../common";
+import { YoutubeRawData, getContinuationFromItems } from "../../common";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { I_END_POINT } from "../constants";
@@ -44,13 +44,21 @@ export class ChannelPlaylists extends Continuable<PlaylistCompact> {
 
 		const items = BaseChannelParser.parseTabData("playlists", response.data);
 		const continuation = getContinuationFromItems(items);
-		const data = mapFilter(items, "gridPlaylistRenderer");
+		const data = items.filter(
+			(i: YoutubeRawData) => "gridPlaylistRenderer" in i || "lockupViewModel" in i
+		);
 
 		return {
 			continuation,
-			items: data.map((i: YoutubeRawData) =>
-				new PlaylistCompact({ client: this.client, channel: this.channel }).load(i)
-			),
+			items: data.map((i: YoutubeRawData) => {
+				const playlist = new PlaylistCompact({
+					client: this.client,
+					channel: this.channel,
+				});
+				if (i.gridPlaylistRenderer) playlist.load(i.gridPlaylistRenderer);
+				else if (i.lockupViewModel) playlist.loadLockup(i.lockupViewModel);
+				return playlist;
+			}),
 		};
 	}
 }
