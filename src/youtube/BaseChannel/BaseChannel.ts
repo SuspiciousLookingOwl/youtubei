@@ -3,6 +3,7 @@ import { Base, BaseProperties } from "../Base";
 import { BaseChannelParser } from "./BaseChannelParser";
 import { ChannelLive } from "./ChannelLive";
 import { ChannelPlaylists } from "./ChannelPlaylists";
+import { ChannelPosts } from "./ChannelPosts";
 import { ChannelShorts } from "./ChannelShorts";
 import { ChannelVideos } from "./ChannelVideos";
 
@@ -39,6 +40,8 @@ export class BaseChannel extends Base implements BaseChannelProperties {
 	live: ChannelLive;
 	/** Continuable of playlists */
 	playlists: ChannelPlaylists;
+	/** Continuable of posts */
+	posts: ChannelPosts;
 
 	/** @hidden */
 	constructor(attr: BaseChannelProperties) {
@@ -49,6 +52,7 @@ export class BaseChannel extends Base implements BaseChannelProperties {
 		this.shorts = new ChannelShorts({ channel: this, client: this.client });
 		this.live = new ChannelLive({ channel: this, client: this.client });
 		this.playlists = new ChannelPlaylists({ channel: this, client: this.client });
+		this.posts = new ChannelPosts({ channel: this, client: this.client });
 	}
 
 	/** The URL of the channel page */
