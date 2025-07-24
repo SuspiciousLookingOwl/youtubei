@@ -29,4 +29,10 @@ describe("BaseChannel", () => {
 		expect(playlists.length).toBeGreaterThanOrEqual(30);
 		expect(channel.playlists.items.length).toBe(playlists.length);
 	});
+
+	it("load posts", async () => {
+		const posts = await channel.posts.next(2);
+		expect(posts.length).toBeGreaterThanOrEqual(10);
+		expect(channel.posts.items.length).toBe(posts.length);
+	});
 });
