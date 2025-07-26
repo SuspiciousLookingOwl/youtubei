@@ -9,6 +9,7 @@ export class BaseChannelParser {
 		shorts: "EgZzaG9ydHPyBgUKA5oBAA%3D%3D",
 		live: "EgdzdHJlYW1z8gYECgJ6AA%3D%3D",
 		playlists: "EglwbGF5bGlzdHPyBgQKAkIA",
+		posts: "EgVwb3N0c_IGBAoCSgA%3D",
 	} as const;
 
 	static loadBaseChannel(target: BaseChannel, data: YoutubeRawData): BaseChannel {
@@ -34,12 +35,15 @@ export class BaseChannelParser {
 		return (
 			tab?.tabRenderer.content.sectionListRenderer?.contents?.[0].itemSectionRenderer
 				.contents[0].gridRenderer?.items ||
+			tab?.tabRenderer.content?.sectionListRenderer?.contents?.[0].itemSectionRenderer
+				?.contents ||
 			tab?.tabRenderer.content.richGridRenderer.contents.map(
 				(c: YoutubeRawData) => c.richItemRenderer?.content || c
 			) ||
 			data.onResponseReceivedActions?.[0].appendContinuationItemsAction.continuationItems.map(
 				(c: YoutubeRawData) => c.richItemRenderer?.content || c
 			) ||
+			data.onResponseReceivedEndpoints?.[0].appendContinuationItemsAction.continuationItems ||
 			[]
 		);
 	}
