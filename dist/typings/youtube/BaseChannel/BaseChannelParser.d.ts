@@ -7,6 +7,7 @@ export declare class BaseChannelParser {
         readonly shorts: "EgZzaG9ydHPyBgUKA5oBAA%3D%3D";
         readonly live: "EgdzdHJlYW1z8gYECgJ6AA%3D%3D";
         readonly playlists: "EglwbGF5bGlzdHPyBgQKAkIA";
+        readonly posts: "EgVwb3N0c_IGBAoCSgA%3D";
     };
     static loadBaseChannel(target: BaseChannel, data: YoutubeRawData): BaseChannel;
     /** Parse tab data from request, tab name is ignored if it's a continuation data */

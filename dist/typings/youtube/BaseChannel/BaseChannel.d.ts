@@ -2,6 +2,7 @@ import { Thumbnails, YoutubeRawData } from "../../common";
 import { Base, BaseProperties } from "../Base";
 import { ChannelLive } from "./ChannelLive";
 import { ChannelPlaylists } from "./ChannelPlaylists";
+import { ChannelPosts } from "./ChannelPosts";
 import { ChannelShorts } from "./ChannelShorts";
 import { ChannelVideos } from "./ChannelVideos";
 /** @hidden */
@@ -36,6 +37,8 @@ export declare class BaseChannel extends Base implements BaseChannelProperties {
     live: ChannelLive;
     /** Continuable of playlists */
     playlists: ChannelPlaylists;
+    /** Continuable of posts */
+    posts: ChannelPosts;
     /** @hidden */
     constructor(attr: BaseChannelProperties);
     /** The URL of the channel page */

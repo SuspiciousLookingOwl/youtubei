@@ -5,6 +5,7 @@ const Base_1 = require("../Base");
 const BaseChannelParser_1 = require("./BaseChannelParser");
 const ChannelLive_1 = require("./ChannelLive");
 const ChannelPlaylists_1 = require("./ChannelPlaylists");
+const ChannelPosts_1 = require("./ChannelPosts");
 const ChannelShorts_1 = require("./ChannelShorts");
 const ChannelVideos_1 = require("./ChannelVideos");
 /**  Represents a Youtube Channel */
@@ -17,6 +18,7 @@ class BaseChannel extends Base_1.Base {
         this.shorts = new ChannelShorts_1.ChannelShorts({ channel: this, client: this.client });
         this.live = new ChannelLive_1.ChannelLive({ channel: this, client: this.client });
         this.playlists = new ChannelPlaylists_1.ChannelPlaylists({ channel: this, client: this.client });
+        this.posts = new ChannelPosts_1.ChannelPosts({ channel: this, client: this.client });
     }
     /** The URL of the channel page */
     get url() {
