@@ -47,7 +47,7 @@ export class BaseVideoParser {
 			data.response.contents.twoColumnWatchNextResults.secondaryResults?.secondaryResults
 				.results;
 
-		const itemSectionRenderer = secondaryContents.find((c: YoutubeRawData) => {
+		const itemSectionRenderer = secondaryContents?.find((c: YoutubeRawData) => {
 			return c.itemSectionRenderer;
 		})?.itemSectionRenderer;
 
