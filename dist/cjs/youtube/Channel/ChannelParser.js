@@ -32,7 +32,7 @@ class ChannelParser {
             const handlePart = metadataParts.find((m) => { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some((s) => "weightLabel" in s); });
             const subscriberCountPart = metadataParts.find((m) => m.accessibilityLabel);
             const videoCountPart = metadataParts.find((m) => { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some((s) => "startIndex" in s); });
-            handle = (_j = handlePart.text) === null || _j === void 0 ? void 0 : _j.content;
+            handle = (_j = handlePart === null || handlePart === void 0 ? void 0 : handlePart.text) === null || _j === void 0 ? void 0 : _j.content;
             videoCountText = videoCountPart === null || videoCountPart === void 0 ? void 0 : videoCountPart.text.content;
             subscriberCountText = subscriberCountPart === null || subscriberCountPart === void 0 ? void 0 : subscriberCountPart.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;

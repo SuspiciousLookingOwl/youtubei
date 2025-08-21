@@ -47,7 +47,7 @@ var BaseVideoParser = /** @class */ (function () {
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
         var secondaryContents = (_c = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
-        var itemSectionRenderer = (_d = secondaryContents.find(function (c) {
+        var itemSectionRenderer = (_d = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find(function (c) {
             return c.itemSectionRenderer;
         })) === null || _d === void 0 ? void 0 : _d.itemSectionRenderer;
         if (itemSectionRenderer)

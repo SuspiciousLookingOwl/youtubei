@@ -37,7 +37,7 @@ class BaseVideoParser {
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
         let secondaryContents = (_c = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
-        const itemSectionRenderer = (_d = secondaryContents.find((c) => {
+        const itemSectionRenderer = (_d = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find((c) => {
             return c.itemSectionRenderer;
         })) === null || _d === void 0 ? void 0 : _d.itemSectionRenderer;
         if (itemSectionRenderer)

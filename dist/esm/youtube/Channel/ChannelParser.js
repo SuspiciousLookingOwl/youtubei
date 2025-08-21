@@ -42,7 +42,7 @@ var ChannelParser = /** @class */ (function () {
             var handlePart = metadataParts.find(function (m) { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some(function (s) { return "weightLabel" in s; }); });
             var subscriberCountPart = metadataParts.find(function (m) { return m.accessibilityLabel; });
             var videoCountPart = metadataParts.find(function (m) { var _a; return (_a = m.text.styleRuns) === null || _a === void 0 ? void 0 : _a.some(function (s) { return "startIndex" in s; }); });
-            handle = (_j = handlePart.text) === null || _j === void 0 ? void 0 : _j.content;
+            handle = (_j = handlePart === null || handlePart === void 0 ? void 0 : handlePart.text) === null || _j === void 0 ? void 0 : _j.content;
             videoCountText = videoCountPart === null || videoCountPart === void 0 ? void 0 : videoCountPart.text.content;
             subscriberCountText = subscriberCountPart === null || subscriberCountPart === void 0 ? void 0 : subscriberCountPart.text.content;
             avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
