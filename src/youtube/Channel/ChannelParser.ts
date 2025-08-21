@@ -54,7 +54,7 @@ export class ChannelParser {
 				m.text.styleRuns?.some((s: YoutubeRawData) => "startIndex" in s)
 			);
 
-			handle = handlePart.text?.content;
+			handle = handlePart?.text?.content;
 			videoCountText = videoCountPart?.text.content;
 			subscriberCountText = subscriberCountPart?.text.content;
 			avatar = imageModel.decoratedAvatarViewModel.avatar.avatarViewModel.image.sources;
