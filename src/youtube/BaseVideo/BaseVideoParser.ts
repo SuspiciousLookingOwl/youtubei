@@ -11,26 +11,26 @@ export class BaseVideoParser {
 		const videoInfo = BaseVideoParser.parseRawData(data);
 
 		// Basic information
-		target.id = videoInfo.videoDetails.videoId;
-		target.title = videoInfo.videoDetails.title;
-		target.uploadDate = videoInfo.dateText.simpleText;
-		target.viewCount = +videoInfo.videoDetails.viewCount || null;
-		target.isLiveContent = videoInfo.videoDetails.isLiveContent;
-		target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
+		target.id = videoInfo?.videoDetails?.videoId;
+		target.title = videoInfo?.videoDetails?.title;
+		target.uploadDate = videoInfo?.dateText?.simpleText;
+		target.viewCount = +videoInfo?.videoDetails?.viewCount || null;
+		target.isLiveContent = videoInfo?.videoDetails?.isLiveContent;
+		target.thumbnails = new Thumbnails().load(videoInfo?.videoDetails?.thumbnail?.thumbnails);
 
 		// Channel
-		const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
+		const { title, thumbnail, subscriberCountText } = videoInfo?.owner?.videoOwnerRenderer || {};
 
 		target.channel = new BaseChannel({
 			client: target.client,
-			id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
-			name: title.runs[0].text,
+			id: title?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.browseId,
+			name: title?.runs?.[0]?.text,
 			subscriberCount: subscriberCountText?.simpleText,
-			thumbnails: new Thumbnails().load(thumbnail.thumbnails),
+			thumbnails: new Thumbnails().load(thumbnail?.thumbnails),
 		});
 
 		// Like Count and Dislike Count
-		const topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
+		const topLevelButtons = videoInfo?.videoActions?.menuRenderer?.topLevelButtons;
 		target.likeCount = topLevelButtons
 			? stripToInt(BaseVideoParser.parseButtonRenderer(topLevelButtons[0]))
 			: null;
@@ -40,7 +40,7 @@ export class BaseVideoParser {
 			videoInfo.superTitleLink?.runs
 				?.map((r: YoutubeRawData) => r.text.trim())
 				.filter((t: string) => t) || [];
-		target.description = videoInfo.videoDetails.shortDescription || "";
+		target.description = videoInfo?.videoDetails?.shortDescription || "";
 
 		// related videos
 		let secondaryContents =
@@ -62,7 +62,7 @@ export class BaseVideoParser {
 		}
 
 		// captions
-		if (videoInfo.captions) {
+		if (videoInfo?.captions) {
 			target.captions = new VideoCaptions({ client: target.client, video: target }).load(
 				videoInfo.captions.playerCaptionsTracklistRenderer
 			);
