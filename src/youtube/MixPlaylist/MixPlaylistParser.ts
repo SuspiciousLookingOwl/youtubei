@@ -5,12 +5,12 @@ import { MixPlaylist } from "./MixPlaylist";
 
 export class MixPlaylistParser {
 	static loadMixPlaylist(target: MixPlaylist, data: YoutubeRawData): MixPlaylist {
-		const twoColumnWatchNextResults = data.contents.twoColumnWatchNextResults;
-		const playlist = twoColumnWatchNextResults.playlist.playlist;
-		target.title = playlist.titleText.simpleText;
-		target.id = playlist.playlistId;
-		target.videoCount = playlist.contents.length;
-		target.videos = MixPlaylistParser.parseVideos(playlist.contents, target.client);
+		const twoColumnWatchNextResults = data?.contents?.twoColumnWatchNextResults;
+		const playlist = twoColumnWatchNextResults?.playlist?.playlist;
+		target.title = playlist?.titleText?.simpleText;
+		target.id = playlist?.playlistId;
+		target.videoCount = playlist?.contents?.length;
+		target.videos = MixPlaylistParser.parseVideos(playlist?.contents, target.client);
 
 		return target;
 	}
