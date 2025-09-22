@@ -45,9 +45,9 @@ export class PlaylistParser {
 		if (videoOwner) {
 			const { title, thumbnail } = videoOwner.videoOwnerRenderer;
 			target.channel = new BaseChannel({
-				id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
-				name: title.runs[0].text,
-				thumbnails: new Thumbnails().load(thumbnail.thumbnails),
+				id: title?.runs?.[0]?.navigationEndpoint?.browseEndpoint?.browseId,
+				name: title?.runs?.[0]?.text,
+				thumbnails: new Thumbnails().load(thumbnail?.thumbnails),
 				client: target.client,
 			});
 		}
