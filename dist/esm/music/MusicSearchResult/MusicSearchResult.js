@@ -125,16 +125,17 @@ var MusicSearchResult = /** @class */ (function (_super) {
                     case 0:
                         this.items = [];
                         this.type = type;
-                        bufferParams = MusicSearchProto.encode(optionsToProto(type)).finish();
+                        if (type)
+                            bufferParams = MusicSearchProto.encode(optionsToProto(type)).finish();
                         return [4 /*yield*/, this.client.http.post(I_END_POINT + "/search", {
                                 data: {
                                     query: query,
-                                    params: Buffer.from(bufferParams).toString("base64"),
+                                    params: bufferParams ? Buffer.from(bufferParams).toString("base64") : undefined,
                                 },
                             })];
                     case 1:
                         response = _c.sent();
-                        _a = MusicSearchResultParser.parseInitialSearchResult(response.data, type, this.client), data = _a.data, continuation = _a.continuation;
+                        _a = MusicSearchResultParser.parseInitialSearchResult(response.data, this.client), data = _a.data, continuation = _a.continuation;
                         (_b = this.items).push.apply(_b, __spread(data));
                         this.continuation = continuation;
                         return [2 /*return*/, this];
@@ -159,7 +160,7 @@ var MusicSearchResult = /** @class */ (function (_super) {
                             })];
                     case 1:
                         response = _b.sent();
-                        _a = MusicSearchResultParser.parseContinuationSearchResult(response.data, this.type, this.client), data = _a.data, continuation = _a.continuation;
+                        _a = MusicSearchResultParser.parseContinuationSearchResult(response.data, this.client), data = _a.data, continuation = _a.continuation;
                         return [2 /*return*/, {
                                 items: data,
                                 continuation: continuation,

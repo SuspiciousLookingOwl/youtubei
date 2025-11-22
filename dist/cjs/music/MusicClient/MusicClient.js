@@ -20,19 +20,18 @@ class MusicClient {
         const fullOptions = Object.assign(Object.assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: Object.assign({ hl: "en", gl: "US" }, options.youtubeClientOptions), apiKey: options.apiKey || constants_1.INNERTUBE_API_KEY, baseUrl: options.baseUrl || constants_1.BASE_URL, clientName: options.clientName || constants_1.INNERTUBE_CLIENT_NAME, clientVersion: options.clientVersion || constants_1.INNERTUBE_CLIENT_VERSION });
         this.http = new common_1.HTTP(fullOptions);
     }
+    /**
+     * Searches for video, song, album, playlist, or artist
+     *
+     * @param query The search query
+     * @param type Search type
+     *
+     */
     search(query, type) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (!type) {
-                const response = yield this.http.post(`${constants_1.I_END_POINT}/search`, {
-                    data: { query },
-                });
-                return MusicSearchResult_1.MusicAllSearchResultParser.parseSearchResult(response.data, this);
-            }
-            else {
-                const result = new MusicSearchResult_1.MusicSearchResult({ client: this });
-                yield result.search(query, type);
-                return result;
-            }
+            const result = new MusicSearchResult_1.MusicSearchResult({ client: this });
+            yield result.search(query, type);
+            return result;
         });
     }
     /**
@@ -42,13 +41,9 @@ class MusicClient {
      */
     searchAll(query) {
         return __awaiter(this, void 0, void 0, function* () {
-            const response = yield this.http.post(`${constants_1.I_END_POINT}/search`, {
-                data: { query },
-            });
-            return {
-                top: MusicSearchResult_1.MusicAllSearchResultParser.parseTopResult(response.data, this),
-                shelves: MusicSearchResult_1.MusicAllSearchResultParser.parseSearchResult(response.data, this),
-            };
+            const result = new MusicSearchResult_1.MusicSearchResult({ client: this });
+            yield result.search(query);
+            return result;
         });
     }
     /**

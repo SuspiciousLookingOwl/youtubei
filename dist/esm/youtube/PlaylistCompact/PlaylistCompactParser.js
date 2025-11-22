@@ -23,11 +23,11 @@ var PlaylistCompactParser = /** @class */ (function () {
         return target;
     };
     PlaylistCompactParser.loadLockupPlaylistCompact = function (target, data) {
+        var _a;
         var lockupMetadataViewModel = data.metadata.lockupMetadataViewModel;
-        var channelMetadata = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows[0]
-            .metadataParts[0];
+        var channelMetadata = (_a = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows) === null || _a === void 0 ? void 0 : _a[0].metadataParts[0];
         var thumbnailViewModel = data.contentImage.collectionThumbnailViewModel.primaryThumbnail.thumbnailViewModel;
-        if (channelMetadata.text.commandRuns) {
+        if (channelMetadata === null || channelMetadata === void 0 ? void 0 : channelMetadata.text.commandRuns) {
             // not a mix
             var channel = new BaseChannel({
                 client: target.client,

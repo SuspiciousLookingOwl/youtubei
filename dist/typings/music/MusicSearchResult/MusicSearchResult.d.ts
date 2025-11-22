@@ -1,12 +1,15 @@
+import { MusicAlbumCompact } from "../MusicAlbumCompact";
+import { MusicArtistCompact } from "../MusicArtistCompact";
 import { FetchResult, MusicContinuable, MusicContinuableConstructorParams } from "../MusicContinuable";
+import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
 import { MusicSongCompact } from "../MusicSongCompact";
 import { MusicVideoCompact } from "../MusicVideoCompact";
 export declare enum MusicSearchTypeEnum {
     Song = "song",
     Video = "video"
 }
-export declare type MusicSearchType = "song" | "video" | MusicSearchTypeEnum;
-export declare type MusicSearchResultItem<T = "song"> = T extends "song" ? MusicSongCompact : MusicVideoCompact;
+export declare type MusicSearchType = "song" | "video" | MusicSearchTypeEnum | undefined;
+export declare type MusicSearchResultItem<T = undefined> = T extends "song" ? MusicSongCompact : T extends "video" ? MusicVideoCompact : MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
 declare type MusicLyricsProperties = MusicContinuableConstructorParams & {
     type?: MusicSearchType;
 };
@@ -32,7 +35,7 @@ declare type MusicLyricsProperties = MusicContinuableConstructorParams & {
  *
  * @noInheritDoc
  */
-export declare class MusicSearchResult<T extends MusicSearchType | undefined = "song"> extends MusicContinuable<MusicSearchResultItem<T>> {
+export declare class MusicSearchResult<T extends MusicSearchType = undefined> extends MusicContinuable<MusicSearchResultItem<T>> {
     private type;
     /** @hidden */
     constructor({ client, type }: MusicLyricsProperties);
@@ -44,7 +47,7 @@ export declare class MusicSearchResult<T extends MusicSearchType | undefined = "
      *
      * @hidden
      */
-    search(query: string, type: MusicSearchType): Promise<MusicSearchResult<T>>;
+    search(query: string, type?: MusicSearchType): Promise<MusicSearchResult<T>>;
     protected fetch(): Promise<FetchResult<MusicSearchResultItem<T>>>;
 }
 export {};

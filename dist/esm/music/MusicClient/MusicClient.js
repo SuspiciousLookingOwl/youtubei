@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 import { HTTP } from "../../common";
 import { MusicLyrics } from "../MusicLyrics";
-import { MusicAllSearchResultParser, MusicSearchResult, } from "../MusicSearchResult";
+import { MusicSearchResult } from "../MusicSearchResult";
 import { BASE_URL, INNERTUBE_API_KEY, INNERTUBE_CLIENT_NAME, INNERTUBE_CLIENT_VERSION, I_END_POINT, } from "../constants";
 /** Youtube Music Client */
 var MusicClient = /** @class */ (function () {
@@ -56,23 +56,22 @@ var MusicClient = /** @class */ (function () {
         var fullOptions = __assign(__assign({ initialCookie: "", oauth: { enabled: false }, fetchOptions: {} }, options), { youtubeClientOptions: __assign({ hl: "en", gl: "US" }, options.youtubeClientOptions), apiKey: options.apiKey || INNERTUBE_API_KEY, baseUrl: options.baseUrl || BASE_URL, clientName: options.clientName || INNERTUBE_CLIENT_NAME, clientVersion: options.clientVersion || INNERTUBE_CLIENT_VERSION });
         this.http = new HTTP(fullOptions);
     }
+    /**
+     * Searches for video, song, album, playlist, or artist
+     *
+     * @param query The search query
+     * @param type Search type
+     *
+     */
     MusicClient.prototype.search = function (query, type) {
         return __awaiter(this, void 0, void 0, function () {
-            var response, result;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!!type) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.http.post(I_END_POINT + "/search", {
-                                data: { query: query },
-                            })];
-                    case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, MusicAllSearchResultParser.parseSearchResult(response.data, this)];
-                    case 2:
                         result = new MusicSearchResult({ client: this });
                         return [4 /*yield*/, result.search(query, type)];
-                    case 3:
+                    case 1:
                         _a.sent();
                         return [2 /*return*/, result];
                 }
@@ -86,18 +85,15 @@ var MusicClient = /** @class */ (function () {
      */
     MusicClient.prototype.searchAll = function (query) {
         return __awaiter(this, void 0, void 0, function () {
-            var response;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.http.post(I_END_POINT + "/search", {
-                            data: { query: query },
-                        })];
+                    case 0:
+                        result = new MusicSearchResult({ client: this });
+                        return [4 /*yield*/, result.search(query)];
                     case 1:
-                        response = _a.sent();
-                        return [2 /*return*/, {
-                                top: MusicAllSearchResultParser.parseTopResult(response.data, this),
-                                shelves: MusicAllSearchResultParser.parseSearchResult(response.data, this),
-                            }];
+                        _a.sent();
+                        return [2 /*return*/, result];
                 }
             });
         });

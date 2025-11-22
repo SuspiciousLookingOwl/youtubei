@@ -60,14 +60,16 @@ class MusicSearchResult extends MusicContinuable_1.MusicContinuable {
         return __awaiter(this, void 0, void 0, function* () {
             this.items = [];
             this.type = type;
-            const bufferParams = proto_1.MusicSearchProto.encode(proto_1.optionsToProto(type)).finish();
+            let bufferParams;
+            if (type)
+                bufferParams = proto_1.MusicSearchProto.encode(proto_1.optionsToProto(type)).finish();
             const response = yield this.client.http.post(`${constants_1.I_END_POINT}/search`, {
                 data: {
                     query,
-                    params: Buffer.from(bufferParams).toString("base64"),
+                    params: bufferParams ? Buffer.from(bufferParams).toString("base64") : undefined,
                 },
             });
-            const { data, continuation } = MusicSearchResultParser_1.MusicSearchResultParser.parseInitialSearchResult(response.data, type, this.client);
+            const { data, continuation } = MusicSearchResultParser_1.MusicSearchResultParser.parseInitialSearchResult(response.data, this.client);
             this.items.push(...data);
             this.continuation = continuation;
             return this;
@@ -84,7 +86,7 @@ class MusicSearchResult extends MusicContinuable_1.MusicContinuable {
             const response = yield this.client.http.post(`${constants_1.I_END_POINT}/search`, {
                 data: { continuation: this.continuation },
             });
-            const { data, continuation } = MusicSearchResultParser_1.MusicSearchResultParser.parseContinuationSearchResult(response.data, this.type, this.client);
+            const { data, continuation } = MusicSearchResultParser_1.MusicSearchResultParser.parseContinuationSearchResult(response.data, this.client);
             return {
                 items: data,
                 continuation,

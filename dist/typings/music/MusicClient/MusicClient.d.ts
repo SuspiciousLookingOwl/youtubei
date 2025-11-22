@@ -1,4 +1,4 @@
-import { HTTP, HTTPOptions, Shelf } from "../../common";
+import { HTTP, HTTPOptions } from "../../common";
 import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicLyrics } from "../MusicLyrics";
@@ -22,17 +22,13 @@ export declare class MusicClient {
      * @param type Search type
      *
      */
-    search(query: string): Promise<Shelf<MusicVideoCompact[] | MusicAlbumCompact[] | MusicPlaylistCompact[] | MusicArtistCompact[]>[]>;
-    search<T extends MusicSearchType>(query: string, type: T): Promise<MusicSearchResult<T>>;
+    search<T extends MusicSearchType>(query: string, type?: T): Promise<MusicSearchResult<T>>;
     /**
      * Searches for all video, song, album, playlist, or artist
      *
      * @param query The search query
      */
-    searchAll(query: string): Promise<{
-        top?: MusicTopShelf;
-        shelves: Shelf<MusicVideoCompact[] | MusicAlbumCompact[] | MusicPlaylistCompact[] | MusicArtistCompact[]>[];
-    }>;
+    searchAll(query: string): Promise<MusicSearchResult>;
     /**
      * Get lyrics of a song
      *
