@@ -5,15 +5,18 @@ import { MusicClient, MusicSongCompact } from "../../src";
 const music = new MusicClient();
 
 describe("MusicClient", () => {
-	it("should contains more than 1 shelves", async () => {
+	it("should load all result", async () => {
 		const result = await music.search("foo");
 		expect(result.items.length).toBeGreaterThan(1);
 	});
 
 	it("should return songs", async () => {
 		const result = await music.search("foo", "song");
+		const next = await result.next();
 		expect(result.items.length).toBeGreaterThan(1);
 		expect(result.items[0]).toBeInstanceOf(MusicSongCompact);
+		expect(next.length).toBeGreaterThan(1);
+		expect(next[0]).toBeInstanceOf(MusicSongCompact);
 	});
 
 	it("should load lyric", async () => {
