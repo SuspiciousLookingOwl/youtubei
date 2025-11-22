@@ -1,8 +1,11 @@
+import { MusicAlbumCompact } from "../MusicAlbumCompact";
+import { MusicArtistCompact } from "../MusicArtistCompact";
 import {
 	FetchResult,
 	MusicContinuable,
 	MusicContinuableConstructorParams,
 } from "../MusicContinuable";
+import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
 import { MusicSongCompact } from "../MusicSongCompact";
 import { MusicVideoCompact } from "../MusicVideoCompact";
 import { I_END_POINT } from "../constants";
@@ -14,11 +17,13 @@ export enum MusicSearchTypeEnum {
 	Video = "video",
 }
 
-export type MusicSearchType = "song" | "video" | MusicSearchTypeEnum;
+export type MusicSearchType = "song" | "video" | MusicSearchTypeEnum | undefined;
 
-export type MusicSearchResultItem<T = "song"> = T extends "song"
+export type MusicSearchResultItem<T = undefined> = T extends "song"
 	? MusicSongCompact
-	: MusicVideoCompact;
+	: T extends "video"
+	? MusicVideoCompact
+	: MusicVideoCompact | MusicAlbumCompact | MusicPlaylistCompact | MusicArtistCompact;
 
 type MusicLyricsProperties = MusicContinuableConstructorParams & {
 	type?: MusicSearchType;
@@ -46,9 +51,9 @@ type MusicLyricsProperties = MusicContinuableConstructorParams & {
  *
  * @noInheritDoc
  */
-export class MusicSearchResult<
-	T extends MusicSearchType | undefined = "song"
-> extends MusicContinuable<MusicSearchResultItem<T>> {
+export class MusicSearchResult<T extends MusicSearchType = undefined> extends MusicContinuable<
+	MusicSearchResultItem<T>
+> {
 	private type!: MusicSearchType;
 
 	/** @hidden */
@@ -65,22 +70,22 @@ export class MusicSearchResult<
 	 *
 	 * @hidden
 	 */
-	async search(query: string, type: MusicSearchType): Promise<MusicSearchResult<T>> {
+	async search(query: string, type?: MusicSearchType): Promise<MusicSearchResult<T>> {
 		this.items = [];
 		this.type = type;
 
-		const bufferParams = MusicSearchProto.encode(optionsToProto(type)).finish();
+		let bufferParams: Uint8Array | undefined;
+		if (type) bufferParams = MusicSearchProto.encode(optionsToProto(type)).finish();
 
 		const response = await this.client.http.post(`${I_END_POINT}/search`, {
 			data: {
 				query,
-				params: Buffer.from(bufferParams).toString("base64"),
+				params: bufferParams ? Buffer.from(bufferParams).toString("base64") : undefined,
 			},
 		});
 
 		const { data, continuation } = MusicSearchResultParser.parseInitialSearchResult(
 			response.data,
-			type,
 			this.client
 		);
 		this.items.push(...(data as MusicSearchResultItem<T>[]));
@@ -103,7 +108,6 @@ export class MusicSearchResult<
 
 		const { data, continuation } = MusicSearchResultParser.parseContinuationSearchResult(
 			response.data,
-			this.type,
 			this.client
 		);
 

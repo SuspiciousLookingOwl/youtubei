@@ -1,15 +1,9 @@
-import { RequestInit } from "node-fetch";
-
-import { HTTP, HTTPOptions, Shelf } from "../../common";
+import { HTTP, HTTPOptions } from "../../common";
 import { MusicAlbumCompact } from "../MusicAlbumCompact";
 import { MusicArtistCompact } from "../MusicArtistCompact";
 import { MusicLyrics } from "../MusicLyrics";
 import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
-import {
-	MusicAllSearchResultParser,
-	MusicSearchResult,
-	MusicSearchType,
-} from "../MusicSearchResult";
+import { MusicSearchResult, MusicSearchType } from "../MusicSearchResult";
 import { MusicVideoCompact } from "../MusicVideoCompact";
 import {
 	BASE_URL,
@@ -58,40 +52,13 @@ export class MusicClient {
 	 * @param type Search type
 	 *
 	 */
-	async search(
-		query: string
-	): Promise<
-		Shelf<
-			| MusicVideoCompact[]
-			| MusicAlbumCompact[]
-			| MusicPlaylistCompact[]
-			| MusicArtistCompact[]
-		>[]
-	>;
-	async search<T extends MusicSearchType>(query: string, type: T): Promise<MusicSearchResult<T>>;
 	async search<T extends MusicSearchType>(
 		query: string,
 		type?: T
-	): Promise<
-		| Shelf<
-				| MusicVideoCompact[]
-				| MusicAlbumCompact[]
-				| MusicPlaylistCompact[]
-				| MusicArtistCompact[]
-		  >[]
-		| MusicSearchResult<T>
-	> {
-		if (!type) {
-			const response = await this.http.post(`${I_END_POINT}/search`, {
-				data: { query },
-			});
-
-			return MusicAllSearchResultParser.parseSearchResult(response.data, this);
-		} else {
-			const result = new MusicSearchResult<T>({ client: this });
-			await result.search(query, type);
-			return result;
-		}
+	): Promise<MusicSearchResult<T>> {
+		const result = new MusicSearchResult<T>({ client: this });
+		await result.search(query, type);
+		return result;
 	}
 
 	/**
@@ -99,25 +66,10 @@ export class MusicClient {
 	 *
 	 * @param query The search query
 	 */
-	async searchAll(
-		query: string
-	): Promise<{
-		top?: MusicTopShelf;
-		shelves: Shelf<
-			| MusicVideoCompact[]
-			| MusicAlbumCompact[]
-			| MusicPlaylistCompact[]
-			| MusicArtistCompact[]
-		>[];
-	}> {
-		const response = await this.http.post(`${I_END_POINT}/search`, {
-			data: { query },
-		});
-
-		return {
-			top: MusicAllSearchResultParser.parseTopResult(response.data, this),
-			shelves: MusicAllSearchResultParser.parseSearchResult(response.data, this),
-		};
+	async searchAll(query: string): Promise<MusicSearchResult> {
+		const result = new MusicSearchResult({ client: this });
+		await result.search(query);
+		return result;
 	}
 
 	/**

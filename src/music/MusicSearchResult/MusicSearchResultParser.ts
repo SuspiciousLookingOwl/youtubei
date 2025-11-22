@@ -1,7 +1,13 @@
-import { YoutubeRawData } from "../../common";
+import { getDuration, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
+import { MusicAlbumCompact } from "../MusicAlbumCompact";
+import { MusicArtistCompact } from "../MusicArtistCompact";
+import { MusicBaseArtist } from "../MusicBaseArtist";
+import { MusicBaseChannel } from "../MusicBaseChannel";
 import { MusicClient } from "../MusicClient";
-import { MusicAllSearchResultParser } from "./MusicAllSearchResultParser";
-import { MusicSearchResultItem, MusicSearchType } from "./MusicSearchResult";
+import { MusicPlaylistCompact } from "../MusicPlaylistCompact";
+import { MusicSongCompact } from "../MusicSongCompact";
+import { MusicVideoCompact } from "../MusicVideoCompact";
+import { MusicSearchResultItem } from "./MusicSearchResult";
 
 type ParseReturnType = {
 	data: MusicSearchResultItem[];
@@ -9,11 +15,7 @@ type ParseReturnType = {
 };
 
 export class MusicSearchResultParser {
-	static parseInitialSearchResult(
-		data: YoutubeRawData,
-		type: MusicSearchType,
-		client: MusicClient
-	): ParseReturnType {
+	static parseInitialSearchResult(data: YoutubeRawData, client: MusicClient): ParseReturnType {
 		const contentSection = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content.sectionListRenderer.contents.find(
 			(c: YoutubeRawData) => "musicShelfRenderer" in c
 		);
@@ -29,44 +31,210 @@ export class MusicSearchResultParser {
 		const { contents, continuations } = contentSection.musicShelfRenderer;
 
 		return {
-			data: MusicSearchResultParser.parseSearchResult(contents, type, client),
+			data: MusicSearchResultParser.parseSearchResult(contents, client),
 			continuation: continuations?.[0]?.nextContinuationData?.continuation,
 		};
 	}
 
 	static parseContinuationSearchResult(
 		data: YoutubeRawData,
-		type: MusicSearchType,
 		client: MusicClient
 	): ParseReturnType {
 		const shelf = data.continuationContents.musicShelfContinuation;
 
 		return {
-			data: MusicSearchResultParser.parseSearchResult(shelf.contents, type, client),
+			data: MusicSearchResultParser.parseSearchResult(shelf.contents, client),
 			continuation: shelf.continuations[0].nextContinuationData.continuation,
 		};
 	}
 
 	private static parseSearchResult(
 		shelfContents: YoutubeRawData,
-		type: MusicSearchType,
 		client: MusicClient
 	): MusicSearchResultItem[] {
-		const rawContents = shelfContents
-			.filter((c: Record<string, unknown>) => "musicResponsiveListItemRenderer" in c)
-			.map((c: Record<string, unknown>) => c.musicResponsiveListItemRenderer);
+		const rawContents = shelfContents.filter(
+			(c: Record<string, unknown>) => "musicResponsiveListItemRenderer" in c
+		);
 
 		const contents: MusicSearchResultItem[] = [];
 
 		for (const c of rawContents) {
-			const parsed = MusicAllSearchResultParser.parseVideoItem(
-				c,
-				type === "video" ? "MUSIC_VIDEO_TYPE_UGC" : "MUSIC_VIDEO_TYPE_ATV",
-				client
-			);
+			const parsed = this.parseSearchItem(c, client);
 			if (parsed) contents.push(parsed as MusicSearchResultItem);
 		}
 
 		return contents;
+	}
+
+	private static parseSearchItem(content: YoutubeRawData, client: MusicClient) {
+		const item = content.musicResponsiveListItemRenderer;
+		const playEndpoint =
+			item.overlay?.musicItemThumbnailOverlayRenderer.content.musicPlayButtonRenderer
+				.playNavigationEndpoint;
+
+		if (playEndpoint?.watchEndpoint) {
+			const pageType =
+				playEndpoint.watchEndpoint.watchEndpointMusicSupportedConfigs
+					.watchEndpointMusicConfig.musicVideoType;
+
+			return this.parseVideoItem(item, pageType, client);
+		} else if (playEndpoint?.watchPlaylistEndpoint.params) {
+			return this.parsePlaylistItem(item, client);
+		} else if (playEndpoint?.watchPlaylistEndpoint) {
+			// TODO add podcast support, id starts with PL
+			if (playEndpoint.watchPlaylistEndpoint.playlistId.startsWith("OL")) {
+				return this.parseAlbumItem(item, client);
+			}
+		} else {
+			return this.parseArtistItem(item, client);
+		}
+	}
+
+	static parseVideoItem(
+		item: YoutubeRawData,
+		pageType: string,
+		client: MusicClient
+	): MusicSongCompact | MusicVideoCompact | undefined {
+		// TODO support other types
+		if (
+			!["MUSIC_VIDEO_TYPE_ATV", "MUSIC_VIDEO_TYPE_UGC", "MUSIC_VIDEO_TYPE_OMV"].includes(
+				pageType
+			)
+		) {
+			return;
+		}
+
+		const [topColumn, bottomColumn] = item.flexColumns.map(
+			(c: YoutubeRawData) => c.musicResponsiveListItemFlexColumnRenderer.text.runs
+		);
+
+		const id = topColumn[0].navigationEndpoint.watchEndpoint.videoId;
+		const title = topColumn[0].text;
+		const duration = getDuration(bottomColumn.at(-1).text) || undefined;
+		const thumbnails = new Thumbnails().load(
+			item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails
+		);
+		const artists = this.parseArtists(bottomColumn, client);
+
+		if (pageType === "MUSIC_VIDEO_TYPE_ATV") {
+			return new MusicSongCompact({
+				client,
+				id,
+				album: this.parseAlbum(bottomColumn, client),
+				title,
+				artists,
+				thumbnails,
+				duration,
+			});
+		} else if (pageType === "MUSIC_VIDEO_TYPE_UGC" || pageType === "MUSIC_VIDEO_TYPE_OMV") {
+			return new MusicVideoCompact({ client, id, title, artists, thumbnails, duration });
+		}
+	}
+
+	private static parsePlaylistItem(item: YoutubeRawData, client: MusicClient) {
+		const [topColumn, bottomColumn] = item.flexColumns.map(
+			(c: YoutubeRawData) => c.musicResponsiveListItemFlexColumnRenderer.text.runs
+		);
+
+		const id =
+			item.overlay.musicItemThumbnailOverlayRenderer.content.musicPlayButtonRenderer
+				.playNavigationEndpoint.watchPlaylistEndpoint.playlistId;
+		const title = topColumn[0].text;
+		const songCount = stripToInt(bottomColumn.at(-1).text) || undefined;
+		const thumbnails = new Thumbnails().load(
+			item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails
+		);
+		const channel = this.parseChannel(bottomColumn, client);
+
+		return new MusicPlaylistCompact({ client, id, title, thumbnails, songCount, channel });
+	}
+
+	private static parseAlbumItem(item: YoutubeRawData, client: MusicClient) {
+		const [topColumn, bottomColumn] = item.flexColumns.map(
+			(c: YoutubeRawData) => c.musicResponsiveListItemFlexColumnRenderer.text.runs
+		);
+
+		const id =
+			item.overlay.musicItemThumbnailOverlayRenderer.content.musicPlayButtonRenderer
+				.playNavigationEndpoint.watchPlaylistEndpoint.playlistId;
+		const title = topColumn[0].text;
+		const year = stripToInt(bottomColumn.at(-1).text) || undefined;
+		const thumbnails = new Thumbnails().load(
+			item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails
+		);
+		const artists = this.parseArtists(bottomColumn, client);
+
+		return new MusicAlbumCompact({ client, id, title, thumbnails, artists, year });
+	}
+
+	private static parseArtistItem(item: YoutubeRawData, client: MusicClient) {
+		const [topColumn] = item.flexColumns.map(
+			(c: YoutubeRawData) => c.musicResponsiveListItemFlexColumnRenderer.text.runs
+		);
+
+		const id = item.navigationEndpoint.browseEndpoint.browseId;
+		const name = topColumn[0].text;
+		const thumbnails = new Thumbnails().load(
+			item.thumbnail.musicThumbnailRenderer.thumbnail.thumbnails
+		);
+
+		return new MusicArtistCompact({ client, id, name, thumbnails });
+	}
+
+	private static parseAlbum(items: YoutubeRawData, client: MusicClient) {
+		const albumRaw = items.find((r: YoutubeRawData) => {
+			const pageType =
+				r.navigationEndpoint?.browseEndpoint.browseEndpointContextSupportedConfigs
+					.browseEndpointContextMusicConfig.pageType;
+
+			return pageType === "MUSIC_PAGE_TYPE_ALBUM";
+		});
+
+		if (!albumRaw) return;
+
+		const album = new MusicAlbumCompact({
+			client,
+			title: albumRaw.text,
+			id: albumRaw.navigationEndpoint?.browseEndpoint.browseId,
+		});
+
+		return album;
+	}
+
+	private static parseArtists(items: YoutubeRawData, client: MusicClient) {
+		return this.parseArtistsOrChannel(items).map(
+			(r: YoutubeRawData) =>
+				new MusicBaseArtist({
+					client,
+					name: r.text,
+					id: r.navigationEndpoint?.browseEndpoint.browseId,
+				})
+		);
+	}
+
+	private static parseChannel(items: YoutubeRawData, client: MusicClient) {
+		const [channelRaw] = this.parseArtistsOrChannel(items);
+
+		if (!channelRaw) return;
+
+		const channel = new MusicBaseChannel({
+			client,
+			name: channelRaw.text,
+			id: channelRaw.navigationEndpoint?.browseEndpoint.browseId,
+		});
+
+		return channel;
+	}
+
+	private static parseArtistsOrChannel(items: YoutubeRawData) {
+		return items.filter((i: YoutubeRawData) => {
+			const pageType =
+				i.navigationEndpoint?.browseEndpoint.browseEndpointContextSupportedConfigs
+					.browseEndpointContextMusicConfig.pageType;
+
+			return (
+				pageType === "MUSIC_PAGE_TYPE_ARTIST" || pageType == "MUSIC_PAGE_TYPE_USER_CHANNEL"
+			);
+		});
 	}
 }
