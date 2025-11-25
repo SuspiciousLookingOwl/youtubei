@@ -29,13 +29,33 @@ var BaseVideoParser = /** @class */ (function () {
         target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
         // Channel
         var _e = videoInfo.owner.videoOwnerRenderer, title = _e.title, thumbnail = _e.thumbnail, subscriberCountText = _e.subscriberCountText;
-        target.channel = new BaseChannel({
-            client: target.client,
-            id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
-            name: title.runs[0].text,
-            subscriberCount: subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText,
-            thumbnails: new Thumbnails().load(thumbnail.thumbnails),
-        });
+        if (title) {
+            target.channel = new BaseChannel({
+                client: target.client,
+                id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
+                name: title.runs[0].text,
+                subscriberCount: subscriberCountText === null || subscriberCountText === void 0 ? void 0 : subscriberCountText.simpleText,
+                thumbnails: new Thumbnails().load(thumbnail.thumbnails),
+            });
+        }
+        if (videoInfo.owner.videoOwnerRenderer.attributedTitle) {
+            var channelsData = videoInfo.owner.videoOwnerRenderer.attributedTitle.commandRuns[0].onTap
+                .innertubeCommand.showDialogCommand.panelLoadingStrategy.inlineContent
+                .dialogViewModel.customContent.listViewModel.listItems;
+            var avatarsData_1 = videoInfo.owner.videoOwnerRenderer.avatarStack.avatarStackViewModel.avatars;
+            target.channels = channelsData.map(function (c, i) {
+                var viewModel = c.listItemViewModel;
+                var thumbnail = avatarsData_1[i].avatarViewModel.image.sources;
+                return new BaseChannel({
+                    client: target.client,
+                    id: viewModel.title.commandRuns[0].onTap.innertubeCommand.browseEndpoint
+                        .browseId,
+                    name: viewModel.title.content,
+                    subscriberCount: viewModel.subtitle.content,
+                    thumbnails: new Thumbnails().load(thumbnail),
+                });
+            });
+        }
         // Like Count and Dislike Count
         var topLevelButtons = videoInfo.videoActions.menuRenderer.topLevelButtons;
         target.likeCount = topLevelButtons

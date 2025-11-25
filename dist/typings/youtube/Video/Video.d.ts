@@ -13,7 +13,7 @@ interface VideoProperties extends BaseVideoProperties {
     comments?: VideoComments;
     chapters?: Chapter[];
 }
-interface MusicMetadata {
+export interface MusicMetadata {
     imageUrl: string;
     title: string;
     artist: string;
