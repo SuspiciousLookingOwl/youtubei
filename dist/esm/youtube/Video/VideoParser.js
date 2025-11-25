@@ -16,7 +16,7 @@ var VideoParser = /** @class */ (function () {
     function VideoParser() {
     }
     VideoParser.loadVideo = function (target, data) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d, _e;
         var videoInfo = BaseVideoParser.parseRawData(data);
         target.duration = +videoInfo.videoDetails.lengthSeconds;
         var itemSectionRenderer = (_a = data.response.contents.twoColumnWatchNextResults.results.results.contents
@@ -33,6 +33,22 @@ var VideoParser = /** @class */ (function () {
                     thumbnails: new Thumbnails().load(c.thumbnail.thumbnails),
                 });
             })) || [];
+        var musicPanel = (_d = data.response.engagementPanels) === null || _d === void 0 ? void 0 : _d.find(function (e) { var _a, _b; return (_b = (_a = e.engagementPanelSectionListRenderer.content) === null || _a === void 0 ? void 0 : _a.structuredDescriptionContentRenderer) === null || _b === void 0 ? void 0 : _b.items.find(function (i) { var _a, _b; return ((_b = (_a = i.horizontalCardListRenderer) === null || _a === void 0 ? void 0 : _a.footerButton) === null || _b === void 0 ? void 0 : _b.buttonViewModel.iconName) === "MUSIC"; }); });
+        if (!musicPanel) {
+            target.music = null;
+        }
+        else {
+            var cards = musicPanel.engagementPanelSectionListRenderer.content.structuredDescriptionContentRenderer.items.find(function (i) { var _a, _b; return ((_b = (_a = i.horizontalCardListRenderer) === null || _a === void 0 ? void 0 : _a.footerButton) === null || _b === void 0 ? void 0 : _b.buttonViewModel.iconName) === "MUSIC"; }).horizontalCardListRenderer.cards;
+            var music = cards.find(function (i) { return i.videoAttributeViewModel; })
+                .videoAttributeViewModel;
+            target.music = {
+                imageUrl: music.image.sources[0].url,
+                title: music.title,
+                artist: music.subtitle,
+                album: ((_e = music.secondarySubtitle) === null || _e === void 0 ? void 0 : _e.content) || null,
+            };
+        }
+        // target.music =
         return target;
     };
     VideoParser.parseComments = function (data, video) {

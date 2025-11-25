@@ -13,6 +13,12 @@ interface VideoProperties extends BaseVideoProperties {
     comments?: VideoComments;
     chapters?: Chapter[];
 }
+interface MusicMetadata {
+    imageUrl: string;
+    title: string;
+    artist: string;
+    album?: string;
+}
 /** Represents a Video, usually returned from `client.getVideo()`  */
 export declare class Video extends BaseVideo implements VideoProperties {
     /** The duration of this video in second */
@@ -21,6 +27,8 @@ export declare class Video extends BaseVideo implements VideoProperties {
     chapters: Chapter[];
     /** {@link Continuable} of videos inside a {@link Video} */
     comments: VideoComments;
+    /** Music metadata (if exists) */
+    music: MusicMetadata | null;
     /** @hidden */
     constructor(attr: VideoProperties);
     /**
