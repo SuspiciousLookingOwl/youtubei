@@ -28,6 +28,33 @@ export class VideoParser {
 				thumbnails: new Thumbnails().load(c.thumbnail.thumbnails),
 			})) || [];
 
+		const musicPanel = data.response.engagementPanels?.find((e: YoutubeRawData) =>
+			e.engagementPanelSectionListRenderer.content?.structuredDescriptionContentRenderer?.items.find(
+				(i: YoutubeRawData) =>
+					i.horizontalCardListRenderer?.footerButton?.buttonViewModel.iconName === "MUSIC"
+			)
+		);
+
+		if (!musicPanel) {
+			target.music = null;
+		} else {
+			const cards = musicPanel.engagementPanelSectionListRenderer.content.structuredDescriptionContentRenderer.items.find(
+				(i: YoutubeRawData) =>
+					i.horizontalCardListRenderer?.footerButton?.buttonViewModel.iconName === "MUSIC"
+			).horizontalCardListRenderer.cards;
+
+			const music = cards.find((i: YoutubeRawData) => i.videoAttributeViewModel)
+				.videoAttributeViewModel;
+
+			target.music = {
+				imageUrl: music.image.sources[0].url,
+				title: music.title,
+				artist: music.subtitle,
+				album: music.secondarySubtitle?.content || null,
+			};
+		}
+		// target.music =
+
 		return target;
 	}
 
