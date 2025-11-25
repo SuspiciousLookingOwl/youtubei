@@ -104,6 +104,7 @@ var MusicSearchResult = /** @class */ (function (_super) {
     function MusicSearchResult(_a) {
         var client = _a.client, type = _a.type;
         var _this = _super.call(this, { client: client }) || this;
+        _this.top = null;
         if (type)
             _this.type = type;
         return _this;
@@ -136,6 +137,7 @@ var MusicSearchResult = /** @class */ (function (_super) {
                     case 1:
                         response = _c.sent();
                         _a = MusicSearchResultParser.parseInitialSearchResult(response.data, this.client), data = _a.data, continuation = _a.continuation;
+                        this.top = MusicSearchResultParser.parseTopResult(response.data, this.client) || null;
                         (_b = this.items).push.apply(_b, __spread(data));
                         this.continuation = continuation;
                         return [2 /*return*/, this];

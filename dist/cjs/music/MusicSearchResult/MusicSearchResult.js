@@ -45,6 +45,7 @@ class MusicSearchResult extends MusicContinuable_1.MusicContinuable {
     /** @hidden */
     constructor({ client, type }) {
         super({ client });
+        this.top = null;
         if (type)
             this.type = type;
     }
@@ -70,6 +71,7 @@ class MusicSearchResult extends MusicContinuable_1.MusicContinuable {
                 },
             });
             const { data, continuation } = MusicSearchResultParser_1.MusicSearchResultParser.parseInitialSearchResult(response.data, this.client);
+            this.top = MusicSearchResultParser_1.MusicSearchResultParser.parseTopResult(response.data, this.client) || null;
             this.items.push(...data);
             this.continuation = continuation;
             return this;

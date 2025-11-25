@@ -36,6 +36,10 @@ declare type MusicLyricsProperties = MusicContinuableConstructorParams & {
  * @noInheritDoc
  */
 export declare class MusicSearchResult<T extends MusicSearchType = undefined> extends MusicContinuable<MusicSearchResultItem<T>> {
+    top: {
+        item: MusicSearchResultItem;
+        more: MusicSearchResultItem[];
+    } | null;
     private type;
     /** @hidden */
     constructor({ client, type }: MusicLyricsProperties);

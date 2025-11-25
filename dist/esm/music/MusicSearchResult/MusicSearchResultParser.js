@@ -40,20 +40,16 @@ var MusicSearchResultParser = /** @class */ (function () {
         var _a, _b;
         var sectionContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
             .sectionListRenderer.contents;
-        var topContent = sectionContents.find(function (c) { return "musicCardShelfRenderer" in c; });
         var resultContents = sectionContents.find(function (c) { return "musicShelfRenderer" in c; });
-        var topResult = this.parseTopResult(topContent, client);
         if (!resultContents) {
             // no results
             return {
-                data: topResult ? [topResult] : [],
+                data: [],
                 continuation: undefined,
             };
         }
         var _c = resultContents.musicShelfRenderer, contents = _c.contents, continuations = _c.continuations;
         var result = MusicSearchResultParser.parseSearchResult(contents, client);
-        if (topResult)
-            result.unshift(topResult);
         return {
             data: result,
             continuation: (_b = (_a = continuations === null || continuations === void 0 ? void 0 : continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
@@ -67,9 +63,13 @@ var MusicSearchResultParser = /** @class */ (function () {
         };
     };
     MusicSearchResultParser.parseTopResult = function (data, client) {
-        var top = data === null || data === void 0 ? void 0 : data.musicCardShelfRenderer;
+        var _this = this;
+        var sectionContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
+            .sectionListRenderer.contents;
+        var topContent = sectionContents.find(function (c) { return "musicCardShelfRenderer" in c; });
+        var top = topContent === null || topContent === void 0 ? void 0 : topContent.musicCardShelfRenderer;
         if (!top)
-            return;
+            return null;
         var _a = top.title.runs[0].navigationEndpoint, browseEndpoint = _a.browseEndpoint, watchEndpoint = _a.watchEndpoint;
         var id = (watchEndpoint === null || watchEndpoint === void 0 ? void 0 : watchEndpoint.videoId) || (browseEndpoint === null || browseEndpoint === void 0 ? void 0 : browseEndpoint.browseId);
         var type = (watchEndpoint === null || watchEndpoint === void 0 ? void 0 : watchEndpoint.watchEndpointMusicSupportedConfigs.watchEndpointMusicConfig.musicVideoType) || (browseEndpoint === null || browseEndpoint === void 0 ? void 0 : browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType);
@@ -123,7 +123,18 @@ var MusicSearchResultParser = /** @class */ (function () {
                 thumbnails: new Thumbnails().load(thumbnail),
             });
         }
-        return topResult;
+        if (!topResult)
+            return null;
+        var more = [];
+        if (top.contents) {
+            more = top.contents
+                .filter(function (c) { return c.musicResponsiveListItemRenderer; })
+                .map(function (c) { return _this.parseSearchItem(c, client); });
+        }
+        return {
+            item: topResult,
+            more: more,
+        };
     };
     MusicSearchResultParser.parseSearchResult = function (shelfContents, client) {
         var e_1, _a;

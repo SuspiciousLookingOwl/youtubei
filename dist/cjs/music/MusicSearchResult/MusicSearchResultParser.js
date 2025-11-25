@@ -14,20 +14,16 @@ class MusicSearchResultParser {
         var _a, _b;
         const sectionContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
             .sectionListRenderer.contents;
-        const topContent = sectionContents.find((c) => "musicCardShelfRenderer" in c);
         const resultContents = sectionContents.find((c) => "musicShelfRenderer" in c);
-        const topResult = this.parseTopResult(topContent, client);
         if (!resultContents) {
             // no results
             return {
-                data: topResult ? [topResult] : [],
+                data: [],
                 continuation: undefined,
             };
         }
         const { contents, continuations } = resultContents.musicShelfRenderer;
         const result = MusicSearchResultParser.parseSearchResult(contents, client);
-        if (topResult)
-            result.unshift(topResult);
         return {
             data: result,
             continuation: (_b = (_a = continuations === null || continuations === void 0 ? void 0 : continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
@@ -41,9 +37,12 @@ class MusicSearchResultParser {
         };
     }
     static parseTopResult(data, client) {
-        const top = data === null || data === void 0 ? void 0 : data.musicCardShelfRenderer;
+        const sectionContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
+            .sectionListRenderer.contents;
+        const topContent = sectionContents.find((c) => "musicCardShelfRenderer" in c);
+        const top = topContent === null || topContent === void 0 ? void 0 : topContent.musicCardShelfRenderer;
         if (!top)
-            return;
+            return null;
         const { browseEndpoint, watchEndpoint } = top.title.runs[0].navigationEndpoint;
         const id = (watchEndpoint === null || watchEndpoint === void 0 ? void 0 : watchEndpoint.videoId) || (browseEndpoint === null || browseEndpoint === void 0 ? void 0 : browseEndpoint.browseId);
         const type = (watchEndpoint === null || watchEndpoint === void 0 ? void 0 : watchEndpoint.watchEndpointMusicSupportedConfigs.watchEndpointMusicConfig.musicVideoType) || (browseEndpoint === null || browseEndpoint === void 0 ? void 0 : browseEndpoint.browseEndpointContextSupportedConfigs.browseEndpointContextMusicConfig.pageType);
@@ -97,7 +96,18 @@ class MusicSearchResultParser {
                 thumbnails: new common_1.Thumbnails().load(thumbnail),
             });
         }
-        return topResult;
+        if (!topResult)
+            return null;
+        let more = [];
+        if (top.contents) {
+            more = top.contents
+                .filter((c) => c.musicResponsiveListItemRenderer)
+                .map((c) => this.parseSearchItem(c, client));
+        }
+        return {
+            item: topResult,
+            more,
+        };
     }
     static parseSearchResult(shelfContents, client) {
         const rawContents = shelfContents.filter((c) => "musicResponsiveListItemRenderer" in c);

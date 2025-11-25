@@ -10,7 +10,10 @@ declare type ParseReturnType = {
 export declare class MusicSearchResultParser {
     static parseInitialSearchResult(data: YoutubeRawData, client: MusicClient): ParseReturnType;
     static parseContinuationSearchResult(data: YoutubeRawData, client: MusicClient): ParseReturnType;
-    private static parseTopResult;
+    static parseTopResult(data: YoutubeRawData, client: MusicClient): {
+        item: MusicSearchResultItem;
+        more: MusicSearchResultItem[];
+    } | null;
     private static parseSearchResult;
     private static parseSearchItem;
     static parseVideoItem(item: YoutubeRawData, pageType: string, client: MusicClient): MusicSongCompact | MusicVideoCompact | undefined;
