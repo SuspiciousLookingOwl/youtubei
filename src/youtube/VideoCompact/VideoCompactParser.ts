@@ -78,7 +78,7 @@ export class VideoCompactParser {
 
 		const channel = new BaseChannel({
 			client: target.client,
-			name: metadataRows[0].metadataParts[0].text.content,
+			name: metadataRows?.[0]?.metadataParts?.[0]?.text?.content,
 			id:
 				decoratedAvatarViewModel.rendererContext.commandContext.onTap.innertubeCommand
 					.browseEndpoint.browseId,
@@ -87,7 +87,7 @@ export class VideoCompactParser {
 			),
 		});
 
-		const isLive = thumbnailBadge.icon?.sources[0].clientResource.imageName === "LIVE";
+		const isLive = thumbnailBadge.icon?.sources?.[0]?.clientResource?.imageName === "LIVE";
 
 		target.channel = channel;
 		target.id = data.contentId;
@@ -97,9 +97,9 @@ export class VideoCompactParser {
 		target.thumbnails = new Thumbnails().load(
 			data.contentImage.thumbnailViewModel.image.sources
 		);
-		target.viewCount = stripToInt(metadataRows[1].metadataParts[0].text.content);
+		target.viewCount = stripToInt(metadataRows?.[1]?.metadataParts?.[0]?.text?.content);
 		target.uploadDate = !isLive
-			? metadataRows[1].metadataParts[metadataRows[1].metadataParts.length - 1].text.content
+			? metadataRows?.[1]?.metadataParts?.[metadataRows?.[1]?.metadataParts?.length - 1]?.text?.content
 			: undefined;
 
 		return target;

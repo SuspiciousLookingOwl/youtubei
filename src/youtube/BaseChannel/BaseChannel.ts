@@ -19,7 +19,7 @@ export interface BaseChannelProperties extends BaseProperties {
 export class BaseChannel extends Base implements BaseChannelProperties {
 	id!: string;
 	/** The channel's name */
-	name!: string;
+	name?: string;
 	/** The channel's handle start with @ */
 	handle?: string;
 	/** The channel's description */
