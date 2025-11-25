@@ -54,6 +54,10 @@ type MusicLyricsProperties = MusicContinuableConstructorParams & {
 export class MusicSearchResult<T extends MusicSearchType = undefined> extends MusicContinuable<
 	MusicSearchResultItem<T>
 > {
+	public top: {
+		item: MusicSearchResultItem;
+		more: MusicSearchResultItem[];
+	} | null = null;
 	private type!: MusicSearchType;
 
 	/** @hidden */
@@ -88,6 +92,8 @@ export class MusicSearchResult<T extends MusicSearchType = undefined> extends Mu
 			response.data,
 			this.client
 		);
+		this.top = MusicSearchResultParser.parseTopResult(response.data, this.client) || null;
+
 		this.items.push(...(data as MusicSearchResultItem<T>[]));
 		this.continuation = continuation;
 

@@ -19,26 +19,20 @@ export class MusicSearchResultParser {
 		const sectionContents =
 			data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
 				.sectionListRenderer.contents;
-		const topContent = sectionContents.find(
-			(c: YoutubeRawData) => "musicCardShelfRenderer" in c
-		);
 		const resultContents = sectionContents.find(
 			(c: YoutubeRawData) => "musicShelfRenderer" in c
 		);
 
-		const topResult = this.parseTopResult(topContent, client);
-
 		if (!resultContents) {
 			// no results
 			return {
-				data: topResult ? [topResult] : [],
+				data: [],
 				continuation: undefined,
 			};
 		}
 
 		const { contents, continuations } = resultContents.musicShelfRenderer;
 		const result = MusicSearchResultParser.parseSearchResult(contents, client);
-		if (topResult) result.unshift(topResult);
 
 		return {
 			data: result,
@@ -58,18 +52,22 @@ export class MusicSearchResultParser {
 		};
 	}
 
-	private static parseTopResult(
+	static parseTopResult(
 		data: YoutubeRawData,
 		client: MusicClient
-	):
-		| MusicVideoCompact
-		| MusicAlbumCompact
-		| MusicArtistCompact
-		| MusicPlaylistCompact
-		| undefined {
-		const top = data?.musicCardShelfRenderer;
+	): {
+		item: MusicSearchResultItem;
+		more: MusicSearchResultItem[];
+	} | null {
+		const sectionContents =
+			data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
+				.sectionListRenderer.contents;
+		const topContent = sectionContents.find(
+			(c: YoutubeRawData) => "musicCardShelfRenderer" in c
+		);
+		const top = topContent?.musicCardShelfRenderer;
 
-		if (!top) return;
+		if (!top) return null;
 
 		const { browseEndpoint, watchEndpoint } = top.title.runs[0].navigationEndpoint;
 		const id = watchEndpoint?.videoId || browseEndpoint?.browseId;
@@ -132,7 +130,25 @@ export class MusicSearchResultParser {
 			});
 		}
 
-		return topResult;
+		if (!topResult) return null;
+
+		let more: (
+			| MusicVideoCompact
+			| MusicAlbumCompact
+			| MusicArtistCompact
+			| MusicPlaylistCompact
+		)[] = [];
+
+		if (top.contents) {
+			more = top.contents
+				.filter((c: YoutubeRawData) => c.musicResponsiveListItemRenderer)
+				.map((c: YoutubeRawData) => this.parseSearchItem(c, client));
+		}
+
+		return {
+			item: topResult,
+			more,
+		};
 	}
 
 	private static parseSearchResult(
