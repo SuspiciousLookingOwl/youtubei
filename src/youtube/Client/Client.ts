@@ -108,7 +108,9 @@ export class Client {
 	/** Get video information by video id or URL */
 	async getVideo<T extends Video | LiveVideo | undefined>(videoId: string): Promise<T> {
 		const nextPromise = this.http.post(`${I_END_POINT}/next`, { data: { videoId } });
-		const playerPromise = this.http.post(`${I_END_POINT}/player`, { data: { videoId } });
+		const playerPromise = this.http.post(`${I_END_POINT}/player`, {
+			data: { videoId, params: "YAHIAQE%3D" },
+		});
 
 		const [nextResponse, playerResponse] = await Promise.all([nextPromise, playerPromise]);
 
