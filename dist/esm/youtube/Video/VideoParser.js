@@ -16,14 +16,14 @@ var VideoParser = /** @class */ (function () {
     function VideoParser() {
     }
     VideoParser.loadVideo = function (target, data) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c, _d, _e, _f;
         var videoInfo = BaseVideoParser.parseRawData(data);
         target.duration = +videoInfo.videoDetails.lengthSeconds;
         var itemSectionRenderer = (_a = data.response.contents.twoColumnWatchNextResults.results.results.contents
             .reverse()
             .find(function (c) { return c.itemSectionRenderer; })) === null || _a === void 0 ? void 0 : _a.itemSectionRenderer;
         target.comments.continuation = getContinuationFromItems((itemSectionRenderer === null || itemSectionRenderer === void 0 ? void 0 : itemSectionRenderer.contents) || []);
-        var chapters = (_c = (_b = data.response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer) === null || _b === void 0 ? void 0 : _b.decoratedPlayerBarRenderer.playerBar.multiMarkersPlayerBarRenderer.markersMap) === null || _c === void 0 ? void 0 : _c[0].value.chapters;
+        var chapters = (_d = (_c = (_b = data.response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer) === null || _b === void 0 ? void 0 : _b.decoratedPlayerBarRenderer.playerBar) === null || _c === void 0 ? void 0 : _c.multiMarkersPlayerBarRenderer.markersMap) === null || _d === void 0 ? void 0 : _d[0].value.chapters;
         target.chapters =
             (chapters === null || chapters === void 0 ? void 0 : chapters.map(function (_a) {
                 var c = _a.chapterRenderer;
@@ -33,7 +33,7 @@ var VideoParser = /** @class */ (function () {
                     thumbnails: new Thumbnails().load(c.thumbnail.thumbnails),
                 });
             })) || [];
-        var musicPanel = (_d = data.response.engagementPanels) === null || _d === void 0 ? void 0 : _d.find(function (e) { var _a, _b; return (_b = (_a = e.engagementPanelSectionListRenderer.content) === null || _a === void 0 ? void 0 : _a.structuredDescriptionContentRenderer) === null || _b === void 0 ? void 0 : _b.items.find(function (i) { var _a, _b; return ((_b = (_a = i.horizontalCardListRenderer) === null || _a === void 0 ? void 0 : _a.footerButton) === null || _b === void 0 ? void 0 : _b.buttonViewModel.iconName) === "MUSIC"; }); });
+        var musicPanel = (_e = data.response.engagementPanels) === null || _e === void 0 ? void 0 : _e.find(function (e) { var _a, _b; return (_b = (_a = e.engagementPanelSectionListRenderer.content) === null || _a === void 0 ? void 0 : _a.structuredDescriptionContentRenderer) === null || _b === void 0 ? void 0 : _b.items.find(function (i) { var _a, _b; return ((_b = (_a = i.horizontalCardListRenderer) === null || _a === void 0 ? void 0 : _a.footerButton) === null || _b === void 0 ? void 0 : _b.buttonViewModel.iconName) === "MUSIC"; }); });
         if (!musicPanel) {
             target.music = null;
         }
@@ -45,7 +45,7 @@ var VideoParser = /** @class */ (function () {
                 imageUrl: music.image.sources[0].url,
                 title: music.title,
                 artist: music.subtitle,
-                album: ((_e = music.secondarySubtitle) === null || _e === void 0 ? void 0 : _e.content) || null,
+                album: ((_f = music.secondarySubtitle) === null || _f === void 0 ? void 0 : _f.content) || null,
             };
         }
         // target.music =
