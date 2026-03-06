@@ -39,11 +39,12 @@ class VideoCompactParser {
         return target;
     }
     static loadLockupVideoCompact(target, data) {
-        var _a, _b;
+        var _a, _b, _c;
         const lockupMetadataViewModel = data.metadata.lockupMetadataViewModel;
         const decoratedAvatarViewModel = lockupMetadataViewModel.image.decoratedAvatarViewModel;
-        const thumbnailBadge = data.contentImage.thumbnailViewModel.overlays[0].thumbnailOverlayBadgeViewModel
-            .thumbnailBadges[0].thumbnailBadgeViewModel;
+        const thumbnailOverlay = data.contentImage.thumbnailViewModel.overlays[0];
+        const thumbnailBadge = (((_a = thumbnailOverlay.thumbnailBottomOverlayViewModel) === null || _a === void 0 ? void 0 : _a.badges[0]) ||
+            thumbnailOverlay.thumbnailOverlayBadgeViewModel.thumbnailBadges[0]).thumbnailBadgeViewModel;
         const metadataRows = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows;
         const channel = new BaseChannel_1.BaseChannel({
             client: target.client,
@@ -52,11 +53,11 @@ class VideoCompactParser {
                 .browseEndpoint.browseId,
             thumbnails: new common_1.Thumbnails().load(decoratedAvatarViewModel.avatar.avatarViewModel.image.sources),
         });
-        const isLive = ((_a = thumbnailBadge.icon) === null || _a === void 0 ? void 0 : _a.sources[0].clientResource.imageName) === "LIVE";
+        const isLive = ((_b = thumbnailBadge.icon) === null || _b === void 0 ? void 0 : _b.sources[0].clientResource.imageName) === "LIVE";
         target.channel = channel;
         target.id = data.contentId;
         target.title = lockupMetadataViewModel.title.content;
-        target.isLive = ((_b = thumbnailBadge.icon) === null || _b === void 0 ? void 0 : _b.sources[0].clientResource.imageName) === "LIVE";
+        target.isLive = ((_c = thumbnailBadge.icon) === null || _c === void 0 ? void 0 : _c.sources[0].clientResource.imageName) === "LIVE";
         target.duration = !isLive ? common_1.getDuration(thumbnailBadge.text) : null;
         target.thumbnails = new common_1.Thumbnails().load(data.contentImage.thumbnailViewModel.image.sources);
         target.viewCount = common_1.stripToInt(metadataRows[1].metadataParts[0].text.content);

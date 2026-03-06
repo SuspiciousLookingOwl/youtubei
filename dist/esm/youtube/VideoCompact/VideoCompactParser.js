@@ -38,11 +38,12 @@ var VideoCompactParser = /** @class */ (function () {
         return target;
     };
     VideoCompactParser.loadLockupVideoCompact = function (target, data) {
-        var _a, _b;
+        var _a, _b, _c;
         var lockupMetadataViewModel = data.metadata.lockupMetadataViewModel;
         var decoratedAvatarViewModel = lockupMetadataViewModel.image.decoratedAvatarViewModel;
-        var thumbnailBadge = data.contentImage.thumbnailViewModel.overlays[0].thumbnailOverlayBadgeViewModel
-            .thumbnailBadges[0].thumbnailBadgeViewModel;
+        var thumbnailOverlay = data.contentImage.thumbnailViewModel.overlays[0];
+        var thumbnailBadge = (((_a = thumbnailOverlay.thumbnailBottomOverlayViewModel) === null || _a === void 0 ? void 0 : _a.badges[0]) ||
+            thumbnailOverlay.thumbnailOverlayBadgeViewModel.thumbnailBadges[0]).thumbnailBadgeViewModel;
         var metadataRows = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows;
         var channel = new BaseChannel({
             client: target.client,
@@ -51,11 +52,11 @@ var VideoCompactParser = /** @class */ (function () {
                 .browseEndpoint.browseId,
             thumbnails: new Thumbnails().load(decoratedAvatarViewModel.avatar.avatarViewModel.image.sources),
         });
-        var isLive = ((_a = thumbnailBadge.icon) === null || _a === void 0 ? void 0 : _a.sources[0].clientResource.imageName) === "LIVE";
+        var isLive = ((_b = thumbnailBadge.icon) === null || _b === void 0 ? void 0 : _b.sources[0].clientResource.imageName) === "LIVE";
         target.channel = channel;
         target.id = data.contentId;
         target.title = lockupMetadataViewModel.title.content;
-        target.isLive = ((_b = thumbnailBadge.icon) === null || _b === void 0 ? void 0 : _b.sources[0].clientResource.imageName) === "LIVE";
+        target.isLive = ((_c = thumbnailBadge.icon) === null || _c === void 0 ? void 0 : _c.sources[0].clientResource.imageName) === "LIVE";
         target.duration = !isLive ? getDuration(thumbnailBadge.text) : null;
         target.thumbnails = new Thumbnails().load(data.contentImage.thumbnailViewModel.image.sources);
         target.viewCount = stripToInt(metadataRows[1].metadataParts[0].text.content);
