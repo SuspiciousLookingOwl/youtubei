@@ -18,6 +18,23 @@ describe("Video", () => {
 		membershipVideo = (await youtube.getVideo("ALz5YW2i5y0")) as Video;
 	});
 
+	it("should have streamingData and getVideoFormats", async () => {
+		// It might be UNPLAYABLE without signature cipher, but we should at least have the property available
+		expect(video).toHaveProperty("streamingData");
+
+		const formats = await youtube.getVideoFormats(video.id);
+		if (formats) {
+			expect(formats).toBeDefined();
+		}
+
+		const compact = video.related.items.find((i) => i.id) as any;
+		if (compact && typeof compact.getVideoFormats === "function") {
+			const compactFormats = await compact.getVideoFormats();
+			if (compactFormats) {
+				expect(compactFormats).toBeDefined();
+			}
+		}
+	});
 	it("match getVideo result", () => {
 		expect(video.id).toBe("OX31kZbAXsA");
 		expect(video.title).toBe(

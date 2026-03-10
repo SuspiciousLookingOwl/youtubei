@@ -1,4 +1,4 @@
-import { HTTP, HTTPOptions, OAuthProps } from "../../common";
+import { HTTP, HTTPOptions, OAuthProps, YoutubeRawData } from "../../common";
 import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -141,6 +141,17 @@ export class Client {
 	/**
 	 * Get video transcript / caption by video id
 	 */
+
+	/**
+	 * Get video format and quality information
+	 *
+	 * @param videoId The video ID
+	 */
+	async getVideoFormats(videoId: string): Promise<YoutubeRawData | undefined> {
+		const response = await this.http.post(`${I_END_POINT}/player`, { data: { videoId } });
+		return response.data?.streamingData;
+	}
+
 	async getVideoTranscript(
 		videoId: string,
 		languageCode?: string
