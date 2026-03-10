@@ -87,6 +87,8 @@ export class BaseVideoParser {
 			target.related.continuation = getContinuationFromItems(secondaryContents);
 		}
 
+		target.streamingData = videoInfo.streamingData || null;
+
 		// captions
 		if (videoInfo.captions) {
 			target.captions = new VideoCaptions({ client: target.client, video: target }).load(
@@ -119,8 +121,8 @@ export class BaseVideoParser {
 		const secondaryInfo = contents.find(
 			(c: YoutubeRawData) => "videoSecondaryInfoRenderer" in c
 		).videoSecondaryInfoRenderer;
-		const { videoDetails, captions } = data.playerResponse;
-		return { ...secondaryInfo, ...primaryInfo, videoDetails, captions };
+		const { videoDetails, captions, streamingData } = data.playerResponse;
+		return { ...secondaryInfo, ...primaryInfo, videoDetails, captions, streamingData };
 	}
 
 	private static parseCompactRenderer(

@@ -19,6 +19,7 @@ export interface BaseVideoProperties extends BaseProperties {
 	likeCount?: number | null;
 	isLiveContent?: boolean;
 	tags?: string[];
+	streamingData?: YoutubeRawData | null;
 }
 
 /** Represents a Video  */
@@ -44,6 +45,8 @@ export class BaseVideo extends Base implements BaseVideoProperties {
 	isLiveContent!: boolean;
 	/** The tags of this video */
 	tags!: string[];
+	/** Streaming data of this video, including formats */
+	streamingData!: YoutubeRawData | null;
 	/** Continuable of videos / playlists related to this video  */
 	related: VideoRelated;
 	/** Captions helper class of this video (if caption exists in this video) */

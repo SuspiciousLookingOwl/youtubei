@@ -84,6 +84,18 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	}
 
 	/**
+	 * Get video format and quality information
+	 *
+	 * Equivalent to
+	 * ```js
+	 * client.getVideoFormats(videoCompact.id);
+	 * ```
+	 */
+	async getVideoFormats(): Promise<YoutubeRawData | undefined> {
+		return await this.client.getVideoFormats(this.id);
+	}
+
+	/**
 	 * Get Video transcript (if exists)
 	 *
 	 * Equivalent to
