@@ -16,6 +16,9 @@ export class BaseVideoParser {
 		target.uploadDate = videoInfo.dateText.simpleText;
 		target.viewCount = +videoInfo.videoDetails.viewCount || null;
 		target.isLiveContent = videoInfo.videoDetails.isLiveContent;
+		target.formats = videoInfo.streamingData?.formats || [];
+		target.adaptiveFormats = videoInfo.streamingData?.adaptiveFormats || [];
+
 		target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
 
 		// Channel
@@ -119,8 +122,8 @@ export class BaseVideoParser {
 		const secondaryInfo = contents.find(
 			(c: YoutubeRawData) => "videoSecondaryInfoRenderer" in c
 		).videoSecondaryInfoRenderer;
-		const { videoDetails, captions } = data.playerResponse;
-		return { ...secondaryInfo, ...primaryInfo, videoDetails, captions };
+		const { videoDetails, captions, streamingData } = data.playerResponse;
+		return { ...secondaryInfo, ...primaryInfo, videoDetails, captions, streamingData };
 	}
 
 	private static parseCompactRenderer(
