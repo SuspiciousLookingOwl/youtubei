@@ -8,7 +8,7 @@ const VideoCompact_1 = require("../VideoCompact");
 const VideoCaptions_1 = require("./VideoCaptions");
 class BaseVideoParser {
     static loadBaseVideo(target, data) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         const videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.videoDetails.videoId;
@@ -16,6 +16,8 @@ class BaseVideoParser {
         target.uploadDate = videoInfo.dateText.simpleText;
         target.viewCount = +videoInfo.videoDetails.viewCount || null;
         target.isLiveContent = videoInfo.videoDetails.isLiveContent;
+        target.formats = ((_a = videoInfo.streamingData) === null || _a === void 0 ? void 0 : _a.formats) || [];
+        target.adaptiveFormats = ((_b = videoInfo.streamingData) === null || _b === void 0 ? void 0 : _b.adaptiveFormats) || [];
         target.thumbnails = new common_1.Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
         // Channel
         const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
@@ -53,13 +55,13 @@ class BaseVideoParser {
             : null;
         // Tags and description
         target.tags =
-            ((_b = (_a = videoInfo.superTitleLink) === null || _a === void 0 ? void 0 : _a.runs) === null || _b === void 0 ? void 0 : _b.map((r) => r.text.trim()).filter((t) => t)) || [];
+            ((_d = (_c = videoInfo.superTitleLink) === null || _c === void 0 ? void 0 : _c.runs) === null || _d === void 0 ? void 0 : _d.map((r) => r.text.trim()).filter((t) => t)) || [];
         target.description = videoInfo.videoDetails.shortDescription || "";
         // related videos
-        let secondaryContents = (_c = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _c === void 0 ? void 0 : _c.secondaryResults.results;
-        const itemSectionRenderer = (_d = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find((c) => {
+        let secondaryContents = (_e = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _e === void 0 ? void 0 : _e.secondaryResults.results;
+        const itemSectionRenderer = (_f = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find((c) => {
             return c.itemSectionRenderer;
-        })) === null || _d === void 0 ? void 0 : _d.itemSectionRenderer;
+        })) === null || _f === void 0 ? void 0 : _f.itemSectionRenderer;
         if (itemSectionRenderer)
             secondaryContents = itemSectionRenderer.contents;
         if (secondaryContents) {
@@ -85,8 +87,8 @@ class BaseVideoParser {
         const primaryInfo = contents.find((c) => "videoPrimaryInfoRenderer" in c)
             .videoPrimaryInfoRenderer;
         const secondaryInfo = contents.find((c) => "videoSecondaryInfoRenderer" in c).videoSecondaryInfoRenderer;
-        const { videoDetails, captions } = data.playerResponse;
-        return Object.assign(Object.assign(Object.assign({}, secondaryInfo), primaryInfo), { videoDetails, captions });
+        const { videoDetails, captions, streamingData } = data.playerResponse;
+        return Object.assign(Object.assign(Object.assign({}, secondaryInfo), primaryInfo), { videoDetails, captions, streamingData });
     }
     static parseCompactRenderer(data, client) {
         if ("compactVideoRenderer" in data) {

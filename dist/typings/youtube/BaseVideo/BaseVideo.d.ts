@@ -17,6 +17,8 @@ export interface BaseVideoProperties extends BaseProperties {
     likeCount?: number | null;
     isLiveContent?: boolean;
     tags?: string[];
+    formats?: YoutubeRawData[];
+    adaptiveFormats?: YoutubeRawData[];
 }
 /** Represents a Video  */
 export declare class BaseVideo extends Base implements BaseVideoProperties {
@@ -40,6 +42,10 @@ export declare class BaseVideo extends Base implements BaseVideoProperties {
     /** Whether this video is a live content or not */
     isLiveContent: boolean;
     /** The tags of this video */
+    /** The formats of the video */
+    formats: YoutubeRawData[];
+    /** The adaptive formats of the video */
+    adaptiveFormats: YoutubeRawData[];
     tags: string[];
     /** Continuable of videos / playlists related to this video  */
     related: VideoRelated;
