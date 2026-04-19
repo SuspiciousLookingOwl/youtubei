@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mapFilter = exports.getContinuationFromItems = exports.stripToInt = exports.getDuration = void 0;
+exports.getThumbnailFromId = exports.mapFilter = exports.getContinuationFromItems = exports.stripToInt = exports.getDuration = void 0;
 const getDuration = (s) => {
     s = s.replace(/:/g, ".");
     const spl = s.split(".");
@@ -47,3 +47,23 @@ const mapFilter = (items, key) => {
         .map((item) => item[key]);
 };
 exports.mapFilter = mapFilter;
+const getThumbnailFromId = (id) => {
+    return [
+        {
+            url: `https://i.ytimg.com/vi/${id}/default.jpg`,
+            width: 120,
+            height: 90,
+        },
+        {
+            url: `https://i.ytimg.com/vi/${id}/mqdefault.jpg`,
+            width: 320,
+            height: 180,
+        },
+        {
+            url: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+            width: 480,
+            height: 360,
+        },
+    ];
+};
+exports.getThumbnailFromId = getThumbnailFromId;

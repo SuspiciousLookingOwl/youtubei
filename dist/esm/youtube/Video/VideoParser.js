@@ -16,14 +16,18 @@ var VideoParser = /** @class */ (function () {
     function VideoParser() {
     }
     VideoParser.loadVideo = function (target, data) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         var videoInfo = BaseVideoParser.parseRawData(data);
-        target.duration = +videoInfo.videoDetails.lengthSeconds;
-        var itemSectionRenderer = (_a = data.response.contents.twoColumnWatchNextResults.results.results.contents
+        var mutations = videoInfo.frameworkUpdates.entityBatchUpdate.mutations;
+        var lastMarkers = (_a = mutations.find(function (m) { var _a; return (_a = m.payload) === null || _a === void 0 ? void 0 : _a.macroMarkersListEntity; })) === null || _a === void 0 ? void 0 : _a.payload.macroMarkersListEntity.markersList.markers;
+        target.duration =
+            +((_b = videoInfo.videoDetails) === null || _b === void 0 ? void 0 : _b.lengthSeconds) ||
+                (lastMarkers ? (+lastMarkers.startMillis + +lastMarkers.durationMillis) / 1000 : 0);
+        var itemSectionRenderer = (_c = data.response.contents.twoColumnWatchNextResults.results.results.contents
             .reverse()
-            .find(function (c) { return c.itemSectionRenderer; })) === null || _a === void 0 ? void 0 : _a.itemSectionRenderer;
+            .find(function (c) { return c.itemSectionRenderer; })) === null || _c === void 0 ? void 0 : _c.itemSectionRenderer;
         target.comments.continuation = getContinuationFromItems((itemSectionRenderer === null || itemSectionRenderer === void 0 ? void 0 : itemSectionRenderer.contents) || []);
-        var chapters = (_d = (_c = (_b = data.response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer) === null || _b === void 0 ? void 0 : _b.decoratedPlayerBarRenderer.playerBar) === null || _c === void 0 ? void 0 : _c.multiMarkersPlayerBarRenderer.markersMap) === null || _d === void 0 ? void 0 : _d[0].value.chapters;
+        var chapters = (_f = (_e = (_d = data.response.playerOverlays.playerOverlayRenderer.decoratedPlayerBarRenderer) === null || _d === void 0 ? void 0 : _d.decoratedPlayerBarRenderer.playerBar) === null || _e === void 0 ? void 0 : _e.multiMarkersPlayerBarRenderer.markersMap) === null || _f === void 0 ? void 0 : _f[0].value.chapters;
         target.chapters =
             (chapters === null || chapters === void 0 ? void 0 : chapters.map(function (_a) {
                 var c = _a.chapterRenderer;
@@ -33,7 +37,7 @@ var VideoParser = /** @class */ (function () {
                     thumbnails: new Thumbnails().load(c.thumbnail.thumbnails),
                 });
             })) || [];
-        var musicPanel = (_e = data.response.engagementPanels) === null || _e === void 0 ? void 0 : _e.find(function (e) { var _a, _b; return (_b = (_a = e.engagementPanelSectionListRenderer.content) === null || _a === void 0 ? void 0 : _a.structuredDescriptionContentRenderer) === null || _b === void 0 ? void 0 : _b.items.find(function (i) { var _a, _b; return ((_b = (_a = i.horizontalCardListRenderer) === null || _a === void 0 ? void 0 : _a.footerButton) === null || _b === void 0 ? void 0 : _b.buttonViewModel.iconName) === "MUSIC"; }); });
+        var musicPanel = (_g = data.response.engagementPanels) === null || _g === void 0 ? void 0 : _g.find(function (e) { var _a, _b; return (_b = (_a = e.engagementPanelSectionListRenderer.content) === null || _a === void 0 ? void 0 : _a.structuredDescriptionContentRenderer) === null || _b === void 0 ? void 0 : _b.items.find(function (i) { var _a, _b; return ((_b = (_a = i.horizontalCardListRenderer) === null || _a === void 0 ? void 0 : _a.footerButton) === null || _b === void 0 ? void 0 : _b.buttonViewModel.iconName) === "MUSIC"; }); });
         if (!musicPanel) {
             target.music = null;
         }
@@ -45,7 +49,7 @@ var VideoParser = /** @class */ (function () {
                 imageUrl: music.image.sources[0].url,
                 title: music.title,
                 artist: music.subtitle,
-                album: ((_f = music.secondarySubtitle) === null || _f === void 0 ? void 0 : _f.content) || null,
+                album: ((_h = music.secondarySubtitle) === null || _h === void 0 ? void 0 : _h.content) || null,
             };
         }
         // target.music =

@@ -9,7 +9,7 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-import { getContinuationFromItems, stripToInt, Thumbnails } from "../../common";
+import { getContinuationFromItems, getThumbnailFromId, stripToInt, Thumbnails, } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { PlaylistCompact } from "../PlaylistCompact";
 import { VideoCompact } from "../VideoCompact";
@@ -18,19 +18,21 @@ var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {
     }
     BaseVideoParser.loadBaseVideo = function (target, data) {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e, _f, _g, _h;
         var videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
-        target.id = videoInfo.videoDetails.videoId;
-        target.title = videoInfo.videoDetails.title;
+        target.id = videoInfo.currentVideoEndpoint.watchEndpoint.videoId;
+        target.title =
+            videoInfo.playerOverlays.playerOverlayRenderer.videoDetails.playerOverlayVideoDetailsRenderer.title.simpleText;
+        target.viewCount =
+            stripToInt(videoInfo.viewCount.videoViewCountRenderer.viewCount.simpleText) || null;
+        target.isLiveContent = !!((_a = videoInfo.videoDetails) === null || _a === void 0 ? void 0 : _a.isLiveContent); // TODO remove dependence on player data
         target.uploadDate = videoInfo.dateText.simpleText;
-        target.viewCount = +videoInfo.videoDetails.viewCount || null;
-        target.isLiveContent = videoInfo.videoDetails.isLiveContent;
-        target.formats = ((_a = videoInfo.streamingData) === null || _a === void 0 ? void 0 : _a.formats) || [];
-        target.adaptiveFormats = ((_b = videoInfo.streamingData) === null || _b === void 0 ? void 0 : _b.adaptiveFormats) || [];
-        target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
+        target.formats = ((_b = videoInfo.streamingData) === null || _b === void 0 ? void 0 : _b.formats) || [];
+        target.adaptiveFormats = ((_c = videoInfo.streamingData) === null || _c === void 0 ? void 0 : _c.adaptiveFormats) || [];
+        target.thumbnails = new Thumbnails().load(((_d = videoInfo.videoDetails) === null || _d === void 0 ? void 0 : _d.thumbnail.thumbnails) || getThumbnailFromId(target.id));
         // Channel
-        var _g = videoInfo.owner.videoOwnerRenderer, title = _g.title, thumbnail = _g.thumbnail, subscriberCountText = _g.subscriberCountText;
+        var _j = videoInfo.owner.videoOwnerRenderer, title = _j.title, thumbnail = _j.thumbnail, subscriberCountText = _j.subscriberCountText;
         if (title) {
             target.channel = new BaseChannel({
                 client: target.client,
@@ -65,13 +67,13 @@ var BaseVideoParser = /** @class */ (function () {
             : null;
         // Tags and description
         target.tags =
-            ((_d = (_c = videoInfo.superTitleLink) === null || _c === void 0 ? void 0 : _c.runs) === null || _d === void 0 ? void 0 : _d.map(function (r) { return r.text.trim(); }).filter(function (t) { return t; })) || [];
-        target.description = videoInfo.videoDetails.shortDescription || "";
+            ((_f = (_e = videoInfo.superTitleLink) === null || _e === void 0 ? void 0 : _e.runs) === null || _f === void 0 ? void 0 : _f.map(function (r) { return r.text.trim(); }).filter(function (t) { return t; })) || [];
+        target.description = videoInfo.attributedDescription.content || ""; // TODO
         // related videos
-        var secondaryContents = (_e = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _e === void 0 ? void 0 : _e.secondaryResults.results;
-        var itemSectionRenderer = (_f = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find(function (c) {
+        var secondaryContents = (_g = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _g === void 0 ? void 0 : _g.secondaryResults.results;
+        var itemSectionRenderer = (_h = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find(function (c) {
             return c.itemSectionRenderer;
-        })) === null || _f === void 0 ? void 0 : _f.itemSectionRenderer;
+        })) === null || _h === void 0 ? void 0 : _h.itemSectionRenderer;
         if (itemSectionRenderer)
             secondaryContents = itemSectionRenderer.contents;
         if (secondaryContents) {
@@ -98,7 +100,9 @@ var BaseVideoParser = /** @class */ (function () {
             .videoPrimaryInfoRenderer;
         var secondaryInfo = contents.find(function (c) { return "videoSecondaryInfoRenderer" in c; }).videoSecondaryInfoRenderer;
         var _a = data.playerResponse, videoDetails = _a.videoDetails, captions = _a.captions, streamingData = _a.streamingData;
-        return __assign(__assign(__assign({}, secondaryInfo), primaryInfo), { videoDetails: videoDetails, captions: captions, streamingData: streamingData });
+        return __assign(__assign(__assign(__assign({}, data.response), secondaryInfo), primaryInfo), { videoDetails: videoDetails,
+            captions: captions,
+            streamingData: streamingData });
     };
     BaseVideoParser.parseCompactRenderer = function (data, client) {
         if ("compactVideoRenderer" in data) {

@@ -63,3 +63,22 @@ export var mapFilter = function (items, key) {
         .filter(function (item) { return item[key]; })
         .map(function (item) { return item[key]; });
 };
+export var getThumbnailFromId = function (id) {
+    return [
+        {
+            url: "https://i.ytimg.com/vi/" + id + "/default.jpg",
+            width: 120,
+            height: 90,
+        },
+        {
+            url: "https://i.ytimg.com/vi/" + id + "/mqdefault.jpg",
+            width: 320,
+            height: 180,
+        },
+        {
+            url: "https://i.ytimg.com/vi/" + id + "/hqdefault.jpg",
+            width: 480,
+            height: 360,
+        },
+    ];
+};
