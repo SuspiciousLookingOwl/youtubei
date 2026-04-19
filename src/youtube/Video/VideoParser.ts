@@ -7,8 +7,9 @@ export class VideoParser {
 	static loadVideo(target: Video, data: YoutubeRawData): Video {
 		const videoInfo = BaseVideoParser.parseRawData(data);
 		const mutations = videoInfo.frameworkUpdates.entityBatchUpdate.mutations;
-		const lastMarkers = mutations.find((m: YoutubeRawData) => m.payload?.macroMarkersListEntity)
-			?.payload.macroMarkersListEntity.markersList.markers;
+		const lastMarkers = mutations
+			.find((m: YoutubeRawData) => m.payload?.macroMarkersListEntity)
+			?.payload.macroMarkersListEntity.markersList.markers.at(-1);
 
 		target.duration =
 			+videoInfo.videoDetails?.lengthSeconds ||

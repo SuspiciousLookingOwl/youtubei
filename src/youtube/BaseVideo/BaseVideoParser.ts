@@ -79,7 +79,10 @@ export class BaseVideoParser {
 			videoInfo.superTitleLink?.runs
 				?.map((r: YoutubeRawData) => r.text.trim())
 				.filter((t: string) => t) || [];
-		target.description = videoInfo.attributedDescription.content || ""; // TODO
+		target.description =
+			videoInfo.videoDetails?.shortDescription ||
+			videoInfo.attributedDescription.content ||
+			"";
 
 		// related videos
 		let secondaryContents =
