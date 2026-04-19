@@ -45,6 +45,22 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 import { HTTP } from "../../common";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -144,24 +160,20 @@ var Client = /** @class */ (function () {
     };
     /** Get video information by video id or URL */
     Client.prototype.getVideo = function (videoId) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function () {
-            var response, data;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0: return [4 /*yield*/, this.http.post(I_END_POINT + "/get_watch", {
-                            data: { playerRequest: { videoId: videoId }, watchNextRequest: { videoId: videoId } },
-                        })];
+            var nextPromise, playerPromise, _e, nextResponse, playerResponse, data;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
+                    case 0:
+                        nextPromise = this.http.post(I_END_POINT + "/next", { data: { videoId: videoId } });
+                        playerPromise = this.http.post(I_END_POINT + "/player", { data: { videoId: videoId } });
+                        return [4 /*yield*/, Promise.all([nextPromise, playerPromise])];
                     case 1:
-                        response = _c.sent();
-                        data = {
-                            response: response.data.find(function (r) { return "watchNextResponse" in r; })
-                                .watchNextResponse,
-                            playerResponse: response.data.find(function (r) { return "playerResponse" in r; })
-                                .playerResponse,
-                        };
+                        _e = __read.apply(void 0, [_f.sent(), 2]), nextResponse = _e[0], playerResponse = _e[1];
+                        data = { response: nextResponse.data, playerResponse: playerResponse.data };
                         if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
-                            data.playerResponse.playabilityStatus.status === "ERROR") {
+                            ((_d = (_c = data.playerResponse) === null || _c === void 0 ? void 0 : _c.playabilityStatus) === null || _d === void 0 ? void 0 : _d.status) === "ERROR") {
                             return [2 /*return*/, undefined];
                         }
                         return [2 /*return*/, (!data.playerResponse.playabilityStatus.liveStreamability

@@ -55,16 +55,15 @@ class HTTP {
     }
     request(path, partialOptions) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.authorizationPromise)
+            const requiresAuth = new URL(`https://${this.baseUrl}/${path}`).pathname.endsWith("/player");
+            if (this.authorizationPromise && requiresAuth)
                 yield this.authorizationPromise;
             const options = Object.assign(Object.assign(Object.assign({}, partialOptions), this.defaultFetchOptions), { headers: Object.assign(Object.assign(Object.assign(Object.assign({}, this.defaultHeaders), { cookie: this.cookie, referer: `https://${this.baseUrl}/` }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
-            if (this.oauth.enabled) {
+            if (this.oauth.enabled && requiresAuth) {
                 this.authorizationPromise = this.authorize();
                 yield this.authorizationPromise;
                 if (this.oauth.token) {
-                    options.headers = {
-                        Authorization: `Bearer ${this.oauth.token}`,
-                    };
+                    options.headers = Object.assign(Object.assign({}, options.headers), { Authorization: `Bearer ${this.oauth.token}`, cookie: undefined });
                 }
             }
             // if URL is a full URL, ignore baseUrl

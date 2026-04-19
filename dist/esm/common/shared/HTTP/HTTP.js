@@ -124,27 +124,26 @@ var HTTP = /** @class */ (function () {
     };
     HTTP.prototype.request = function (path, partialOptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var options, urlString, url, _a, _b, _c, key, value, response, data;
+            var requiresAuth, options, urlString, url, _a, _b, _c, key, value, response, data;
             var e_1, _d;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
-                        if (!this.authorizationPromise) return [3 /*break*/, 2];
+                        requiresAuth = new URL("https://" + this.baseUrl + "/" + path).pathname.endsWith("/player");
+                        if (!(this.authorizationPromise && requiresAuth)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.authorizationPromise];
                     case 1:
                         _e.sent();
                         _e.label = 2;
                     case 2:
                         options = __assign(__assign(__assign({}, partialOptions), this.defaultFetchOptions), { headers: __assign(__assign(__assign(__assign({}, this.defaultHeaders), { cookie: this.cookie, referer: "https://" + this.baseUrl + "/" }), partialOptions.headers), this.defaultFetchOptions.headers), body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined });
-                        if (!this.oauth.enabled) return [3 /*break*/, 4];
+                        if (!(this.oauth.enabled && requiresAuth)) return [3 /*break*/, 4];
                         this.authorizationPromise = this.authorize();
                         return [4 /*yield*/, this.authorizationPromise];
                     case 3:
                         _e.sent();
                         if (this.oauth.token) {
-                            options.headers = {
-                                Authorization: "Bearer " + this.oauth.token,
-                            };
+                            options.headers = __assign(__assign({}, options.headers), { Authorization: "Bearer " + this.oauth.token, cookie: undefined });
                         }
                         _e.label = 4;
                     case 4:
