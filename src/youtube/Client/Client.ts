@@ -1,4 +1,4 @@
-import { HTTP, HTTPOptions, OAuthProps, YoutubeRawData } from "../../common";
+import { HTTP, HTTPOptions, OAuthProps } from "../../common";
 import { Caption } from "../Caption";
 import { Channel } from "../Channel";
 import { LiveVideo } from "../LiveVideo";
@@ -107,20 +107,16 @@ export class Client {
 
 	/** Get video information by video id or URL */
 	async getVideo<T extends Video | LiveVideo | undefined>(videoId: string): Promise<T> {
-		const response = await this.http.post(`${I_END_POINT}/get_watch`, {
-			data: { playerRequest: { videoId }, watchNextRequest: { videoId } },
-		});
+		const nextPromise = this.http.post(`${I_END_POINT}/next`, { data: { videoId } });
+		const playerPromise = this.http.post(`${I_END_POINT}/player`, { data: { videoId } });
 
-		const data = {
-			response: response.data.find((r: YoutubeRawData) => "watchNextResponse" in r)
-				.watchNextResponse,
-			playerResponse: response.data.find((r: YoutubeRawData) => "playerResponse" in r)
-				.playerResponse,
-		};
+		const [nextResponse, playerResponse] = await Promise.all([nextPromise, playerPromise]);
+
+		const data = { response: nextResponse.data, playerResponse: playerResponse.data };
 
 		if (
 			!data.response?.contents?.twoColumnWatchNextResults.results.results.contents ||
-			data.playerResponse.playabilityStatus.status === "ERROR"
+			data.playerResponse?.playabilityStatus?.status === "ERROR"
 		) {
 			return undefined as T;
 		}
