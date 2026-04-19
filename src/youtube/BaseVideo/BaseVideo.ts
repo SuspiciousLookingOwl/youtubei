@@ -21,7 +21,6 @@ export interface BaseVideoProperties extends BaseProperties {
 	tags?: string[];
 	formats?: YoutubeRawData[];
 	adaptiveFormats?: YoutubeRawData[];
-
 }
 
 /** Represents a Video  */
