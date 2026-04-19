@@ -1,3 +1,4 @@
+import fs from "fs/promises";
 import fetch, { Response as FetchResponse, HeadersInit, RequestInit } from "node-fetch";
 import { URLSearchParams } from "url";
 
@@ -29,6 +30,7 @@ export type HTTPOptions = {
 	initialCookie?: string;
 	oauth?: OAuthOptions;
 	pot?: PotOptions;
+	rawResponseLogPath?: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -56,6 +58,7 @@ export class HTTP {
 	private authorizationPromise: Promise<void> | null;
 	private pot?: PotOptions;
 	public oauth: OAuthOptions & OAuthProps;
+	private rawResponseLogPath?: string;
 
 	constructor(options: HTTPOptions) {
 		this.apiKey = options.apiKey;
@@ -79,6 +82,7 @@ export class HTTP {
 		this.authorizationPromise = null;
 		this.defaultFetchOptions = options.fetchOptions || {};
 		this.defaultClientOptions = options.youtubeClientOptions || {};
+		this.rawResponseLogPath = options.rawResponseLogPath;
 	}
 
 	async get(path: string, options?: Partial<Options>): Promise<Response> {
@@ -156,6 +160,14 @@ export class HTTP {
 
 		const response = await fetch(urlString, options);
 		const data = await response.json();
+
+		if (this.rawResponseLogPath) {
+			await fs.appendFile(
+				this.rawResponseLogPath,
+				JSON.stringify({ url: urlString, response: data }) + "\n"
+			);
+		}
+
 		this.parseCookie(response);
 
 		return { data };
