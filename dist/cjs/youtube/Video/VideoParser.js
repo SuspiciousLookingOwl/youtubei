@@ -9,7 +9,8 @@ class VideoParser {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         const videoInfo = BaseVideo_1.BaseVideoParser.parseRawData(data);
         const mutations = videoInfo.frameworkUpdates.entityBatchUpdate.mutations;
-        const lastMarkers = (_a = mutations.find((m) => { var _a; return (_a = m.payload) === null || _a === void 0 ? void 0 : _a.macroMarkersListEntity; })) === null || _a === void 0 ? void 0 : _a.payload.macroMarkersListEntity.markersList.markers;
+        const lastMarkers = (_a = mutations
+            .find((m) => { var _a; return (_a = m.payload) === null || _a === void 0 ? void 0 : _a.macroMarkersListEntity; })) === null || _a === void 0 ? void 0 : _a.payload.macroMarkersListEntity.markersList.markers.at(-1);
         target.duration =
             +((_b = videoInfo.videoDetails) === null || _b === void 0 ? void 0 : _b.lengthSeconds) ||
                 (lastMarkers ? (+lastMarkers.startMillis + +lastMarkers.durationMillis) / 1000 : 0);

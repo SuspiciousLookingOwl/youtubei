@@ -19,7 +19,8 @@ var VideoParser = /** @class */ (function () {
         var _a, _b, _c, _d, _e, _f, _g, _h;
         var videoInfo = BaseVideoParser.parseRawData(data);
         var mutations = videoInfo.frameworkUpdates.entityBatchUpdate.mutations;
-        var lastMarkers = (_a = mutations.find(function (m) { var _a; return (_a = m.payload) === null || _a === void 0 ? void 0 : _a.macroMarkersListEntity; })) === null || _a === void 0 ? void 0 : _a.payload.macroMarkersListEntity.markersList.markers;
+        var lastMarkers = (_a = mutations
+            .find(function (m) { var _a; return (_a = m.payload) === null || _a === void 0 ? void 0 : _a.macroMarkersListEntity; })) === null || _a === void 0 ? void 0 : _a.payload.macroMarkersListEntity.markersList.markers.at(-1);
         target.duration =
             +((_b = videoInfo.videoDetails) === null || _b === void 0 ? void 0 : _b.lengthSeconds) ||
                 (lastMarkers ? (+lastMarkers.startMillis + +lastMarkers.durationMillis) / 1000 : 0);

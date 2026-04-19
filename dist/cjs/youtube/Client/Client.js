@@ -82,10 +82,15 @@ class Client {
     getVideo(videoId) {
         var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
-            const nextPromise = this.http.post(`${constants_1.I_END_POINT}/next`, { data: { videoId } });
-            const playerPromise = this.http.post(`${constants_1.I_END_POINT}/player`, { data: { videoId } });
-            const [nextResponse, playerResponse] = yield Promise.all([nextPromise, playerPromise]);
-            const data = { response: nextResponse.data, playerResponse: playerResponse.data };
+            const response = yield this.http.post(`${constants_1.I_END_POINT}/get_watch`, {
+                data: { playerRequest: { videoId }, watchNextRequest: { videoId } },
+            });
+            const data = {
+                response: response.data.find((r) => "watchNextResponse" in r)
+                    .watchNextResponse,
+                playerResponse: response.data.find((r) => "playerResponse" in r)
+                    .playerResponse,
+            };
             if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
                 data.playerResponse.playabilityStatus.status === "ERROR") {
                 return undefined;

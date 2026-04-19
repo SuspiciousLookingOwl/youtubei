@@ -18,7 +18,7 @@ var BaseVideoParser = /** @class */ (function () {
     function BaseVideoParser() {
     }
     BaseVideoParser.loadBaseVideo = function (target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         var videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.currentVideoEndpoint.watchEndpoint.videoId;
@@ -32,7 +32,7 @@ var BaseVideoParser = /** @class */ (function () {
         target.adaptiveFormats = ((_c = videoInfo.streamingData) === null || _c === void 0 ? void 0 : _c.adaptiveFormats) || [];
         target.thumbnails = new Thumbnails().load(((_d = videoInfo.videoDetails) === null || _d === void 0 ? void 0 : _d.thumbnail.thumbnails) || getThumbnailFromId(target.id));
         // Channel
-        var _j = videoInfo.owner.videoOwnerRenderer, title = _j.title, thumbnail = _j.thumbnail, subscriberCountText = _j.subscriberCountText;
+        var _k = videoInfo.owner.videoOwnerRenderer, title = _k.title, thumbnail = _k.thumbnail, subscriberCountText = _k.subscriberCountText;
         if (title) {
             target.channel = new BaseChannel({
                 client: target.client,
@@ -68,12 +68,15 @@ var BaseVideoParser = /** @class */ (function () {
         // Tags and description
         target.tags =
             ((_f = (_e = videoInfo.superTitleLink) === null || _e === void 0 ? void 0 : _e.runs) === null || _f === void 0 ? void 0 : _f.map(function (r) { return r.text.trim(); }).filter(function (t) { return t; })) || [];
-        target.description = videoInfo.attributedDescription.content || ""; // TODO
+        target.description =
+            ((_g = videoInfo.videoDetails) === null || _g === void 0 ? void 0 : _g.shortDescription) ||
+                videoInfo.attributedDescription.content ||
+                "";
         // related videos
-        var secondaryContents = (_g = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _g === void 0 ? void 0 : _g.secondaryResults.results;
-        var itemSectionRenderer = (_h = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find(function (c) {
+        var secondaryContents = (_h = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _h === void 0 ? void 0 : _h.secondaryResults.results;
+        var itemSectionRenderer = (_j = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find(function (c) {
             return c.itemSectionRenderer;
-        })) === null || _h === void 0 ? void 0 : _h.itemSectionRenderer;
+        })) === null || _j === void 0 ? void 0 : _j.itemSectionRenderer;
         if (itemSectionRenderer)
             secondaryContents = itemSectionRenderer.contents;
         if (secondaryContents) {
