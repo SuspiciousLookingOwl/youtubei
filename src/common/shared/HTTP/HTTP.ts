@@ -118,7 +118,11 @@ export class HTTP {
 	}
 
 	private async request(path: string, partialOptions: Partial<Options>): Promise<Response> {
-		if (this.authorizationPromise) await this.authorizationPromise;
+		const requiresAuth = new URL(`https://${this.baseUrl}/${path}`).pathname.endsWith(
+			"/player"
+		);
+
+		if (this.authorizationPromise && requiresAuth) await this.authorizationPromise;
 
 		const options: RequestInit = {
 			...partialOptions,
@@ -133,13 +137,15 @@ export class HTTP {
 			body: partialOptions.data ? JSON.stringify(partialOptions.data) : undefined,
 		};
 
-		if (this.oauth.enabled) {
+		if (this.oauth.enabled && requiresAuth) {
 			this.authorizationPromise = this.authorize();
 			await this.authorizationPromise;
 
 			if (this.oauth.token) {
 				options.headers = {
+					...options.headers,
 					Authorization: `Bearer ${this.oauth.token}`,
+					cookie: (undefined as unknown) as string,
 				};
 			}
 		}
