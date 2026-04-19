@@ -72,6 +72,7 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
+import fs from "fs/promises";
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
 import { OAuth } from "./OAuth";
@@ -96,6 +97,7 @@ var HTTP = /** @class */ (function () {
         this.authorizationPromise = null;
         this.defaultFetchOptions = options.fetchOptions || {};
         this.defaultClientOptions = options.youtubeClientOptions || {};
+        this.rawResponseLogPath = options.rawResponseLogPath;
     }
     HTTP.prototype.get = function (path, options) {
         return __awaiter(this, void 0, void 0, function () {
@@ -172,6 +174,12 @@ var HTTP = /** @class */ (function () {
                         return [4 /*yield*/, response.json()];
                     case 6:
                         data = _e.sent();
+                        if (!this.rawResponseLogPath) return [3 /*break*/, 8];
+                        return [4 /*yield*/, fs.appendFile(this.rawResponseLogPath, JSON.stringify({ url: urlString, response: data }) + "\n")];
+                    case 7:
+                        _e.sent();
+                        _e.label = 8;
+                    case 8:
                         this.parseCookie(response);
                         return [2 /*return*/, { data: data }];
                 }

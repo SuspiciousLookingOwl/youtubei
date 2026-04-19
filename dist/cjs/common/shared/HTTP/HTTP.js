@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HTTP = void 0;
+const promises_1 = __importDefault(require("fs/promises"));
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const url_1 = require("url");
 const OAuth_1 = require("./OAuth");
@@ -37,6 +38,7 @@ class HTTP {
         this.authorizationPromise = null;
         this.defaultFetchOptions = options.fetchOptions || {};
         this.defaultClientOptions = options.youtubeClientOptions || {};
+        this.rawResponseLogPath = options.rawResponseLogPath;
     }
     get(path, options) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -79,6 +81,9 @@ class HTTP {
             }
             const response = yield node_fetch_1.default(urlString, options);
             const data = yield response.json();
+            if (this.rawResponseLogPath) {
+                yield promises_1.default.appendFile(this.rawResponseLogPath, JSON.stringify({ url: urlString, response: data }) + "\n");
+            }
             this.parseCookie(response);
             return { data };
         });

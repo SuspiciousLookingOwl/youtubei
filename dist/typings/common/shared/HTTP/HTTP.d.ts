@@ -22,6 +22,7 @@ export declare type HTTPOptions = {
     initialCookie?: string;
     oauth?: OAuthOptions;
     pot?: PotOptions;
+    rawResponseLogPath?: string;
 };
 declare type Response<T = any> = {
     data: T;
@@ -45,6 +46,7 @@ export declare class HTTP {
     private authorizationPromise;
     private pot?;
     oauth: OAuthOptions & OAuthProps;
+    private rawResponseLogPath?;
     constructor(options: HTTPOptions);
     get(path: string, options?: Partial<Options>): Promise<Response>;
     post(path: string, options?: Partial<Options>): Promise<Response>;
