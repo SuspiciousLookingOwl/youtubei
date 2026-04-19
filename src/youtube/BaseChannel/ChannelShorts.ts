@@ -1,4 +1,4 @@
-import { YoutubeRawData, getContinuationFromItems, mapFilter } from "../../common";
+import { YoutubeRawData, getContinuationFromItems } from "../../common";
 import { Continuable, ContinuableConstructorParams, FetchResult } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { I_END_POINT } from "../constants";
@@ -44,13 +44,21 @@ export class ChannelShorts extends Continuable<VideoCompact> {
 
 		const items = BaseChannelParser.parseTabData("shorts", response.data);
 		const continuation = getContinuationFromItems(items);
-		const data = mapFilter(items, "reelItemRenderer");
+		const data = items.filter(
+			(i: YoutubeRawData) => "reelItemRenderer" in i || "shortsLockupViewModel" in i
+		);
 
 		return {
 			continuation,
-			items: data.map((i: YoutubeRawData) =>
-				new VideoCompact({ client: this.client, channel: this.channel }).load(i)
-			),
+			items: data.map((i: YoutubeRawData) => {
+				const video = new VideoCompact({
+					client: this.client,
+					channel: this.channel,
+				});
+				if (i.reelItemRenderer) video.load(i.reelItemRenderer);
+				else if (i.shortsLockupViewModel) video.loadLockup(i.lockupViewModel);
+				return video;
+			}),
 		};
 	}
 }
