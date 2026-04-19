@@ -46,10 +46,20 @@ class ChannelShorts extends Continuable_1.Continuable {
             });
             const items = BaseChannelParser_1.BaseChannelParser.parseTabData("shorts", response.data);
             const continuation = common_1.getContinuationFromItems(items);
-            const data = common_1.mapFilter(items, "reelItemRenderer");
+            const data = items.filter((i) => "reelItemRenderer" in i || "shortsLockupViewModel" in i);
             return {
                 continuation,
-                items: data.map((i) => new VideoCompact_1.VideoCompact({ client: this.client, channel: this.channel }).load(i)),
+                items: data.map((i) => {
+                    const video = new VideoCompact_1.VideoCompact({
+                        client: this.client,
+                        channel: this.channel,
+                    });
+                    if (i.reelItemRenderer)
+                        video.load(i.reelItemRenderer);
+                    else if (i.shortsLockupViewModel)
+                        video.loadLockup(i.lockupViewModel);
+                    return video;
+                }),
             };
         });
     }
