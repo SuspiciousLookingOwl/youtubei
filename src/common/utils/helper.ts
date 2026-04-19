@@ -1,3 +1,4 @@
+import { Thumbnail } from "../shared";
 import { YoutubeRawData } from "./types";
 
 export const getDuration = (s: string): number => {
@@ -47,4 +48,24 @@ export const mapFilter = (items: YoutubeRawData, key: string): YoutubeRawData =>
 	return items
 		.filter((item: YoutubeRawData) => item[key])
 		.map((item: YoutubeRawData) => item[key]);
+};
+
+export const getThumbnailFromId = (id: string): Thumbnail[] => {
+	return [
+		{
+			url: `https://i.ytimg.com/vi/${id}/default.jpg`,
+			width: 120,
+			height: 90,
+		},
+		{
+			url: `https://i.ytimg.com/vi/${id}/mqdefault.jpg`,
+			width: 320,
+			height: 180,
+		},
+		{
+			url: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+			width: 480,
+			height: 360,
+		},
+	];
 };

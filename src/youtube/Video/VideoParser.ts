@@ -6,7 +6,13 @@ import { Video } from "./Video";
 export class VideoParser {
 	static loadVideo(target: Video, data: YoutubeRawData): Video {
 		const videoInfo = BaseVideoParser.parseRawData(data);
-		target.duration = +videoInfo.videoDetails.lengthSeconds;
+		const mutations = videoInfo.frameworkUpdates.entityBatchUpdate.mutations;
+		const lastMarkers = mutations.find((m: YoutubeRawData) => m.payload?.macroMarkersListEntity)
+			?.payload.macroMarkersListEntity.markersList.markers;
+
+		target.duration =
+			+videoInfo.videoDetails?.lengthSeconds ||
+			(lastMarkers ? (+lastMarkers.startMillis + +lastMarkers.durationMillis) / 1000 : 0);
 
 		const itemSectionRenderer = data.response.contents.twoColumnWatchNextResults.results.results.contents
 			.reverse()

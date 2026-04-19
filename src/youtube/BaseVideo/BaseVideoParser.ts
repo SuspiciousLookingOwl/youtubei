@@ -1,4 +1,10 @@
-import { getContinuationFromItems, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
+import {
+	getContinuationFromItems,
+	getThumbnailFromId,
+	stripToInt,
+	Thumbnails,
+	YoutubeRawData,
+} from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
 import { PlaylistCompact } from "../PlaylistCompact";
@@ -11,15 +17,19 @@ export class BaseVideoParser {
 		const videoInfo = BaseVideoParser.parseRawData(data);
 
 		// Basic information
-		target.id = videoInfo.videoDetails.videoId;
-		target.title = videoInfo.videoDetails.title;
+		target.id = videoInfo.currentVideoEndpoint.watchEndpoint.videoId;
+		target.title =
+			videoInfo.playerOverlays.playerOverlayRenderer.videoDetails.playerOverlayVideoDetailsRenderer.title.simpleText;
+		target.viewCount =
+			stripToInt(videoInfo.viewCount.videoViewCountRenderer.viewCount.simpleText) || null;
+		target.isLiveContent = !!videoInfo.videoDetails?.isLiveContent; // TODO remove dependence on player data
 		target.uploadDate = videoInfo.dateText.simpleText;
-		target.viewCount = +videoInfo.videoDetails.viewCount || null;
-		target.isLiveContent = videoInfo.videoDetails.isLiveContent;
 		target.formats = videoInfo.streamingData?.formats || [];
 		target.adaptiveFormats = videoInfo.streamingData?.adaptiveFormats || [];
 
-		target.thumbnails = new Thumbnails().load(videoInfo.videoDetails.thumbnail.thumbnails);
+		target.thumbnails = new Thumbnails().load(
+			videoInfo.videoDetails?.thumbnail.thumbnails || getThumbnailFromId(target.id)
+		);
 
 		// Channel
 		const { title, thumbnail, subscriberCountText } = videoInfo.owner.videoOwnerRenderer;
@@ -69,7 +79,7 @@ export class BaseVideoParser {
 			videoInfo.superTitleLink?.runs
 				?.map((r: YoutubeRawData) => r.text.trim())
 				.filter((t: string) => t) || [];
-		target.description = videoInfo.videoDetails.shortDescription || "";
+		target.description = videoInfo.attributedDescription.content || ""; // TODO
 
 		// related videos
 		let secondaryContents =
@@ -123,7 +133,14 @@ export class BaseVideoParser {
 			(c: YoutubeRawData) => "videoSecondaryInfoRenderer" in c
 		).videoSecondaryInfoRenderer;
 		const { videoDetails, captions, streamingData } = data.playerResponse;
-		return { ...secondaryInfo, ...primaryInfo, videoDetails, captions, streamingData };
+		return {
+			...data.response,
+			...secondaryInfo,
+			...primaryInfo,
+			videoDetails,
+			captions,
+			streamingData,
+		};
 	}
 
 	private static parseCompactRenderer(
