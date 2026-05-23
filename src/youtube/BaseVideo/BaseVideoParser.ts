@@ -81,7 +81,7 @@ export class BaseVideoParser {
 				.filter((t: string) => t) || [];
 		target.description =
 			videoInfo.videoDetails?.shortDescription ||
-			videoInfo.attributedDescription.content ||
+			videoInfo.attributedDescription?.content ||
 			"";
 
 		// related videos
