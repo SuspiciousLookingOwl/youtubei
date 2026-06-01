@@ -8,7 +8,7 @@ const VideoCompact_1 = require("../VideoCompact");
 const VideoCaptions_1 = require("./VideoCaptions");
 class BaseVideoParser {
     static loadBaseVideo(target, data) {
-        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
         const videoInfo = BaseVideoParser.parseRawData(data);
         // Basic information
         target.id = videoInfo.currentVideoEndpoint.watchEndpoint.videoId;
@@ -59,14 +59,13 @@ class BaseVideoParser {
         target.tags =
             ((_f = (_e = videoInfo.superTitleLink) === null || _e === void 0 ? void 0 : _e.runs) === null || _f === void 0 ? void 0 : _f.map((r) => r.text.trim()).filter((t) => t)) || [];
         target.description =
-            ((_g = videoInfo.videoDetails) === null || _g === void 0 ? void 0 : _g.shortDescription) ||
-                videoInfo.attributedDescription.content ||
+            ((_g = videoInfo.videoDetails) === null || _g === void 0 ? void 0 : _g.shortDescription) || ((_h = videoInfo.attributedDescription) === null || _h === void 0 ? void 0 : _h.content) ||
                 "";
         // related videos
-        let secondaryContents = (_h = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _h === void 0 ? void 0 : _h.secondaryResults.results;
-        const itemSectionRenderer = (_j = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find((c) => {
+        let secondaryContents = (_j = data.response.contents.twoColumnWatchNextResults.secondaryResults) === null || _j === void 0 ? void 0 : _j.secondaryResults.results;
+        const itemSectionRenderer = (_k = secondaryContents === null || secondaryContents === void 0 ? void 0 : secondaryContents.find((c) => {
             return c.itemSectionRenderer;
-        })) === null || _j === void 0 ? void 0 : _j.itemSectionRenderer;
+        })) === null || _k === void 0 ? void 0 : _k.itemSectionRenderer;
         if (itemSectionRenderer)
             secondaryContents = itemSectionRenderer.contents;
         if (secondaryContents) {
