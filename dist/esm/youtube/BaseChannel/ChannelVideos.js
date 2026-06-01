@@ -47,7 +47,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-import { getContinuationFromItems, mapFilter } from "../../common";
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+import { getContinuationFromItems, getDuration, mapFilter, stripToInt, Thumbnails } from "../../common";
 import { Continuable } from "../Continuable";
 import { VideoCompact } from "../VideoCompact";
 import { I_END_POINT } from "../constants";
@@ -80,7 +100,7 @@ var ChannelVideos = /** @class */ (function (_super) {
     ChannelVideos.prototype.fetch = function () {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var params, response, items, continuation, data;
+            var params, response, items, continuation, videoRenderers, lockupViewModels, fromVideoRenderer, fromLockup;
             var _this = this;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -93,12 +113,30 @@ var ChannelVideos = /** @class */ (function (_super) {
                         response = _b.sent();
                         items = BaseChannelParser.parseTabData("videos", response.data);
                         continuation = getContinuationFromItems(items);
-                        data = mapFilter(items, "videoRenderer");
+                        videoRenderers = mapFilter(items, "videoRenderer");
+                        lockupViewModels = mapFilter(items, "lockupViewModel");
+                        fromVideoRenderer = videoRenderers.map(function (i) {
+                            return new VideoCompact({ client: _this.client, channel: _this.channel }).load(i);
+                        });
+                        fromLockup = lockupViewModels.map(function (i) {
+                            var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v;
+                            var v = new VideoCompact({ client: _this.client, channel: _this.channel });
+                            v.id = i.contentId;
+                            v.title = (_c = (_b = (_a = i.metadata) === null || _a === void 0 ? void 0 : _a.lockupMetadataViewModel) === null || _b === void 0 ? void 0 : _b.title) === null || _c === void 0 ? void 0 : _c.content;
+                            v.thumbnails = new Thumbnails().load(((_f = (_e = (_d = i.contentImage) === null || _d === void 0 ? void 0 : _d.thumbnailViewModel) === null || _e === void 0 ? void 0 : _e.image) === null || _f === void 0 ? void 0 : _f.sources) || []);
+                            var overlays = ((_j = (_h = (_g = i.contentImage) === null || _g === void 0 ? void 0 : _g.thumbnailViewModel) === null || _h === void 0 ? void 0 : _h.overlays) === null || _j === void 0 ? void 0 : _j[0]) || {};
+                            var badges = ((_k = overlays.thumbnailBottomOverlayViewModel) === null || _k === void 0 ? void 0 : _k.badges) || [];
+                            var badgeText = ((_m = (_l = badges[0]) === null || _l === void 0 ? void 0 : _l.thumbnailBadgeViewModel) === null || _m === void 0 ? void 0 : _m.text) || "";
+                            v.isLive = badgeText === "LIVE";
+                            v.duration = !v.isLive && badgeText ? getDuration(badgeText) : null;
+                            var metaRows = ((_r = (_q = (_p = (_o = i.metadata) === null || _o === void 0 ? void 0 : _o.lockupMetadataViewModel) === null || _p === void 0 ? void 0 : _p.metadata) === null || _q === void 0 ? void 0 : _q.contentMetadataViewModel) === null || _r === void 0 ? void 0 : _r.metadataRows) || [];
+                            var metaText = ((_v = (_u = (_t = (_s = metaRows[0]) === null || _s === void 0 ? void 0 : _s.metadataParts) === null || _t === void 0 ? void 0 : _t[0]) === null || _u === void 0 ? void 0 : _u.text) === null || _v === void 0 ? void 0 : _v.content) || "";
+                            v.viewCount = stripToInt(metaText);
+                            return v;
+                        });
                         return [2 /*return*/, {
                                 continuation: continuation,
-                                items: data.map(function (i) {
-                                    return new VideoCompact({ client: _this.client, channel: _this.channel }).load(i);
-                                }),
+                                items: __spread(fromVideoRenderer, fromLockup),
                             }];
                 }
             });
