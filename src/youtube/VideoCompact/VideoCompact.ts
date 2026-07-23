@@ -35,6 +35,8 @@ export class VideoCompact extends Base implements VideoCompactProperties {
 	isShort!: boolean;
 	/** The channel who uploads this video */
 	channel?: BaseChannel;
+	/** The channel who uploads this video */
+	channels?: BaseChannel[];
 	/** The date this video is uploaded at */
 	uploadDate?: string;
 	/** How many view does this video have, null if the view count is hidden */

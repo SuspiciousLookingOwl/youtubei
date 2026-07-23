@@ -71,6 +71,7 @@ export class VideoCompactParser {
 	static loadLockupVideoCompact(target: VideoCompact, data: YoutubeRawData): VideoCompact {
 		const lockupMetadataViewModel = data.metadata.lockupMetadataViewModel;
 		const decoratedAvatarViewModel = lockupMetadataViewModel.image.decoratedAvatarViewModel;
+		const avatarStackViewModel = lockupMetadataViewModel.image.avatarStackViewModel;
 		const thumbnailOverlay = data.contentImage.thumbnailViewModel.overlays[0];
 		const thumbnailBadge = (
 			thumbnailOverlay.thumbnailBottomOverlayViewModel?.badges[0] ||
@@ -78,16 +79,48 @@ export class VideoCompactParser {
 		).thumbnailBadgeViewModel;
 		const metadataRows = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows;
 
-		const channel = new BaseChannel({
-			client: target.client,
-			name: metadataRows[0].metadataParts[0].text.content,
-			id:
-				decoratedAvatarViewModel.rendererContext.commandContext.onTap.innertubeCommand
-					.browseEndpoint.browseId,
-			thumbnails: new Thumbnails().load(
-				decoratedAvatarViewModel.avatar.avatarViewModel.image.sources
-			),
-		});
+		let channel: BaseChannel | undefined;
+		if (decoratedAvatarViewModel) {
+			// single channel
+			channel = new BaseChannel({
+				client: target.client,
+				name: metadataRows[0].metadataParts[0].text.content,
+				id:
+					decoratedAvatarViewModel.rendererContext.commandContext.onTap.innertubeCommand
+						.browseEndpoint.browseId,
+				thumbnails: new Thumbnails().load(
+					decoratedAvatarViewModel.avatar.avatarViewModel.image.sources
+				),
+			});
+		} else if (avatarStackViewModel) {
+			// Collaboration video with multiple channels
+			const listItems =
+				avatarStackViewModel.rendererContext.commandContext.onTap.innertubeCommand
+					.showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel
+					.customContent.listViewModel.listItems;
+
+			if (listItems?.length) {
+				const channels = listItems.map((item: YoutubeRawData) => {
+					const listItem = item.listItemViewModel;
+					const channelId =
+						listItem.rendererContext.commandContext.onTap.innertubeCommand
+							.browseEndpoint.browseId;
+					const channelName = listItem.title.content;
+					const channelThumbnails =
+						listItem.leadingAccessory.avatarViewModel.image.sources;
+
+					return new BaseChannel({
+						client: target.client,
+						id: channelId,
+						name: channelName,
+						thumbnails: new Thumbnails().load(channelThumbnails),
+					});
+				});
+
+				target.channel = channels[0];
+				target.channels = channels.slice(1);
+			}
+		}
 
 		const isLive = thumbnailBadge.icon?.sources[0].clientResource.imageName === "LIVE";
 

@@ -27,21 +27,26 @@ export const getContinuationFromItems = (
 	accessors: string[] = ["continuationEndpoint"]
 ): string | undefined => {
 	const continuation = items[items.length - 1];
-	const renderer = continuation?.continuationItemRenderer;
-	if (!renderer) return;
 
-	let current = renderer;
-	for (const accessor of accessors) {
-		current = current[accessor];
+	if (continuation?.continuationItemRenderer) {
+		let current = continuation.continuationItemRenderer;
+		for (const accessor of accessors) {
+			current = current[accessor];
+		}
+
+		if (current?.commandExecutorCommand?.commands?.length) {
+			current = current.commandExecutorCommand.commands.find(
+				(cmd: YoutubeRawData) => "continuationCommand" in cmd
+			);
+		}
+
+		return current?.continuationCommand?.token;
+	} else if (continuation?.continuationItemViewModel) {
+		return continuation.continuationItemViewModel.continuationCommand.innertubeCommand
+			.continuationCommand.token;
+	} else {
+		return;
 	}
-
-	if (current?.commandExecutorCommand?.commands?.length) {
-		current = current.commandExecutorCommand.commands.find(
-			(cmd: YoutubeRawData) => "continuationCommand" in cmd
-		);
-	}
-
-	return current?.continuationCommand?.token;
 };
 
 export const mapFilter = (items: YoutubeRawData, key: string): YoutubeRawData => {

@@ -37,8 +37,7 @@ export class PlaylistParser {
 
 		const playlistContents =
 			data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
-				.sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
-				.playlistVideoListRenderer?.contents || [];
+				.sectionListRenderer.contents[0].itemSectionRenderer.contents || [];
 
 		// Channel
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
@@ -70,9 +69,11 @@ export class PlaylistParser {
 		const playlistContents =
 			data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
 
-		const videos = mapFilter(playlistContents, "playlistVideoRenderer");
+		const videos = mapFilter(playlistContents, "lockupViewModel");
 
-		return videos.map((video: YoutubeRawData) => new VideoCompact({ client }).load(video));
+		return videos.map((video: YoutubeRawData) =>
+			new VideoCompact({ client }).loadLockup(video)
+		);
 	}
 
 	/**
@@ -84,11 +85,15 @@ export class PlaylistParser {
 		playlistContents: YoutubeRawData,
 		playlist: Playlist
 	): VideoCompact[] {
-		const videosRenderer = playlistContents.map((c: YoutubeRawData) => c.playlistVideoRenderer);
+		const videoLockupViewModels = playlistContents.map(
+			(c: YoutubeRawData) => c.lockupViewModel
+		);
 		const videos = [];
-		for (const videoRenderer of videosRenderer) {
-			if (!videoRenderer) continue;
-			const video = new VideoCompact({ client: playlist.client }).load(videoRenderer);
+		for (const videoLockupViewModel of videoLockupViewModels) {
+			if (!videoLockupViewModel) continue;
+			const video = new VideoCompact({ client: playlist.client }).loadLockup(
+				videoLockupViewModel
+			);
 			videos.push(video);
 		}
 		return videos;
