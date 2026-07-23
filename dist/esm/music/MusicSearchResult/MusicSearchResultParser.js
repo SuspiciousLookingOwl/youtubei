@@ -41,19 +41,39 @@ var MusicSearchResultParser = /** @class */ (function () {
         var sectionContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
             .sectionListRenderer.contents;
         var resultContents = sectionContents.find(function (c) { return "musicShelfRenderer" in c; });
-        if (!resultContents) {
-            // no results
+        if (resultContents) {
+            if (!resultContents) {
+                // no results
+                return {
+                    data: [],
+                    continuation: undefined,
+                };
+            }
+            var _c = resultContents.musicShelfRenderer, contents = _c.contents, continuations = _c.continuations;
+            var result = MusicSearchResultParser.parseSearchResult(contents, client);
             return {
-                data: [],
+                data: result,
+                continuation: (_b = (_a = continuations === null || continuations === void 0 ? void 0 : continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
+            };
+        }
+        else {
+            if (!sectionContents.length) {
+                // no results
+                return {
+                    data: [],
+                    continuation: undefined,
+                };
+            }
+            var contents = sectionContents
+                .filter(function (c) { return "itemSectionRenderer" in c; })
+                .map(function (c) { return c.itemSectionRenderer.contents[0]; })
+                .flat();
+            var result = MusicSearchResultParser.parseSearchResult(contents, client);
+            return {
+                data: result,
                 continuation: undefined,
             };
         }
-        var _c = resultContents.musicShelfRenderer, contents = _c.contents, continuations = _c.continuations;
-        var result = MusicSearchResultParser.parseSearchResult(contents, client);
-        return {
-            data: result,
-            continuation: (_b = (_a = continuations === null || continuations === void 0 ? void 0 : continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
-        };
     };
     MusicSearchResultParser.parseContinuationSearchResult = function (data, client) {
         var shelf = data.continuationContents.musicShelfContinuation;

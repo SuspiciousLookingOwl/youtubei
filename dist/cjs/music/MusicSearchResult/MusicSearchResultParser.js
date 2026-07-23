@@ -15,19 +15,39 @@ class MusicSearchResultParser {
         const sectionContents = data.contents.tabbedSearchResultsRenderer.tabs[0].tabRenderer.content
             .sectionListRenderer.contents;
         const resultContents = sectionContents.find((c) => "musicShelfRenderer" in c);
-        if (!resultContents) {
-            // no results
+        if (resultContents) {
+            if (!resultContents) {
+                // no results
+                return {
+                    data: [],
+                    continuation: undefined,
+                };
+            }
+            const { contents, continuations } = resultContents.musicShelfRenderer;
+            const result = MusicSearchResultParser.parseSearchResult(contents, client);
             return {
-                data: [],
+                data: result,
+                continuation: (_b = (_a = continuations === null || continuations === void 0 ? void 0 : continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
+            };
+        }
+        else {
+            if (!sectionContents.length) {
+                // no results
+                return {
+                    data: [],
+                    continuation: undefined,
+                };
+            }
+            const contents = sectionContents
+                .filter((c) => "itemSectionRenderer" in c)
+                .map((c) => c.itemSectionRenderer.contents[0])
+                .flat();
+            const result = MusicSearchResultParser.parseSearchResult(contents, client);
+            return {
+                data: result,
                 continuation: undefined,
             };
         }
-        const { contents, continuations } = resultContents.musicShelfRenderer;
-        const result = MusicSearchResultParser.parseSearchResult(contents, client);
-        return {
-            data: result,
-            continuation: (_b = (_a = continuations === null || continuations === void 0 ? void 0 : continuations[0]) === null || _a === void 0 ? void 0 : _a.nextContinuationData) === null || _b === void 0 ? void 0 : _b.continuation,
-        };
     }
     static parseContinuationSearchResult(data, client) {
         const shelf = data.continuationContents.musicShelfContinuation;
