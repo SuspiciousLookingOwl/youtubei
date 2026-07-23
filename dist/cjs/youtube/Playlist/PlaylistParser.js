@@ -6,7 +6,7 @@ const BaseChannel_1 = require("../BaseChannel");
 const VideoCompact_1 = require("../VideoCompact");
 class PlaylistParser {
     static loadPlaylist(target, data) {
-        var _a, _b, _c;
+        var _a, _b;
         const sidebarRenderer = data.sidebar.playlistSidebarRenderer.items;
         const primaryRenderer = sidebarRenderer[0].playlistSidebarPrimaryInfoRenderer;
         const metadata = data.metadata.playlistMetadataRenderer;
@@ -26,11 +26,10 @@ class PlaylistParser {
             target.videoCount = PlaylistParser.parseSideBarInfo(stats[0], true);
             target.lastUpdatedAt = PlaylistParser.parseSideBarInfo(stats[1], false);
         }
-        const playlistContents = ((_b = data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
-            .sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
-            .playlistVideoListRenderer) === null || _b === void 0 ? void 0 : _b.contents) || [];
+        const playlistContents = data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
+            .sectionListRenderer.contents[0].itemSectionRenderer.contents || [];
         // Channel
-        const videoOwner = (_c = sidebarRenderer[1]) === null || _c === void 0 ? void 0 : _c.playlistSidebarSecondaryInfoRenderer.videoOwner;
+        const videoOwner = (_b = sidebarRenderer[1]) === null || _b === void 0 ? void 0 : _b.playlistSidebarSecondaryInfoRenderer.videoOwner;
         if (videoOwner) {
             const { title, thumbnail } = videoOwner.videoOwnerRenderer;
             target.channel = new BaseChannel_1.BaseChannel({
@@ -51,8 +50,8 @@ class PlaylistParser {
     }
     static parseContinuationVideos(data, client) {
         const playlistContents = data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
-        const videos = common_1.mapFilter(playlistContents, "playlistVideoRenderer");
-        return videos.map((video) => new VideoCompact_1.VideoCompact({ client }).load(video));
+        const videos = common_1.mapFilter(playlistContents, "lockupViewModel");
+        return videos.map((video) => new VideoCompact_1.VideoCompact({ client }).loadLockup(video));
     }
     /**
      * Get compact videos
@@ -60,12 +59,12 @@ class PlaylistParser {
      * @param playlistContents raw object from youtubei
      */
     static parseVideos(playlistContents, playlist) {
-        const videosRenderer = playlistContents.map((c) => c.playlistVideoRenderer);
+        const videoLockupViewModels = playlistContents.map((c) => c.lockupViewModel);
         const videos = [];
-        for (const videoRenderer of videosRenderer) {
-            if (!videoRenderer)
+        for (const videoLockupViewModel of videoLockupViewModels) {
+            if (!videoLockupViewModel)
                 continue;
-            const video = new VideoCompact_1.VideoCompact({ client: playlist.client }).load(videoRenderer);
+            const video = new VideoCompact_1.VideoCompact({ client: playlist.client }).loadLockup(videoLockupViewModel);
             videos.push(video);
         }
         return videos;

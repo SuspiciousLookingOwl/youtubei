@@ -41,17 +41,45 @@ var VideoCompactParser = /** @class */ (function () {
         var _a, _b, _c;
         var lockupMetadataViewModel = data.metadata.lockupMetadataViewModel;
         var decoratedAvatarViewModel = lockupMetadataViewModel.image.decoratedAvatarViewModel;
+        var avatarStackViewModel = lockupMetadataViewModel.image.avatarStackViewModel;
         var thumbnailOverlay = data.contentImage.thumbnailViewModel.overlays[0];
         var thumbnailBadge = (((_a = thumbnailOverlay.thumbnailBottomOverlayViewModel) === null || _a === void 0 ? void 0 : _a.badges[0]) ||
             thumbnailOverlay.thumbnailOverlayBadgeViewModel.thumbnailBadges[0]).thumbnailBadgeViewModel;
         var metadataRows = lockupMetadataViewModel.metadata.contentMetadataViewModel.metadataRows;
-        var channel = new BaseChannel({
-            client: target.client,
-            name: metadataRows[0].metadataParts[0].text.content,
-            id: decoratedAvatarViewModel.rendererContext.commandContext.onTap.innertubeCommand
-                .browseEndpoint.browseId,
-            thumbnails: new Thumbnails().load(decoratedAvatarViewModel.avatar.avatarViewModel.image.sources),
-        });
+        var channel;
+        if (decoratedAvatarViewModel) {
+            // single channel
+            channel = new BaseChannel({
+                client: target.client,
+                name: metadataRows[0].metadataParts[0].text.content,
+                id: decoratedAvatarViewModel.rendererContext.commandContext.onTap.innertubeCommand
+                    .browseEndpoint.browseId,
+                thumbnails: new Thumbnails().load(decoratedAvatarViewModel.avatar.avatarViewModel.image.sources),
+            });
+        }
+        else if (avatarStackViewModel) {
+            // Collaboration video with multiple channels
+            var listItems = avatarStackViewModel.rendererContext.commandContext.onTap.innertubeCommand
+                .showDialogCommand.panelLoadingStrategy.inlineContent.dialogViewModel
+                .customContent.listViewModel.listItems;
+            if (listItems === null || listItems === void 0 ? void 0 : listItems.length) {
+                var channels = listItems.map(function (item) {
+                    var listItem = item.listItemViewModel;
+                    var channelId = listItem.rendererContext.commandContext.onTap.innertubeCommand
+                        .browseEndpoint.browseId;
+                    var channelName = listItem.title.content;
+                    var channelThumbnails = listItem.leadingAccessory.avatarViewModel.image.sources;
+                    return new BaseChannel({
+                        client: target.client,
+                        id: channelId,
+                        name: channelName,
+                        thumbnails: new Thumbnails().load(channelThumbnails),
+                    });
+                });
+                target.channel = channels[0];
+                target.channels = channels.slice(1);
+            }
+        }
         var isLive = ((_b = thumbnailBadge.icon) === null || _b === void 0 ? void 0 : _b.sources[0].clientResource.imageName) === "LIVE";
         target.channel = channel;
         target.id = data.contentId;

@@ -16,7 +16,7 @@ var PlaylistParser = /** @class */ (function () {
     function PlaylistParser() {
     }
     PlaylistParser.loadPlaylist = function (target, data) {
-        var _a, _b, _c;
+        var _a, _b;
         var sidebarRenderer = data.sidebar.playlistSidebarRenderer.items;
         var primaryRenderer = sidebarRenderer[0].playlistSidebarPrimaryInfoRenderer;
         var metadata = data.metadata.playlistMetadataRenderer;
@@ -24,7 +24,7 @@ var PlaylistParser = /** @class */ (function () {
         target.id = (_a = Object.values(metadata)
             .find(function (v) { return v.includes("playlist?list="); })) === null || _a === void 0 ? void 0 : _a.split("=")[1];
         target.title = metadata.title;
-        var _d = primaryRenderer.thumbnailRenderer, playlistVideoThumbnailRenderer = _d.playlistVideoThumbnailRenderer, playlistCustomThumbnailRenderer = _d.playlistCustomThumbnailRenderer;
+        var _c = primaryRenderer.thumbnailRenderer, playlistVideoThumbnailRenderer = _c.playlistVideoThumbnailRenderer, playlistCustomThumbnailRenderer = _c.playlistCustomThumbnailRenderer;
         target.thumbnails = new Thumbnails().load((playlistVideoThumbnailRenderer || playlistCustomThumbnailRenderer).thumbnail.thumbnails);
         var stats = primaryRenderer.stats;
         if (primaryRenderer.stats.length === 3) {
@@ -36,13 +36,12 @@ var PlaylistParser = /** @class */ (function () {
             target.videoCount = PlaylistParser.parseSideBarInfo(stats[0], true);
             target.lastUpdatedAt = PlaylistParser.parseSideBarInfo(stats[1], false);
         }
-        var playlistContents = ((_b = data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
-            .sectionListRenderer.contents[0].itemSectionRenderer.contents[0]
-            .playlistVideoListRenderer) === null || _b === void 0 ? void 0 : _b.contents) || [];
+        var playlistContents = data.contents.twoColumnBrowseResultsRenderer.tabs[0].tabRenderer.content
+            .sectionListRenderer.contents[0].itemSectionRenderer.contents || [];
         // Channel
-        var videoOwner = (_c = sidebarRenderer[1]) === null || _c === void 0 ? void 0 : _c.playlistSidebarSecondaryInfoRenderer.videoOwner;
+        var videoOwner = (_b = sidebarRenderer[1]) === null || _b === void 0 ? void 0 : _b.playlistSidebarSecondaryInfoRenderer.videoOwner;
         if (videoOwner) {
-            var _e = videoOwner.videoOwnerRenderer, title = _e.title, thumbnail = _e.thumbnail;
+            var _d = videoOwner.videoOwnerRenderer, title = _d.title, thumbnail = _d.thumbnail;
             target.channel = new BaseChannel({
                 id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
                 name: title.runs[0].text,
@@ -61,8 +60,10 @@ var PlaylistParser = /** @class */ (function () {
     };
     PlaylistParser.parseContinuationVideos = function (data, client) {
         var playlistContents = data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
-        var videos = mapFilter(playlistContents, "playlistVideoRenderer");
-        return videos.map(function (video) { return new VideoCompact({ client: client }).load(video); });
+        var videos = mapFilter(playlistContents, "lockupViewModel");
+        return videos.map(function (video) {
+            return new VideoCompact({ client: client }).loadLockup(video);
+        });
     };
     /**
      * Get compact videos
@@ -71,21 +72,21 @@ var PlaylistParser = /** @class */ (function () {
      */
     PlaylistParser.parseVideos = function (playlistContents, playlist) {
         var e_1, _a;
-        var videosRenderer = playlistContents.map(function (c) { return c.playlistVideoRenderer; });
+        var videoLockupViewModels = playlistContents.map(function (c) { return c.lockupViewModel; });
         var videos = [];
         try {
-            for (var videosRenderer_1 = __values(videosRenderer), videosRenderer_1_1 = videosRenderer_1.next(); !videosRenderer_1_1.done; videosRenderer_1_1 = videosRenderer_1.next()) {
-                var videoRenderer = videosRenderer_1_1.value;
-                if (!videoRenderer)
+            for (var videoLockupViewModels_1 = __values(videoLockupViewModels), videoLockupViewModels_1_1 = videoLockupViewModels_1.next(); !videoLockupViewModels_1_1.done; videoLockupViewModels_1_1 = videoLockupViewModels_1.next()) {
+                var videoLockupViewModel = videoLockupViewModels_1_1.value;
+                if (!videoLockupViewModel)
                     continue;
-                var video = new VideoCompact({ client: playlist.client }).load(videoRenderer);
+                var video = new VideoCompact({ client: playlist.client }).loadLockup(videoLockupViewModel);
                 videos.push(video);
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (videosRenderer_1_1 && !videosRenderer_1_1.done && (_a = videosRenderer_1.return)) _a.call(videosRenderer_1);
+                if (videoLockupViewModels_1_1 && !videoLockupViewModels_1_1.done && (_a = videoLockupViewModels_1.return)) _a.call(videoLockupViewModels_1);
             }
             finally { if (e_1) throw e_1.error; }
         }

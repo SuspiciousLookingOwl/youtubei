@@ -36,27 +36,33 @@ export var getContinuationFromItems = function (items, accessors) {
     var _b, _c, _d;
     if (accessors === void 0) { accessors = ["continuationEndpoint"]; }
     var continuation = items[items.length - 1];
-    var renderer = continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemRenderer;
-    if (!renderer)
-        return;
-    var current = renderer;
-    try {
-        for (var accessors_1 = __values(accessors), accessors_1_1 = accessors_1.next(); !accessors_1_1.done; accessors_1_1 = accessors_1.next()) {
-            var accessor = accessors_1_1.value;
-            current = current[accessor];
-        }
-    }
-    catch (e_1_1) { e_1 = { error: e_1_1 }; }
-    finally {
+    if (continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemRenderer) {
+        var current = continuation.continuationItemRenderer;
         try {
-            if (accessors_1_1 && !accessors_1_1.done && (_a = accessors_1.return)) _a.call(accessors_1);
+            for (var accessors_1 = __values(accessors), accessors_1_1 = accessors_1.next(); !accessors_1_1.done; accessors_1_1 = accessors_1.next()) {
+                var accessor = accessors_1_1.value;
+                current = current[accessor];
+            }
         }
-        finally { if (e_1) throw e_1.error; }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (accessors_1_1 && !accessors_1_1.done && (_a = accessors_1.return)) _a.call(accessors_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        if ((_c = (_b = current === null || current === void 0 ? void 0 : current.commandExecutorCommand) === null || _b === void 0 ? void 0 : _b.commands) === null || _c === void 0 ? void 0 : _c.length) {
+            current = current.commandExecutorCommand.commands.find(function (cmd) { return "continuationCommand" in cmd; });
+        }
+        return (_d = current === null || current === void 0 ? void 0 : current.continuationCommand) === null || _d === void 0 ? void 0 : _d.token;
     }
-    if ((_c = (_b = current === null || current === void 0 ? void 0 : current.commandExecutorCommand) === null || _b === void 0 ? void 0 : _b.commands) === null || _c === void 0 ? void 0 : _c.length) {
-        current = current.commandExecutorCommand.commands.find(function (cmd) { return "continuationCommand" in cmd; });
+    else if (continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemViewModel) {
+        return continuation.continuationItemViewModel.continuationCommand.innertubeCommand
+            .continuationCommand.token;
     }
-    return (_d = current === null || current === void 0 ? void 0 : current.continuationCommand) === null || _d === void 0 ? void 0 : _d.token;
+    else {
+        return;
+    }
 };
 export var mapFilter = function (items, key) {
     return items

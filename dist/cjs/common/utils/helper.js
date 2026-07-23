@@ -28,17 +28,23 @@ exports.stripToInt = stripToInt;
 const getContinuationFromItems = (items, accessors = ["continuationEndpoint"]) => {
     var _a, _b, _c;
     const continuation = items[items.length - 1];
-    const renderer = continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemRenderer;
-    if (!renderer)
+    if (continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemRenderer) {
+        let current = continuation.continuationItemRenderer;
+        for (const accessor of accessors) {
+            current = current[accessor];
+        }
+        if ((_b = (_a = current === null || current === void 0 ? void 0 : current.commandExecutorCommand) === null || _a === void 0 ? void 0 : _a.commands) === null || _b === void 0 ? void 0 : _b.length) {
+            current = current.commandExecutorCommand.commands.find((cmd) => "continuationCommand" in cmd);
+        }
+        return (_c = current === null || current === void 0 ? void 0 : current.continuationCommand) === null || _c === void 0 ? void 0 : _c.token;
+    }
+    else if (continuation === null || continuation === void 0 ? void 0 : continuation.continuationItemViewModel) {
+        return continuation.continuationItemViewModel.continuationCommand.innertubeCommand
+            .continuationCommand.token;
+    }
+    else {
         return;
-    let current = renderer;
-    for (const accessor of accessors) {
-        current = current[accessor];
     }
-    if ((_b = (_a = current === null || current === void 0 ? void 0 : current.commandExecutorCommand) === null || _a === void 0 ? void 0 : _a.commands) === null || _b === void 0 ? void 0 : _b.length) {
-        current = current.commandExecutorCommand.commands.find((cmd) => "continuationCommand" in cmd);
-    }
-    return (_c = current === null || current === void 0 ? void 0 : current.continuationCommand) === null || _c === void 0 ? void 0 : _c.token;
 };
 exports.getContinuationFromItems = getContinuationFromItems;
 const mapFilter = (items, key) => {
