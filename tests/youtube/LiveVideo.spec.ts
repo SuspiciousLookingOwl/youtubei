@@ -8,7 +8,7 @@ describe("Video", () => {
 	let video: LiveVideo;
 
 	beforeAll(async () => {
-		video = (await youtube.getVideo("jfKfPfyJRdk")) as LiveVideo;
+		video = (await youtube.getVideo("X4VbdwhkE10")) as LiveVideo;
 	});
 
 	it("match live getVideo result", () => {

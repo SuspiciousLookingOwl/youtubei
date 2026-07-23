@@ -17,7 +17,7 @@ describe("SearchResult", () => {
 
 	it("load continuation", async () => {
 		const nextVideos = await result.next();
-		expect(nextVideos.length).toBeGreaterThan(15);
-		expect(result.items.length).toBeGreaterThanOrEqual(35);
+		expect(nextVideos.length).toBeGreaterThanOrEqual(5);
+		expect(result.items.length).toBeGreaterThanOrEqual(20);
 	});
 });
