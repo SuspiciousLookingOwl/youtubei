@@ -23,21 +23,43 @@ export class MusicSearchResultParser {
 			(c: YoutubeRawData) => "musicShelfRenderer" in c
 		);
 
-		if (!resultContents) {
-			// no results
+		if (resultContents) {
+			if (!resultContents) {
+				// no results
+				return {
+					data: [],
+					continuation: undefined,
+				};
+			}
+
+			const { contents, continuations } = resultContents.musicShelfRenderer;
+			const result = MusicSearchResultParser.parseSearchResult(contents, client);
+
 			return {
-				data: [],
+				data: result,
+				continuation: continuations?.[0]?.nextContinuationData?.continuation,
+			};
+		} else {
+			if (!sectionContents.length) {
+				// no results
+				return {
+					data: [],
+					continuation: undefined,
+				};
+			}
+
+			const contents = sectionContents
+				.filter((c: YoutubeRawData) => "itemSectionRenderer" in c)
+				.map((c: YoutubeRawData) => c.itemSectionRenderer.contents[0])
+				.flat();
+
+			const result = MusicSearchResultParser.parseSearchResult(contents, client);
+
+			return {
+				data: result,
 				continuation: undefined,
 			};
 		}
-
-		const { contents, continuations } = resultContents.musicShelfRenderer;
-		const result = MusicSearchResultParser.parseSearchResult(contents, client);
-
-		return {
-			data: result,
-			continuation: continuations?.[0]?.nextContinuationData?.continuation,
-		};
 	}
 
 	static parseContinuationSearchResult(
