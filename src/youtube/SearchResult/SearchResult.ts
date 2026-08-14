@@ -149,14 +149,12 @@ export class SearchResult<T extends SearchType | undefined = "all"> extends Cont
 
 		this.estimatedResults = +response.data.estimatedResults;
 
-		if (this.estimatedResults > 0) {
-			const { data, continuation } = SearchResultParser.parseInitialSearchResult(
-				response.data,
-				this.client
-			);
-			this.items.push(...(data as SearchResultItem<T>[]));
-			this.continuation = continuation;
-		}
+		const { data, continuation } = SearchResultParser.parseInitialSearchResult(
+			response.data,
+			this.client
+		);
+		this.items.push(...(data as SearchResultItem<T>[]));
+		this.continuation = continuation;
 
 		return this;
 	}
