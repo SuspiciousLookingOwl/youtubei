@@ -109,11 +109,9 @@ class SearchResult extends Continuable_1.Continuable {
                 },
             });
             this.estimatedResults = +response.data.estimatedResults;
-            if (this.estimatedResults > 0) {
-                const { data, continuation } = SearchResultParser_1.SearchResultParser.parseInitialSearchResult(response.data, this.client);
-                this.items.push(...data);
-                this.continuation = continuation;
-            }
+            const { data, continuation } = SearchResultParser_1.SearchResultParser.parseInitialSearchResult(response.data, this.client);
+            this.items.push(...data);
+            this.continuation = continuation;
             return this;
         });
     }
