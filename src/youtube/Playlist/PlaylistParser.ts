@@ -41,7 +41,7 @@ export class PlaylistParser {
 
 		// Channel
 		const videoOwner = sidebarRenderer[1]?.playlistSidebarSecondaryInfoRenderer.videoOwner;
-		if (videoOwner) {
+		if (videoOwner?.videoOwnerRenderer.title.runs) {
 			const { title, thumbnail } = videoOwner.videoOwnerRenderer;
 			target.channel = new BaseChannel({
 				id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
