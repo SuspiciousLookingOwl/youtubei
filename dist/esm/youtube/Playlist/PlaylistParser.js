@@ -40,7 +40,7 @@ var PlaylistParser = /** @class */ (function () {
             .sectionListRenderer.contents[0].itemSectionRenderer.contents || [];
         // Channel
         var videoOwner = (_b = sidebarRenderer[1]) === null || _b === void 0 ? void 0 : _b.playlistSidebarSecondaryInfoRenderer.videoOwner;
-        if (videoOwner) {
+        if (videoOwner === null || videoOwner === void 0 ? void 0 : videoOwner.videoOwnerRenderer.title.runs) {
             var _d = videoOwner.videoOwnerRenderer, title = _d.title, thumbnail = _d.thumbnail;
             target.channel = new BaseChannel({
                 id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,

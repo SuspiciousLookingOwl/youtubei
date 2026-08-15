@@ -30,7 +30,7 @@ class PlaylistParser {
             .sectionListRenderer.contents[0].itemSectionRenderer.contents || [];
         // Channel
         const videoOwner = (_b = sidebarRenderer[1]) === null || _b === void 0 ? void 0 : _b.playlistSidebarSecondaryInfoRenderer.videoOwner;
-        if (videoOwner) {
+        if (videoOwner === null || videoOwner === void 0 ? void 0 : videoOwner.videoOwnerRenderer.title.runs) {
             const { title, thumbnail } = videoOwner.videoOwnerRenderer;
             target.channel = new BaseChannel_1.BaseChannel({
                 id: title.runs[0].navigationEndpoint.browseEndpoint.browseId,
