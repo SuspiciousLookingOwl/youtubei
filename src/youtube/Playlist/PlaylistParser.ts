@@ -52,7 +52,12 @@ export class PlaylistParser {
 		}
 
 		// Videos
-		target.videos.items = PlaylistParser.parseVideos(playlistContents, target);
+		target.videos.items = PlaylistParser.parseVideos(
+			playlistContents[0].playlistVideoListRenderer
+				? playlistContents[0].playlistVideoListRenderer.contents
+				: playlistContents,
+			target
+		);
 		target.videos.continuation = getContinuationFromItems(playlistContents);
 
 		return target;
@@ -82,18 +87,22 @@ export class PlaylistParser {
 	 * @param playlistContents raw object from youtubei
 	 */
 	private static parseVideos(
-		playlistContents: YoutubeRawData,
+		playlistContents: YoutubeRawData[],
 		playlist: Playlist
 	): VideoCompact[] {
-		const videoLockupViewModels = playlistContents.map(
-			(c: YoutubeRawData) => c.lockupViewModel
-		);
 		const videos = [];
-		for (const videoLockupViewModel of videoLockupViewModels) {
-			if (!videoLockupViewModel) continue;
-			const video = new VideoCompact({ client: playlist.client }).loadLockup(
-				videoLockupViewModel
-			);
+		for (const content of playlistContents) {
+			let video: VideoCompact | undefined;
+			if (content.lockupViewModel) {
+				video = new VideoCompact({ client: playlist.client }).loadLockup(
+					content.lockupViewModel
+				);
+			} else if (content.playlistVideoRenderer) {
+				video = new VideoCompact({ client: playlist.client }).load(
+					content.playlistVideoRenderer
+				);
+			}
+			if (!video) continue;
 			videos.push(video);
 		}
 		return videos;
