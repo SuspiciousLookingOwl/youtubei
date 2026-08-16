@@ -50,7 +50,9 @@ var PlaylistParser = /** @class */ (function () {
             });
         }
         // Videos
-        target.videos.items = PlaylistParser.parseVideos(playlistContents, target);
+        target.videos.items = PlaylistParser.parseVideos(playlistContents[0].playlistVideoListRenderer
+            ? playlistContents[0].playlistVideoListRenderer.contents
+            : playlistContents, target);
         target.videos.continuation = getContinuationFromItems(playlistContents);
         return target;
     };
@@ -72,21 +74,26 @@ var PlaylistParser = /** @class */ (function () {
      */
     PlaylistParser.parseVideos = function (playlistContents, playlist) {
         var e_1, _a;
-        var videoLockupViewModels = playlistContents.map(function (c) { return c.lockupViewModel; });
         var videos = [];
         try {
-            for (var videoLockupViewModels_1 = __values(videoLockupViewModels), videoLockupViewModels_1_1 = videoLockupViewModels_1.next(); !videoLockupViewModels_1_1.done; videoLockupViewModels_1_1 = videoLockupViewModels_1.next()) {
-                var videoLockupViewModel = videoLockupViewModels_1_1.value;
-                if (!videoLockupViewModel)
+            for (var playlistContents_1 = __values(playlistContents), playlistContents_1_1 = playlistContents_1.next(); !playlistContents_1_1.done; playlistContents_1_1 = playlistContents_1.next()) {
+                var content = playlistContents_1_1.value;
+                var video = void 0;
+                if (content.lockupViewModel) {
+                    video = new VideoCompact({ client: playlist.client }).loadLockup(content.lockupViewModel);
+                }
+                else if (content.playlistVideoRenderer) {
+                    video = new VideoCompact({ client: playlist.client }).load(content.playlistVideoRenderer);
+                }
+                if (!video)
                     continue;
-                var video = new VideoCompact({ client: playlist.client }).loadLockup(videoLockupViewModel);
                 videos.push(video);
             }
         }
         catch (e_1_1) { e_1 = { error: e_1_1 }; }
         finally {
             try {
-                if (videoLockupViewModels_1_1 && !videoLockupViewModels_1_1.done && (_a = videoLockupViewModels_1.return)) _a.call(videoLockupViewModels_1);
+                if (playlistContents_1_1 && !playlistContents_1_1.done && (_a = playlistContents_1.return)) _a.call(playlistContents_1);
             }
             finally { if (e_1) throw e_1.error; }
         }

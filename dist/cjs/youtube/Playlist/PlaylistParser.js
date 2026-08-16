@@ -40,7 +40,9 @@ class PlaylistParser {
             });
         }
         // Videos
-        target.videos.items = PlaylistParser.parseVideos(playlistContents, target);
+        target.videos.items = PlaylistParser.parseVideos(playlistContents[0].playlistVideoListRenderer
+            ? playlistContents[0].playlistVideoListRenderer.contents
+            : playlistContents, target);
         target.videos.continuation = common_1.getContinuationFromItems(playlistContents);
         return target;
     }
@@ -59,12 +61,17 @@ class PlaylistParser {
      * @param playlistContents raw object from youtubei
      */
     static parseVideos(playlistContents, playlist) {
-        const videoLockupViewModels = playlistContents.map((c) => c.lockupViewModel);
         const videos = [];
-        for (const videoLockupViewModel of videoLockupViewModels) {
-            if (!videoLockupViewModel)
+        for (const content of playlistContents) {
+            let video;
+            if (content.lockupViewModel) {
+                video = new VideoCompact_1.VideoCompact({ client: playlist.client }).loadLockup(content.lockupViewModel);
+            }
+            else if (content.playlistVideoRenderer) {
+                video = new VideoCompact_1.VideoCompact({ client: playlist.client }).load(content.playlistVideoRenderer);
+            }
+            if (!video)
                 continue;
-            const video = new VideoCompact_1.VideoCompact({ client: playlist.client }).loadLockup(videoLockupViewModel);
             videos.push(video);
         }
         return videos;
