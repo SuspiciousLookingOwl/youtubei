@@ -1,4 +1,4 @@
-import { getContinuationFromItems, mapFilter, Thumbnails, YoutubeRawData } from "../../common";
+import { getContinuationFromItems, Thumbnails, YoutubeRawData } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { Client } from "../Client";
 import { VideoCompact } from "../VideoCompact";
@@ -73,11 +73,20 @@ export class PlaylistParser {
 		const playlistContents =
 			data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
 
-		const videos = mapFilter(playlistContents, "lockupViewModel");
+		const videos = [];
 
-		return videos.map((video: YoutubeRawData) =>
-			new VideoCompact({ client }).loadLockup(video)
-		);
+		for (const content of playlistContents) {
+			let video: VideoCompact | undefined;
+			if (content.lockupViewModel) {
+				video = new VideoCompact({ client }).loadLockup(content.lockupViewModel);
+			} else if (content.playlistVideoRenderer) {
+				video = new VideoCompact({ client }).load(content.playlistVideoRenderer);
+			}
+			if (!video) continue;
+			videos.push(video);
+		}
+
+		return videos;
 	}
 
 	/**
