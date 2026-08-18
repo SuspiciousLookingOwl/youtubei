@@ -51,14 +51,13 @@ export class PlaylistParser {
 			});
 		}
 
+		const playlistContentRenderer = playlistContents[0].playlistVideoListRenderer
+			? playlistContents[0].playlistVideoListRenderer.contents
+			: playlistContents;
+
 		// Videos
-		target.videos.items = PlaylistParser.parseVideos(
-			playlistContents[0].playlistVideoListRenderer
-				? playlistContents[0].playlistVideoListRenderer.contents
-				: playlistContents,
-			target
-		);
-		target.videos.continuation = getContinuationFromItems(playlistContents);
+		target.videos.items = PlaylistParser.parseVideos(playlistContentRenderer, target);
+		target.videos.continuation = getContinuationFromItems(playlistContentRenderer);
 
 		return target;
 	}
