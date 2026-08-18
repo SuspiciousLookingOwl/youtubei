@@ -9,7 +9,7 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
-import { getContinuationFromItems, mapFilter, Thumbnails } from "../../common";
+import { getContinuationFromItems, Thumbnails } from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { VideoCompact } from "../VideoCompact";
 var PlaylistParser = /** @class */ (function () {
@@ -62,29 +62,18 @@ var PlaylistParser = /** @class */ (function () {
         return getContinuationFromItems(playlistContents);
     };
     PlaylistParser.parseContinuationVideos = function (data, client) {
-        var playlistContents = data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
-        var videos = mapFilter(playlistContents, "lockupViewModel");
-        return videos.map(function (video) {
-            return new VideoCompact({ client: client }).loadLockup(video);
-        });
-    };
-    /**
-     * Get compact videos
-     *
-     * @param playlistContents raw object from youtubei
-     */
-    PlaylistParser.parseVideos = function (playlistContents, playlist) {
         var e_1, _a;
+        var playlistContents = data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
         var videos = [];
         try {
             for (var playlistContents_1 = __values(playlistContents), playlistContents_1_1 = playlistContents_1.next(); !playlistContents_1_1.done; playlistContents_1_1 = playlistContents_1.next()) {
                 var content = playlistContents_1_1.value;
                 var video = void 0;
                 if (content.lockupViewModel) {
-                    video = new VideoCompact({ client: playlist.client }).loadLockup(content.lockupViewModel);
+                    video = new VideoCompact({ client: client }).loadLockup(content.lockupViewModel);
                 }
                 else if (content.playlistVideoRenderer) {
-                    video = new VideoCompact({ client: playlist.client }).load(content.playlistVideoRenderer);
+                    video = new VideoCompact({ client: client }).load(content.playlistVideoRenderer);
                 }
                 if (!video)
                     continue;
@@ -97,6 +86,38 @@ var PlaylistParser = /** @class */ (function () {
                 if (playlistContents_1_1 && !playlistContents_1_1.done && (_a = playlistContents_1.return)) _a.call(playlistContents_1);
             }
             finally { if (e_1) throw e_1.error; }
+        }
+        return videos;
+    };
+    /**
+     * Get compact videos
+     *
+     * @param playlistContents raw object from youtubei
+     */
+    PlaylistParser.parseVideos = function (playlistContents, playlist) {
+        var e_2, _a;
+        var videos = [];
+        try {
+            for (var playlistContents_2 = __values(playlistContents), playlistContents_2_1 = playlistContents_2.next(); !playlistContents_2_1.done; playlistContents_2_1 = playlistContents_2.next()) {
+                var content = playlistContents_2_1.value;
+                var video = void 0;
+                if (content.lockupViewModel) {
+                    video = new VideoCompact({ client: playlist.client }).loadLockup(content.lockupViewModel);
+                }
+                else if (content.playlistVideoRenderer) {
+                    video = new VideoCompact({ client: playlist.client }).load(content.playlistVideoRenderer);
+                }
+                if (!video)
+                    continue;
+                videos.push(video);
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (playlistContents_2_1 && !playlistContents_2_1.done && (_a = playlistContents_2.return)) _a.call(playlistContents_2);
+            }
+            finally { if (e_2) throw e_2.error; }
         }
         return videos;
     };

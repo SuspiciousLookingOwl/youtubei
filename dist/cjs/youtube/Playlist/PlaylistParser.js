@@ -53,8 +53,20 @@ class PlaylistParser {
     }
     static parseContinuationVideos(data, client) {
         const playlistContents = data.onResponseReceivedActions[0].appendContinuationItemsAction.continuationItems;
-        const videos = common_1.mapFilter(playlistContents, "lockupViewModel");
-        return videos.map((video) => new VideoCompact_1.VideoCompact({ client }).loadLockup(video));
+        const videos = [];
+        for (const content of playlistContents) {
+            let video;
+            if (content.lockupViewModel) {
+                video = new VideoCompact_1.VideoCompact({ client }).loadLockup(content.lockupViewModel);
+            }
+            else if (content.playlistVideoRenderer) {
+                video = new VideoCompact_1.VideoCompact({ client }).load(content.playlistVideoRenderer);
+            }
+            if (!video)
+                continue;
+            videos.push(video);
+        }
+        return videos;
     }
     /**
      * Get compact videos
