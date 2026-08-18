@@ -39,11 +39,12 @@ class PlaylistParser {
                 client: target.client,
             });
         }
-        // Videos
-        target.videos.items = PlaylistParser.parseVideos(playlistContents[0].playlistVideoListRenderer
+        const playlistContentRenderer = playlistContents[0].playlistVideoListRenderer
             ? playlistContents[0].playlistVideoListRenderer.contents
-            : playlistContents, target);
-        target.videos.continuation = common_1.getContinuationFromItems(playlistContents);
+            : playlistContents;
+        // Videos
+        target.videos.items = PlaylistParser.parseVideos(playlistContentRenderer, target);
+        target.videos.continuation = common_1.getContinuationFromItems(playlistContentRenderer);
         return target;
     }
     static parseVideoContinuation(data) {

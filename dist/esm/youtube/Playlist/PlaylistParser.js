@@ -49,11 +49,12 @@ var PlaylistParser = /** @class */ (function () {
                 client: target.client,
             });
         }
-        // Videos
-        target.videos.items = PlaylistParser.parseVideos(playlistContents[0].playlistVideoListRenderer
+        var playlistContentRenderer = playlistContents[0].playlistVideoListRenderer
             ? playlistContents[0].playlistVideoListRenderer.contents
-            : playlistContents, target);
-        target.videos.continuation = getContinuationFromItems(playlistContents);
+            : playlistContents;
+        // Videos
+        target.videos.items = PlaylistParser.parseVideos(playlistContentRenderer, target);
+        target.videos.continuation = getContinuationFromItems(playlistContentRenderer);
         return target;
     };
     PlaylistParser.parseVideoContinuation = function (data) {
