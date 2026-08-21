@@ -25,6 +25,8 @@ export type HTTPOptions = {
 	baseUrl: string;
 	clientName: string;
 	clientVersion: string;
+	playerClientName?: string;
+	playerClientVersion?: string;
 	fetchOptions?: Partial<RequestInit>;
 	youtubeClientOptions?: Record<string, unknown>;
 	initialCookie?: string;
@@ -51,6 +53,8 @@ export class HTTP {
 	private baseUrl: string;
 	private clientName: string;
 	private clientVersion: string;
+	private playerClientName?: string;
+	private playerClientVersion?: string;
 	private cookie: string;
 	private defaultHeaders: HeadersInit;
 	private defaultFetchOptions: Partial<RequestInit>;
@@ -65,6 +69,8 @@ export class HTTP {
 		this.baseUrl = options.baseUrl;
 		this.clientName = options.clientName;
 		this.clientVersion = options.clientVersion;
+		this.playerClientName = options.playerClientName;
+		this.playerClientVersion = options.playerClientVersion;
 		this.cookie = options.initialCookie || "";
 		this.defaultHeaders = {
 			"x-youtube-client-version": this.clientVersion,
@@ -94,6 +100,9 @@ export class HTTP {
 	}
 
 	async post(path: string, options?: Partial<Options>): Promise<Response> {
+		// a proof of origin token makes the default client acceptable to `/player`
+		const usePlayerClient = this.isPlayerEndpoint(path) && !this.pot;
+
 		return await this.request(path, {
 			...options,
 			method: "POST",
@@ -105,8 +114,9 @@ export class HTTP {
 			data: {
 				context: {
 					client: {
-						clientName: this.clientName,
-						clientVersion: this.clientVersion,
+						clientName: (usePlayerClient && this.playerClientName) || this.clientName,
+						clientVersion:
+							(usePlayerClient && this.playerClientVersion) || this.clientVersion,
 						visitorData: this.pot?.visitorData,
 						...this.defaultClientOptions,
 					},
@@ -117,10 +127,13 @@ export class HTTP {
 		});
 	}
 
+	private isPlayerEndpoint(path: string): boolean {
+		const url = path.startsWith("http") ? path : `https://${this.baseUrl}/${path}`;
+		return new URL(url).pathname.endsWith("/player");
+	}
+
 	private async request(path: string, partialOptions: Partial<Options>): Promise<Response> {
-		const requiresAuth = new URL(`https://${this.baseUrl}/${path}`).pathname.endsWith(
-			"/player"
-		);
+		const requiresAuth = this.isPlayerEndpoint(path);
 
 		if (this.authorizationPromise && requiresAuth) await this.authorizationPromise;
 
