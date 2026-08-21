@@ -1,29 +1,25 @@
-// import { Client, MixPlaylist } from "../../src";
 import "jest-extended";
 
-// const youtube = new Client();
+import { Client, MixPlaylist } from "../../src";
 
-// NOTE: Seems like mix playlist doesn't lasts forever(?), making this test fails
+const youtube = new Client({ youtubeClientOptions: { hl: "en" } });
 
 describe("MixPlaylist", () => {
-	// let playlist: MixPlaylist;
-	// let invalidPlaylist: undefined;
-	// beforeAll(async () => {
-	// 	playlist = (await youtube.getPlaylist("RDjchDYHSBl_c")) as MixPlaylist;
-	// 	invalidPlaylist = (await youtube.getPlaylist("foo")) as undefined;
-	// });
-	// it("match getPlaylist result", () => {
-	// 	expect(playlist.id).toBe("RDjchDYHSBl_c");
-	// 	expect(playlist.title).toBe(
-	// 		"Mix - ElGrandeToto - Love Nwantiti (ft Ckay) (s l o w e d + r e v e r b)"
-	// 	);
-	// 	expect(playlist.videoCount).toBeGreaterThan(20);
-	// 	expect(playlist.videos.length).toBe(25);
-	// });
-	// it("match invalid getPlaylist", async () => {
-	// 	expect(invalidPlaylist).toBeUndefined();
-	// });
-	it("temporary", async () => {
-		expect(1).toBe(1);
+	let playlist: MixPlaylist;
+
+	beforeAll(async () => {
+		// mix ids expire, so derive one from a current search result
+		const result = await youtube.search("lofi", { type: "video" });
+		playlist = (await youtube.getPlaylist(`RD${result.items[0].id}`)) as MixPlaylist;
+	});
+
+	it("match getPlaylist result", () => {
+		expect(playlist instanceof MixPlaylist).toBeTrue();
+		expect(typeof playlist.title).toBe("string");
+		expect(playlist.videos.length).toBeGreaterThan(0);
+	});
+
+	it("match expired getPlaylist", async () => {
+		expect(await youtube.getPlaylist("RDjchDYHSBl_c")).toBeUndefined();
 	});
 });
