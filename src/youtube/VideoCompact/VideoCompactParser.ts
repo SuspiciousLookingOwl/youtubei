@@ -1,4 +1,11 @@
-import { getDuration, stripToInt, Thumbnails, YoutubeRawData } from "../../common";
+import {
+	getDuration,
+	getThumbnailFromId,
+	stripToInt,
+	stripToIntCompact,
+	Thumbnails,
+	YoutubeRawData,
+} from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { VideoCompact } from "./VideoCompact";
 
@@ -132,10 +139,26 @@ export class VideoCompactParser {
 		target.thumbnails = new Thumbnails().load(
 			data.contentImage.thumbnailViewModel.image.sources
 		);
-		target.viewCount = stripToInt(metadataRows[1].metadataParts[0].text.content);
+		target.viewCount = stripToIntCompact(metadataRows[1].metadataParts[0].text.content);
 		target.uploadDate = !isLive
 			? metadataRows[1].metadataParts[metadataRows[1].metadataParts.length - 1].text.content
 			: undefined;
+
+		return target;
+	}
+
+	static loadShortsLockupVideoCompact(target: VideoCompact, data: YoutubeRawData): VideoCompact {
+		const { reelWatchEndpoint } = data.onTap.innertubeCommand;
+		const { overlayMetadata } = data;
+
+		target.id = reelWatchEndpoint.videoId;
+		target.title = overlayMetadata?.primaryText?.content;
+		target.viewCount = stripToIntCompact(overlayMetadata?.secondaryText?.content);
+		target.thumbnails = new Thumbnails().load(
+			reelWatchEndpoint.thumbnail?.thumbnails || getThumbnailFromId(target.id)
+		);
+		target.duration = null;
+		target.isLive = false;
 
 		return target;
 	}
