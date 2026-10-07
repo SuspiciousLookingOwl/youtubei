@@ -160,23 +160,23 @@ var Client = /** @class */ (function () {
     };
     /** Get video information by video id or URL */
     Client.prototype.getVideo = function (videoId) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function () {
-            var nextPromise, playerPromise, _e, nextResponse, playerResponse, data;
-            return __generator(this, function (_f) {
-                switch (_f.label) {
+            var nextPromise, playerPromise, _f, nextResponse, playerResponse, data;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
                         nextPromise = this.http.post(I_END_POINT + "/next", { data: { videoId: videoId } });
                         playerPromise = this.http.post(I_END_POINT + "/player", { data: { videoId: videoId } });
                         return [4 /*yield*/, Promise.all([nextPromise, playerPromise])];
                     case 1:
-                        _e = __read.apply(void 0, [_f.sent(), 2]), nextResponse = _e[0], playerResponse = _e[1];
+                        _f = __read.apply(void 0, [_g.sent(), 2]), nextResponse = _f[0], playerResponse = _f[1];
                         data = { response: nextResponse.data, playerResponse: playerResponse.data };
                         if (!((_b = (_a = data.response) === null || _a === void 0 ? void 0 : _a.contents) === null || _b === void 0 ? void 0 : _b.twoColumnWatchNextResults.results.results.contents) ||
                             ((_d = (_c = data.playerResponse) === null || _c === void 0 ? void 0 : _c.playabilityStatus) === null || _d === void 0 ? void 0 : _d.status) === "ERROR") {
                             return [2 /*return*/, undefined];
                         }
-                        return [2 /*return*/, (!data.playerResponse.playabilityStatus.liveStreamability
+                        return [2 /*return*/, (!((_e = data.playerResponse.playabilityStatus) === null || _e === void 0 ? void 0 : _e.liveStreamability)
                                 ? new Video({ client: this }).load(data)
                                 : new LiveVideo({ client: this }).load(data))];
                 }

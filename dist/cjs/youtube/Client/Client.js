@@ -80,7 +80,7 @@ class Client {
     }
     /** Get video information by video id or URL */
     getVideo(videoId) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         return __awaiter(this, void 0, void 0, function* () {
             const nextPromise = this.http.post(`${constants_1.I_END_POINT}/next`, { data: { videoId } });
             const playerPromise = this.http.post(`${constants_1.I_END_POINT}/player`, { data: { videoId } });
@@ -90,7 +90,7 @@ class Client {
                 ((_d = (_c = data.playerResponse) === null || _c === void 0 ? void 0 : _c.playabilityStatus) === null || _d === void 0 ? void 0 : _d.status) === "ERROR") {
                 return undefined;
             }
-            return (!data.playerResponse.playabilityStatus.liveStreamability
+            return (!((_e = data.playerResponse.playabilityStatus) === null || _e === void 0 ? void 0 : _e.liveStreamability)
                 ? new Video_1.Video({ client: this }).load(data)
                 : new LiveVideo_1.LiveVideo({ client: this }).load(data));
         });
