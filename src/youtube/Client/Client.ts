@@ -120,8 +120,7 @@ export class Client {
 		) {
 			return undefined as T;
 		}
-
-		return (!data.playerResponse.playabilityStatus.liveStreamability
+		return (!data.playerResponse.playabilityStatus?.liveStreamability
 			? new Video({ client: this }).load(data)
 			: new LiveVideo({ client: this }).load(data)) as T;
 	}
