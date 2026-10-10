@@ -89,7 +89,10 @@ export class Client {
 				data: { playlistId },
 			});
 
-			if (response.data.error) {
+			if (
+				response.data.error ||
+				!response.data.contents?.twoColumnWatchNextResults?.playlist
+			) {
 				return undefined as T;
 			}
 			return new MixPlaylist({ client: this }).load(response.data) as T;
