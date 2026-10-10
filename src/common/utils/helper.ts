@@ -22,6 +22,17 @@ export const stripToInt = (string: string): number | null => {
 	return +string.replace(/[^0-9]/g, "");
 };
 
+// parses abbreviated counts such as "40K" or "1.2M"
+export const stripToIntCompact = (string: string): number | null => {
+	if (!string) return null;
+	const match = string.match(/([\d.,]+)\s*([KMB])?/i);
+	if (!match) return null;
+	const value = +match[1].replace(/,/g, "");
+	if (isNaN(value)) return null;
+	const multiplier: Record<string, number> = { k: 1e3, m: 1e6, b: 1e9 };
+	return Math.round(value * (multiplier[match[2]?.toLowerCase()] || 1));
+};
+
 export const getContinuationFromItems = (
 	items: YoutubeRawData,
 	accessors: string[] = ["continuationEndpoint"]

@@ -1,20 +1,25 @@
-import { getContinuationFromItems, Thumbnails, YoutubeRawData } from "../../common";
+import {
+	getContinuationFromItems,
+	stripToIntCompact,
+	Thumbnails,
+	YoutubeRawData,
+} from "../../common";
 import { BaseChannel } from "../BaseChannel";
 import { Reply } from "../Reply";
 import { Comment } from "./Comment";
 
 export class CommentParser {
 	static loadComment(target: Comment, data: YoutubeRawData): Comment {
-		const { properties, toolbar, author, avatar } = data;
+		const { properties, toolbar, author } = data;
 
 		// Basic information
 		target.id = properties.commentId;
 		target.content = properties.content.content;
 		target.publishDate = properties.publishedTime;
-		target.likeCount = +toolbar.likeCountLiked; // probably broken
+		target.likeCount = stripToIntCompact(toolbar.likeCountLiked) || 0;
 		target.isAuthorChannelOwner = !!author.isCreator;
 		target.isPinned = false; // TODO fix this
-		target.replyCount = +toolbar.replyCount;
+		target.replyCount = stripToIntCompact(toolbar.replyCount) || 0;
 
 		// Reply Continuation
 		target.replies.continuation = data.replies
@@ -22,10 +27,14 @@ export class CommentParser {
 			: undefined;
 
 		// Author
+		const avatarUrl = author.avatarThumbnailUrl;
+		const avatarSize = +(avatarUrl?.match(/=s(\d+)/)?.[1] || 88);
 		target.author = new BaseChannel({
-			id: author.id,
+			id: author.channelId,
 			name: author.displayName,
-			thumbnails: new Thumbnails().load(avatar.image.sources),
+			thumbnails: new Thumbnails().load(
+				avatarUrl ? [{ url: avatarUrl, width: avatarSize, height: avatarSize }] : []
+			),
 			client: target.client,
 		});
 
