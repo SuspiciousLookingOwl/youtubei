@@ -56,7 +56,7 @@ export class ChannelShorts extends Continuable<VideoCompact> {
 					channel: this.channel,
 				});
 				if (i.reelItemRenderer) video.load(i.reelItemRenderer);
-				else if (i.shortsLockupViewModel) video.loadLockup(i.lockupViewModel);
+				else if (i.shortsLockupViewModel) video.loadShortsLockup(i.shortsLockupViewModel);
 				return video;
 			}),
 		};
