@@ -47,7 +47,7 @@ export class VideoCaptions extends Base {
 				(track: YoutubeRawData) =>
 					new CaptionLanguage({
 						captions: this,
-						name: track.name.simpleText,
+						name: track.name.simpleText || track.name.runs?.[0]?.text,
 						code: track.languageCode,
 						isTranslatable: !!track.isTranslatable,
 						url: track.baseUrl,
@@ -83,7 +83,7 @@ export class VideoCaptions extends Base {
 				new Caption({
 					duration: e.dDurationMs,
 					start: e.tStartMs,
-					text: e.segs?.map((s: YoutubeRawData) => s.utf8).join(),
+					text: e.segs?.map((s: YoutubeRawData) => s.utf8).join(""),
 					segments: e.segs,
 				})
 			);

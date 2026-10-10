@@ -11,6 +11,8 @@ import {
 	INNERTUBE_API_KEY,
 	INNERTUBE_CLIENT_NAME,
 	INNERTUBE_CLIENT_VERSION,
+	INNERTUBE_PLAYER_CLIENT_NAME,
+	INNERTUBE_PLAYER_CLIENT_VERSION,
 	I_END_POINT,
 } from "../constants";
 
@@ -38,6 +40,8 @@ export class Client {
 			baseUrl: options.baseUrl || BASE_URL,
 			clientName: options.clientName || INNERTUBE_CLIENT_NAME,
 			clientVersion: options.clientVersion || INNERTUBE_CLIENT_VERSION,
+			playerClientName: options.playerClientName || INNERTUBE_PLAYER_CLIENT_NAME,
+			playerClientVersion: options.playerClientVersion || INNERTUBE_PLAYER_CLIENT_VERSION,
 		};
 
 		this.http = new HTTP(this.options);
